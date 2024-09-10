@@ -1,14 +1,11 @@
-import { Canvas } from "@react-three/fiber";
-
 import MainGameTobBar from "./MainGameTobBar";
+import MainGameCanvas from "./MainGameCanvas";
 
 function MainGame() {
   return (
-    <main className="flex h-screen w-screen select-none flex-col items-center justify-center bg-black">
+    <main className="flex h-screen w-screen select-none flex-col items-center justify-start bg-black">
       <MainGameTobBar />
-      <div className="h-[90vh] w-[90vh] border-2 border-solid border-sky-200">
-        <Canvas></Canvas>
-      </div>
+      <MainGameCanvas />
     </main>
   );
 }
