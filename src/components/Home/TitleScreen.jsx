@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import titleImage from "../assets/onetwopunch.png";
+import titleImage from "../../assets/onetwopunch.png";
 
 function TitleScreen() {
   const buttonRef = useRef(null);
@@ -20,8 +20,8 @@ function TitleScreen() {
     };
   }, []);
 
-  const navigateToNormalMode = () => {
-    navigate("/normalMode");
+  const navigateToMainGame = () => {
+    navigate("/main-game");
   };
 
   return (
@@ -29,7 +29,7 @@ function TitleScreen() {
       <img className="mb-16 w-[680px]" src={titleImage} />
       <button
         className="bg-punch-red text-punch-white hover:bg-punch-dark-red transform rounded-lg px-6 py-4 text-4xl font-bold shadow-lg transition duration-300 ease-in-out hover:scale-105"
-        onClick={navigateToNormalMode}
+        onClick={navigateToMainGame}
         ref={buttonRef}
       >
         START GAME
