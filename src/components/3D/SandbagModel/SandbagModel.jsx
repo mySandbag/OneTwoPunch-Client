@@ -19,9 +19,9 @@ function SandbagModel() {
   }, [sandbagGLTF]);
 
   useEffect(() => {
-    if (sandbagRef.current);
-
-    sandbagRef.current.position.y = 1;
+    if (sandbagRef.current) {
+      sandbagRef.current.position.y = 1;
+    }
   }, []);
 
   return <primitive object={sandbagGLTF.scene} ref={sandbagRef} />;
