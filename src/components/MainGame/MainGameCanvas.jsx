@@ -3,6 +3,8 @@ import { Canvas, useThree } from "@react-three/fiber";
 
 import GarageModel from "../3D/GarageModel/GarageModel";
 import SandbagModel from "../3D/SandbagModel/SandbagModel";
+import GloveLeft from "../3D/GloveModel/GloveLeft";
+import GloveRight from "../3D/GloveModel/GLoveRight";
 
 function MainGameCanvas() {
   const CameraControls = () => {
@@ -21,12 +23,12 @@ function MainGameCanvas() {
           className="h-full w-full"
           shadows
           camera={{
-            position: [0, 3, 6],
-            fov: 30,
+            position: [0, 2.5, 3.5],
+            fov: 50,
           }}
         >
           <CameraControls />
-          <ambientLight color="#FFFFFF" intensity={1.7} />
+          <ambientLight color="#FFFFFF" intensity={1.2} />
           <directionalLight
             castShadow
             position={[10, 10, 10]}
@@ -44,6 +46,8 @@ function MainGameCanvas() {
 
           <GarageModel />
           <SandbagModel />
+          <GloveLeft />
+          <GloveRight />
         </Canvas>
       </div>
     </div>
