@@ -70,7 +70,7 @@
       "name": "lambert2SG",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.23320700228214264, 0.004554226528853178, 0.0047846087254583836, 1
+          0.51, 0.004554226528853178, 0.0047846087254583836, 1
         ],
         "metallicFactor": 0,
         "roughnessFactor": 0.9699479937553406
