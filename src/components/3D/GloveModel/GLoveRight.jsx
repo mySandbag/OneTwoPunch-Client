@@ -3,7 +3,8 @@ import { useLoader, useFrame } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import {
-  INITIAL_GLOVE_SPEED,
+  GLOVE_SPEED,
+  GLOVE_DIRECTION,
   MAX_GLOVE_REACH,
   RIGHT_GLOVE_POSITION,
   RIGHT_GLOVE_ROTATION,
@@ -15,9 +16,9 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
     "/src/assets/model/glove_right/gloveRight.gltf",
   );
   const gloveRightRef = useRef();
-  const directionRef = useRef(-1);
+  const directionRef = useRef(GLOVE_DIRECTION.FORWARD);
 
-  const [speed, setSpeed] = useState(INITIAL_GLOVE_SPEED);
+  const [speed, setSpeed] = useState(GLOVE_SPEED.INITIAL);
   const [xPosition, setXPosition] = useState(RIGHT_GLOVE_POSITION.INITIAL_X);
   const [xRotation, setXRotation] = useState(RIGHT_GLOVE_ROTATION.INITIAL_X);
   const [yRotation, setYRotation] = useState(RIGHT_GLOVE_ROTATION.INITIAL_Y);
@@ -47,41 +48,66 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
       -Math.PI / RIGHT_GLOVE_ROTATION.INITIAL_Y;
   };
 
+  const handleForwardMovement = () => {
+    setSpeed((previousSpeed) => previousSpeed + GLOVE_SPEED.INCREMENT);
+    setXPosition((previousPosition) =>
+      Math.max(previousPosition - RIGHT_GLOVE_POSITION.DELTA_X, 0),
+    );
+    setXRotation((previousRotation) =>
+      Math.max(previousRotation - RIGHT_GLOVE_ROTATION.DELTA_X, 2),
+    );
+    setYRotation((previousRotation) =>
+      Math.max(previousRotation - RIGHT_GLOVE_ROTATION.DELTA_Y, 2),
+    );
+  };
+
+  const handleBackwardMovement = () => {
+    setSpeed((previousSpeed) =>
+      Math.max(previousSpeed - GLOVE_SPEED.DECREMENT, GLOVE_SPEED.INITIAL),
+    );
+    setXPosition((previousPosition) =>
+      Math.min(
+        previousPosition + RIGHT_GLOVE_POSITION.DELTA_X,
+        RIGHT_GLOVE_POSITION.INITIAL_X,
+      ),
+    );
+    setXRotation((previousRotation) =>
+      Math.min(
+        previousRotation + RIGHT_GLOVE_ROTATION.DELTA_X,
+        RIGHT_GLOVE_ROTATION.INITIAL_X,
+      ),
+    );
+    setYRotation((previousRotation) =>
+      Math.min(
+        previousRotation + RIGHT_GLOVE_ROTATION.DELTA_Y,
+        RIGHT_GLOVE_ROTATION.INITIAL_Y,
+      ),
+    );
+  };
+
   useFrame(() => {
     if (triggerAnimation && gloveRightRef.current) {
       const currentZ = gloveRightRef.current.position.z;
+      const isMovingForward = directionRef.current < 0;
+
       gloveRightRef.current.position.x = xPosition;
       gloveRightRef.current.position.z += speed * directionRef.current;
       gloveRightRef.current.rotation.x = -Math.PI / Math.max(xRotation, 2);
       gloveRightRef.current.rotation.y = -Math.PI / Math.max(yRotation, 2);
 
-      if (directionRef.current < 0) {
-        setSpeed((previousSpeed) => previousSpeed + 0.01);
-        setXPosition((previousPosition) =>
-          Math.max(previousPosition - 0.03, 0),
-        );
-        setXRotation((previousRotation) => Math.max(previousRotation - 0.4, 2));
-        setYRotation((previousRotation) => Math.max(previousRotation - 1.4, 2));
+      if (isMovingForward) {
+        handleForwardMovement();
       } else {
-        setSpeed((previousSpeed) => Math.max(previousSpeed - 0.008, 0.05));
-        setXPosition((previousPosition) =>
-          Math.min(previousPosition + 0.03, RIGHT_GLOVE_POSITION.INITIAL_X),
-        );
-        setXRotation((previousRotation) =>
-          Math.min(previousRotation + 0.4, RIGHT_GLOVE_ROTATION.INITIAL_X),
-        );
-        setYRotation((previousRotation) =>
-          Math.min(previousRotation + 1.4, RIGHT_GLOVE_ROTATION.INITIAL_Y),
-        );
+        handleBackwardMovement();
       }
 
       if (currentZ <= MAX_GLOVE_REACH) {
-        directionRef.current = 1;
+        directionRef.current = GLOVE_DIRECTION.BACKWARD;
       }
 
       if (currentZ > RIGHT_GLOVE_POSITION.INITIAL_Z) {
-        directionRef.current = -1;
-        setSpeed(INITIAL_GLOVE_SPEED);
+        directionRef.current = GLOVE_DIRECTION.FORWARD;
+        setSpeed(GLOVE_SPEED.INITIAL);
         setXPosition(RIGHT_GLOVE_POSITION.INITIAL_X);
         setXRotation(RIGHT_GLOVE_ROTATION.INITIAL_X);
         setYRotation(RIGHT_GLOVE_ROTATION.INITIAL_Y);
