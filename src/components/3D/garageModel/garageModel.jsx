@@ -15,10 +15,10 @@ function GarageModel() {
     const { gl } = useThree();
     useEffect(() => {
       gl.outputColorSpace = SRGBColorSpace;
-      concreteFloor.colorSpace = SRGBColorSpace;
-      brickWallLR.colorSpace = SRGBColorSpace;
-      brickWallFB.colorSpace = SRGBColorSpace;
-    }, [gl]);
+      if (concreteFloor) concreteFloor.colorSpace = SRGBColorSpace;
+      if (brickWallLR) brickWallLR.colorSpace = SRGBColorSpace;
+      if (brickWallFB) brickWallFB.colorSpace = SRGBColorSpace;
+    }, [gl, concreteFloor, brickWallLR, brickWallFB]);
 
     return null;
   }
@@ -50,7 +50,7 @@ function GarageModel() {
         />
         <meshStandardMaterial
           attach="material-4"
-          color="purple"
+          map={concreteFloor}
           side={BackSide}
         />
         <meshStandardMaterial

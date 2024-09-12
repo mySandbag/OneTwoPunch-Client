@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 
 import GarageModel from "../3D/GarageModel/GarageModel";
@@ -7,6 +7,9 @@ import GloveLeft from "../3D/GloveModel/GloveLeft";
 import GloveRight from "../3D/GloveModel/GLoveRight";
 
 function MainGameCanvas() {
+  const [animateLeft, setAnimateLeft] = useState(false);
+  const [animateRight, setAnimateRight] = useState(false);
+
   const CameraControls = () => {
     const { camera } = useThree();
     useEffect(() => {
@@ -15,6 +18,36 @@ function MainGameCanvas() {
 
     return null;
   };
+
+  const handleLeftGloveAnimationTrigger = (event) => {
+    if (event.key === "F" || event.key === "f") {
+      setAnimateLeft(true);
+    }
+  };
+
+  const handleRightGloveAnimationTrigger = (event) => {
+    if (event.key === "J" || event.key === "j") {
+      setAnimateRight(true);
+    }
+  };
+
+  const handleAnimationRightEnd = () => {
+    setAnimateRight(false);
+  };
+
+  const handleAnimationLeftEnd = () => {
+    setAnimateLeft(false);
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleRightGloveAnimationTrigger);
+    window.addEventListener("keydown", handleLeftGloveAnimationTrigger);
+
+    return () => {
+      window.removeEventListener("keydown", handleRightGloveAnimationTrigger);
+      window.removeEventListener("keydown", handleLeftGloveAnimationTrigger);
+    };
+  }, []);
 
   return (
     <div className="relative w-full flex-grow">
@@ -46,8 +79,14 @@ function MainGameCanvas() {
 
           <GarageModel />
           <SandbagModel />
-          <GloveLeft />
-          <GloveRight />
+          <GloveLeft
+            triggerAnimation={animateLeft}
+            onAnimationEnd={handleAnimationLeftEnd}
+          />
+          <GloveRight
+            triggerAnimation={animateRight}
+            onAnimationEnd={handleAnimationRightEnd}
+          />
         </Canvas>
       </div>
     </div>
