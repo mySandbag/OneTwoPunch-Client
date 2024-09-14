@@ -5,6 +5,7 @@ import {
   LEFT_GLOVE_ROTATION,
   RIGHT_GLOVE_POSITION,
   RIGHT_GLOVE_ROTATION,
+  SANDBAG_POSITION,
 } from "../constants/gloveMotionSettings";
 
 const createSummonGloveStateSlice = (set, get) => ({
@@ -15,7 +16,12 @@ const createSummonGloveStateSlice = (set, get) => ({
     rightX: 0,
     rightY: 0,
     rightZ: 0,
-    isInitialized: false,
+    sandbagX: 0,
+    sandbagY: 0,
+    sandbagZ: 0,
+    isLeftInitialized: false,
+    isRightInitialized: false,
+    isSandbagInitialized: false,
   },
   summonRotation: {
     leftX: 0,
@@ -24,7 +30,12 @@ const createSummonGloveStateSlice = (set, get) => ({
     rightX: 0,
     rightY: 0,
     rightZ: 0,
-    isInitialized: false,
+    sandbagX: 0,
+    sandbagY: 0,
+    sandbagZ: 0,
+    isLeftInitialized: false,
+    isRightInitialized: false,
+    isSandbagInitialized: false,
   },
   setSummonPosition: (setValue) =>
     set((state) => ({
@@ -45,6 +56,9 @@ const defaultConfiguredPosition = {
   rightX: RIGHT_GLOVE_POSITION.INITIAL_X,
   rightY: RIGHT_GLOVE_POSITION.INITIAL_Y,
   rightZ: RIGHT_GLOVE_POSITION.INITIAL_Z,
+  sandbagX: 0,
+  sandbagY: SANDBAG_POSITION.INITIAL_Y,
+  sandbagZ: 0,
   isMoving: false,
 };
 
@@ -55,6 +69,9 @@ const defaultConfiguredRotation = {
   rightX: RIGHT_GLOVE_ROTATION.INITIAL_X,
   rightY: RIGHT_GLOVE_ROTATION.INITIAL_X,
   rightZ: 0,
+  sandbagX: 0,
+  sandbagY: 0,
+  sandbagZ: 0,
   isMoving: false,
 };
 

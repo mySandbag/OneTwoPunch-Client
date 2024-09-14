@@ -1,3 +1,7 @@
+export const SANDBAG_POSITION = {
+  INITIAL_Y: 1,
+};
+
 export const GLOVE_SPEED = {
   INITIAL: 0.15,
   INCREMENT: 0.005,

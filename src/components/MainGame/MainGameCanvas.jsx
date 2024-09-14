@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 
 import GarageModel from "../3D/GarageModel/GarageModel";
 import SandbagModel from "../3D/SandbagModel/SandbagModel";
@@ -87,6 +88,8 @@ function MainGameCanvas() {
             triggerAnimation={animateRight}
             onAnimationEnd={handleAnimationRightEnd}
           />
+
+          <OrbitControls />
         </Canvas>
       </div>
     </div>

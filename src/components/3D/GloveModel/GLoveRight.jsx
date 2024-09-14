@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { useLoader, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+import { useLoader, useFrame, useThree } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import {
@@ -8,35 +9,110 @@ import {
   MAX_GLOVE_REACH,
   RIGHT_GLOVE_POSITION,
   RIGHT_GLOVE_ROTATION,
+  RIGHT_ANGLE,
 } from "../../../constants/gloveMotionSettings";
+
+import { drawAxesAtPoint } from "../../../common/drawAxesAtPoint";
+import usePackageStore from "../../../store";
 
 function GloveRight({ triggerAnimation, onAnimationEnd }) {
   const gloveRight = useLoader(
     GLTFLoader,
     "/src/assets/model/glove_right/gloveRight.gltf",
   );
-  const gloveRightRef = useRef();
-  const directionRef = useRef(GLOVE_DIRECTION.FORWARD);
+
+  const {
+    setSummonPosition,
+    getSummonPosition,
+    setCurrentPosition,
+    setCurrentRotation,
+    getCurrentPosition,
+    getCurrentRotation,
+    initializeCurrentState,
+  } = usePackageStore();
+  const { scene } = useThree();
 
   const [speed, setSpeed] = useState(GLOVE_SPEED.INITIAL);
-  const [xPosition, setXPosition] = useState(RIGHT_GLOVE_POSITION.INITIAL_X);
-  const [xRotation, setXRotation] = useState(RIGHT_GLOVE_ROTATION.INITIAL_X);
-  const [yRotation, setYRotation] = useState(RIGHT_GLOVE_ROTATION.INITIAL_Y);
+  const [originalBoundingBox, setOriginalBoundingBox] = useState(null);
+
+  const gloveRightRef = useRef();
+  const directionRef = useRef(GLOVE_DIRECTION.FORWARD);
+  const axesRef = useRef([]);
 
   useEffect(() => {
     gloveRight.scene.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
+      if (gloveRight) {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
       }
     });
   }, [gloveRight]);
 
   useEffect(() => {
     if (gloveRightRef.current) {
+      if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
+        const originalBox = new THREE.Box3().setFromObject(
+          gloveRightRef.current,
+        );
+        setOriginalBoundingBox(originalBox.clone());
+      }
+
       initializeGlovePosition();
+
+      if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
+        const movedBox = new THREE.Box3().setFromObject(gloveRightRef.current);
+        const movedHelper = new THREE.Box3Helper(
+          movedBox,
+          new THREE.Color(0x00ff00),
+        );
+        scene.add(movedHelper);
+      }
+
+      return () => {
+        scene.remove(gloveRight.scene);
+        gloveRightRef.current = null;
+      };
     }
   }, []);
+
+  useEffect(() => {
+    if (originalBoundingBox) {
+      if (!getSummonPosition().isRightInitialized) {
+        const helper = new THREE.Box3Helper(
+          originalBoundingBox,
+          new THREE.Color(0x00ffff),
+        );
+        const helperCenter = new THREE.Vector3();
+        originalBoundingBox.getCenter(helperCenter);
+
+        setSummonPosition({
+          rightX: helperCenter.x,
+          rightY: helperCenter.y,
+          rightZ: helperCenter.z,
+          isRightInitialized: true,
+        });
+        scene.add(helper);
+      }
+
+      const xyzPosition = [
+        getSummonPosition().rightX,
+        getSummonPosition().rightY,
+        getSummonPosition().rightZ,
+      ];
+      if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
+        drawAxesAtPoint(...xyzPosition, axesRef, scene);
+      }
+
+      return () => {
+        if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
+          axesRef.current.forEach((axis) => scene.remove(axis));
+          axesRef.current = [];
+        }
+      };
+    }
+  }, [originalBoundingBox]);
 
   const initializeGlovePosition = () => {
     gloveRightRef.current.position.x = RIGHT_GLOVE_POSITION.INITIAL_X;
@@ -46,43 +122,47 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
       -Math.PI / RIGHT_GLOVE_ROTATION.INITIAL_X;
     gloveRightRef.current.rotation.y =
       -Math.PI / RIGHT_GLOVE_ROTATION.INITIAL_Y;
+
+    initializeCurrentState();
   };
+
+  const xPosition = getCurrentPosition().rightX;
+  const xRotation = getCurrentRotation().rightX;
+  const yRotation = getCurrentRotation().rightY;
 
   const handleForwardMovement = () => {
     setSpeed((previousSpeed) => previousSpeed + GLOVE_SPEED.INCREMENT);
-    setXPosition((previousPosition) =>
-      Math.max(previousPosition - RIGHT_GLOVE_POSITION.DELTA_X, 0),
-    );
-    setXRotation((previousRotation) =>
-      Math.max(previousRotation - RIGHT_GLOVE_ROTATION.DELTA_X, 2),
-    );
-    setYRotation((previousRotation) =>
-      Math.max(previousRotation - RIGHT_GLOVE_ROTATION.DELTA_Y, 2),
-    );
+    setCurrentPosition({
+      rightX: Math.max(xPosition - RIGHT_GLOVE_POSITION.DELTA_X, 0),
+      rightZ: speed + GLOVE_SPEED.INCREMENT,
+    });
+    setCurrentRotation({
+      rightX: Math.max(xRotation - RIGHT_GLOVE_ROTATION.DELTA_X, RIGHT_ANGLE),
+      rightY: Math.max(yRotation - RIGHT_GLOVE_ROTATION.DELTA_Y, RIGHT_ANGLE),
+    });
   };
 
   const handleBackwardMovement = () => {
     setSpeed((previousSpeed) =>
       Math.max(previousSpeed - GLOVE_SPEED.DECREMENT, GLOVE_SPEED.INITIAL),
     );
-    setXPosition((previousPosition) =>
-      Math.min(
-        previousPosition + RIGHT_GLOVE_POSITION.DELTA_X,
+    setCurrentPosition({
+      rightX: Math.min(
+        xPosition + RIGHT_GLOVE_POSITION.DELTA_X,
         RIGHT_GLOVE_POSITION.INITIAL_X,
       ),
-    );
-    setXRotation((previousRotation) =>
-      Math.min(
-        previousRotation + RIGHT_GLOVE_ROTATION.DELTA_X,
+      rightZ: Math.max(speed - GLOVE_SPEED.DECREMENT, GLOVE_SPEED.INITIAL),
+    });
+    setCurrentRotation({
+      rightX: Math.min(
+        xRotation + RIGHT_GLOVE_ROTATION.DELTA_X,
         RIGHT_GLOVE_ROTATION.INITIAL_X,
       ),
-    );
-    setYRotation((previousRotation) =>
-      Math.min(
-        previousRotation + RIGHT_GLOVE_ROTATION.DELTA_Y,
+      rightY: Math.min(
+        yRotation + RIGHT_GLOVE_ROTATION.DELTA_Y,
         RIGHT_GLOVE_ROTATION.INITIAL_Y,
       ),
-    );
+    });
   };
 
   useFrame(() => {
@@ -92,14 +172,12 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
 
       gloveRightRef.current.position.x = xPosition;
       gloveRightRef.current.position.z += speed * directionRef.current;
-      gloveRightRef.current.rotation.x = -Math.PI / Math.max(xRotation, 2);
-      gloveRightRef.current.rotation.y = -Math.PI / Math.max(yRotation, 2);
+      gloveRightRef.current.rotation.x =
+        -Math.PI / Math.max(xRotation, RIGHT_ANGLE);
+      gloveRightRef.current.rotation.y =
+        -Math.PI / Math.max(yRotation, RIGHT_ANGLE);
 
-      if (isMovingForward) {
-        handleForwardMovement();
-      } else {
-        handleBackwardMovement();
-      }
+      isMovingForward ? handleForwardMovement() : handleBackwardMovement();
 
       if (currentZ <= MAX_GLOVE_REACH) {
         directionRef.current = GLOVE_DIRECTION.BACKWARD;
@@ -108,9 +186,6 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
       if (currentZ > RIGHT_GLOVE_POSITION.INITIAL_Z) {
         directionRef.current = GLOVE_DIRECTION.FORWARD;
         setSpeed(GLOVE_SPEED.INITIAL);
-        setXPosition(RIGHT_GLOVE_POSITION.INITIAL_X);
-        setXRotation(RIGHT_GLOVE_ROTATION.INITIAL_X);
-        setYRotation(RIGHT_GLOVE_ROTATION.INITIAL_Y);
 
         initializeGlovePosition();
         onAnimationEnd();
