@@ -13,6 +13,7 @@ import {
 } from "../../../constants/gloveMotionSettings";
 
 import { drawAxesAtPoint } from "../../../common/drawAxesAtPoint";
+import { drawDynamicAxesAtPoint } from "../../../common/drawDynamicAxesAtPoint";
 import usePackageStore from "../../../store";
 
 function GloveRight({ triggerAnimation, onAnimationEnd }) {
@@ -38,6 +39,27 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
   const gloveRightRef = useRef();
   const directionRef = useRef(GLOVE_DIRECTION.FORWARD);
   const axesRef = useRef([]);
+
+  const initializeGlovePosition = () => {
+    gloveRightRef.current.position.x = RIGHT_GLOVE_POSITION.INITIAL_X;
+    gloveRightRef.current.position.y = RIGHT_GLOVE_POSITION.INITIAL_Y;
+    gloveRightRef.current.position.z = RIGHT_GLOVE_POSITION.INITIAL_Z;
+    gloveRightRef.current.rotation.x =
+      -(Math.PI / RIGHT_GLOVE_ROTATION.INITIAL_X).toFixed(2);
+    gloveRightRef.current.rotation.y =
+      -(Math.PI / RIGHT_GLOVE_ROTATION.INITIAL_Y).toFixed(2);
+
+      drawDynamicAxesAtPoint(
+        gloveRightRef.current.position.x,
+        gloveRightRef.current.position.y,
+        gloveRightRef.current.position.z,
+        gloveRightRef.current.rotation,
+        axesRef,
+        scene
+      );
+    initializeCurrentState();
+    
+  };
 
   useEffect(() => {
     gloveRight.scene.traverse((child) => {
@@ -114,17 +136,7 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
     }
   }, [originalBoundingBox]);
 
-  const initializeGlovePosition = () => {
-    gloveRightRef.current.position.x = RIGHT_GLOVE_POSITION.INITIAL_X;
-    gloveRightRef.current.position.y = RIGHT_GLOVE_POSITION.INITIAL_Y;
-    gloveRightRef.current.position.z = RIGHT_GLOVE_POSITION.INITIAL_Z;
-    gloveRightRef.current.rotation.x =
-      -Math.PI / RIGHT_GLOVE_ROTATION.INITIAL_X;
-    gloveRightRef.current.rotation.y =
-      -Math.PI / RIGHT_GLOVE_ROTATION.INITIAL_Y;
 
-    initializeCurrentState();
-  };
 
   const xPosition = getCurrentPosition().rightX;
   const xRotation = getCurrentRotation().rightX;
@@ -173,9 +185,18 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
       gloveRightRef.current.position.x = xPosition;
       gloveRightRef.current.position.z += speed * directionRef.current;
       gloveRightRef.current.rotation.x =
-        -Math.PI / Math.max(xRotation, RIGHT_ANGLE);
+        -(Math.PI / Math.max(xRotation, RIGHT_ANGLE)).toFixed(2);
       gloveRightRef.current.rotation.y =
-        -Math.PI / Math.max(yRotation, RIGHT_ANGLE);
+        -(Math.PI / Math.max(yRotation, RIGHT_ANGLE)).toFixed(2);
+
+        drawDynamicAxesAtPoint(
+          gloveRightRef.current.position.x,
+          gloveRightRef.current.position.y,
+          gloveRightRef.current.position.z,
+          gloveRightRef.current.rotation,
+          axesRef,
+          scene
+        );
 
       isMovingForward ? handleForwardMovement() : handleBackwardMovement();
 

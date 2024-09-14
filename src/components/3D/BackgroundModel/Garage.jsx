@@ -11,7 +11,7 @@ function GarageModel() {
   const brickWallLR = useLoader(TextureLoader, "/src/assets/brickWall_LR.jpg");
   const brickWallFB = useLoader(TextureLoader, "/src/assets/brickWall_FB.jpg");
 
-  function SetRendererSettings() {
+  function SetColorSpace() {
     const { gl } = useThree();
     useEffect(() => {
       gl.outputColorSpace = SRGBColorSpace;
@@ -25,7 +25,7 @@ function GarageModel() {
 
   return (
     <>
-      <SetRendererSettings />
+      <SetColorSpace />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 3, 0]} receiveShadow>
         <boxGeometry args={[12, 12, 7]} />
         <meshStandardMaterial

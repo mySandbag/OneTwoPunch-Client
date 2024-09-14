@@ -13,6 +13,7 @@ import {
 } from "../../../constants/gloveMotionSettings";
 
 import { drawAxesAtPoint } from "../../../common/drawAxesAtPoint";
+import { drawDynamicAxesAtPoint } from "../../../common/drawDynamicAxesAtPoint";
 import usePackageStore from "../../../store";
 
 function GloveLeft({ triggerAnimation, onAnimationEnd }) {
@@ -38,6 +39,25 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   const gloveLeftRef = useRef();
   const directionRef = useRef(GLOVE_DIRECTION.FORWARD);
   const axesRef = useRef([]);
+
+  const initializeGlovePosition = () => {
+    gloveLeftRef.current.position.x = LEFT_GLOVE_POSITION.INITIAL_X;
+    gloveLeftRef.current.position.y = LEFT_GLOVE_POSITION.INITIAL_Y;
+    gloveLeftRef.current.position.z = LEFT_GLOVE_POSITION.INITIAL_Z;
+    gloveLeftRef.current.rotation.x = -(Math.PI / LEFT_GLOVE_ROTATION.INITIAL_X).toFixed(2);
+    gloveLeftRef.current.rotation.y = (Math.PI / LEFT_GLOVE_ROTATION.INITIAL_Y).toFixed(2);
+
+    drawDynamicAxesAtPoint(
+      gloveLeftRef.current.position.x,
+      gloveLeftRef.current.position.y,
+      gloveLeftRef.current.position.z,
+      gloveLeftRef.current.rotation,
+      axesRef,
+      scene
+    );
+  initializeCurrentState();
+    initializeCurrentState();
+  };
 
   useEffect(() => {
     if (gloveLeft) {
@@ -115,16 +135,6 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     }
   }, [originalBoundingBox]);
 
-  const initializeGlovePosition = () => {
-    gloveLeftRef.current.position.x = LEFT_GLOVE_POSITION.INITIAL_X;
-    gloveLeftRef.current.position.y = LEFT_GLOVE_POSITION.INITIAL_Y;
-    gloveLeftRef.current.position.z = LEFT_GLOVE_POSITION.INITIAL_Z;
-    gloveLeftRef.current.rotation.x = -Math.PI / LEFT_GLOVE_ROTATION.INITIAL_X;
-    gloveLeftRef.current.rotation.y = Math.PI / LEFT_GLOVE_ROTATION.INITIAL_Y;
-
-    initializeCurrentState();
-  };
-
   const xPosition = getCurrentPosition().leftX;
   const xRotation = getCurrentRotation().leftX;
   const yRotation = getCurrentRotation().leftY;
@@ -172,9 +182,18 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       gloveLeftRef.current.position.x = xPosition;
       gloveLeftRef.current.position.z += speed * directionRef.current;
       gloveLeftRef.current.rotation.x =
-        -Math.PI / Math.max(xRotation, RIGHT_ANGLE);
+        -(Math.PI / Math.max(xRotation, RIGHT_ANGLE)).toFixed(2);
       gloveLeftRef.current.rotation.y =
-        Math.PI / Math.max(yRotation, RIGHT_ANGLE);
+        (Math.PI / Math.max(yRotation, RIGHT_ANGLE)).toFixed(2);
+
+        drawDynamicAxesAtPoint(
+          gloveLeftRef.current.position.x,
+          gloveLeftRef.current.position.y,
+          gloveLeftRef.current.position.z,
+          gloveLeftRef.current.rotation,
+          axesRef,
+          scene
+        );
 
       isMovingForward ? handleForwardMovement() : handleBackwardMovement();
 
