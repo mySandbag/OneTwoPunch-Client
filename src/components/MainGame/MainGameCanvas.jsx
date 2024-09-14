@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
-import GarageModel from "../3D/GarageModel/GarageModel";
-import SandbagModel from "../3D/SandbagModel/SandbagModel";
+import GarageModel from "../3D/BackgroundModel/Garage";
+import SandbagModel from "../3D/SandbagModel/Sandbag";
 import GloveLeft from "../3D/GloveModel/GloveLeft";
-import GloveRight from "../3D/GloveModel/GLoveRight";
+import GloveRight from "../3D/GloveModel/GloveRight";
 
 function MainGameCanvas() {
   const [animateLeft, setAnimateLeft] = useState(false);
