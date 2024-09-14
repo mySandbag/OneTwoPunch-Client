@@ -11,6 +11,8 @@ export const GLOVE_DIRECTION = {
 
 export const MAX_GLOVE_REACH = 0.8;
 
+export const RIGHT_ANGLE = 2;
+
 export const RIGHT_GLOVE_POSITION = {
   INITIAL_X: 0.6,
   INITIAL_Y: 1.6,
