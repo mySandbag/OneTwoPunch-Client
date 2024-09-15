@@ -10,7 +10,8 @@ import usePackageStore from "../../../store";
 
 function SandbagModel() {
   const sandbag = useLoader(GLTFLoader, "/src/assets/model/sandbag/scene.gltf");
-  const { setSummonPosition, getSummonPosition } = usePackageStore();
+  const { setSummonPosition, getSummonPosition, setSandbagOBB } =
+    usePackageStore();
   const { scene } = useThree();
 
   const [originalBoundingBox, setOriginalBoundingBox] = useState(null);
@@ -30,14 +31,20 @@ function SandbagModel() {
   useEffect(() => {
     if (sandbagRef.current) {
       if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
-        const originalBox = new THREE.Box3().setFromObject(sandbagRef.current);
+        const originalBox = new THREE.Box3().setFromObject(
+          sandbagRef.current,
+          true,
+        );
         setOriginalBoundingBox(originalBox.clone());
       }
 
       sandbagRef.current.position.y = SANDBAG_POSITION.INITIAL_Y;
 
       if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
-        const movedBox = new THREE.Box3().setFromObject(sandbagRef.current);
+        const movedBox = new THREE.Box3().setFromObject(
+          sandbagRef.current,
+          true,
+        );
         const movedHelper = new THREE.Box3Helper(
           movedBox,
           new THREE.Color(0x0000ff),
@@ -54,6 +61,27 @@ function SandbagModel() {
   useEffect(() => {
     if (originalBoundingBox) {
       if (!getSummonPosition().isSandbagInitialized) {
+        let centerPoint = new THREE.Vector3();
+        originalBoundingBox.getCenter(centerPoint);
+        const boxHalfSize = {
+          x: (originalBoundingBox.max.x - originalBoundingBox.min.x) / 2,
+          y: (originalBoundingBox.max.y - originalBoundingBox.min.y) / 2,
+          z: (originalBoundingBox.max.z - originalBoundingBox.min.z) / 2,
+        };
+
+        const rotationMatrix = new THREE.Matrix3();
+        rotationMatrix.set(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
+        setSandbagOBB({
+          center: centerPoint,
+          halfSize: {
+            x: boxHalfSize.x,
+            y: boxHalfSize.y,
+            z: boxHalfSize.z,
+          },
+          rotation: rotationMatrix,
+        });
+
         const helper = new THREE.Box3Helper(
           originalBoundingBox,
           new THREE.Color(0x800080),

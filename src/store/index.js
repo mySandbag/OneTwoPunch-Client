@@ -8,6 +8,42 @@ import {
   SANDBAG_POSITION,
 } from "../constants/gloveMotionSettings";
 
+const createGloveOBBSlice = (set, get) => ({
+  leftGloveOBB: {
+    center: {},
+    halfSize: {},
+    rotation: [],
+  },
+  rightGloveOBB: {
+    center: {},
+    halfSize: {},
+    rotation: [],
+  },
+  setLeftGloveOBB: (setValue) =>
+    set((state) => ({
+      leftGloveOBB: { ...state.leftGloveOBB, ...setValue },
+    })),
+  setRightGloveOBB: (setValue) =>
+    set((state) => ({
+      rightGloveOBB: { ...state.rightGloveOBB, ...setValue },
+    })),
+  getLeftGloveOBB: () => get().leftGloveOBB,
+  getRightGloveOBB: () => get().rightGloveOBB,
+});
+
+const createSandbagOBBSlice = (set, get) => ({
+  sandbagOBB: {
+    center: {},
+    halfSize: {},
+    rotation: [],
+  },
+  setSandbagOBB: (setValue) =>
+    set((state) => ({
+      rightSandbagOBB: { ...state.rightSandbagOBB, ...setValue },
+    })),
+  getSandbagOBB: () => get().rightSandbagOBB,
+});
+
 const createSummonGloveStateSlice = (set, get) => ({
   summonPosition: {
     leftX: 0,
@@ -96,6 +132,8 @@ const createCurrentGloveStateSlice = (set, get) => ({
 });
 
 const usePackageStore = create((set, get) => ({
+  ...createGloveOBBSlice(set, get),
+  ...createSandbagOBBSlice(set, get),
   ...createSummonGloveStateSlice(set, get),
   ...createCurrentGloveStateSlice(set, get),
 }));
