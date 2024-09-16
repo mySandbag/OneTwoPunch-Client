@@ -23,6 +23,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     "/src/assets/model/glove_left/gloveLeft.gltf",
   );
   const {
+    updateHitCount,
     setSummonPosition,
     getSummonPosition,
     setLeftGloveOBB,
@@ -38,6 +39,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   const { scene } = useThree();
 
   const [speed, setSpeed] = useState(GLOVE_SPEED.INITIAL);
+  const [isFirstCollide, setIsFirstCollide] = useState(true);
   const [originalBoundingBox, setOriginalBoundingBox] = useState(null);
 
   const gloveLeftRef = useRef();
@@ -184,11 +186,11 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       Math.PI / Math.max(yRotation, RIGHT_ANGLE)
     ).toFixed(2);
 
-    console.log(
-      checkOBBCollision(getLeftGloveOBB(), getSandbagOBB()),
-      [getLeftGloveOBB(), getSandbagOBB()],
-      "왼쪽충돌",
-    );
+    const isCollide = checkOBBCollision(getLeftGloveOBB(), getSandbagOBB());
+    if (isCollide && isFirstCollide) {
+      updateHitCount();
+      setIsFirstCollide(false);
+    }
   };
 
   const handleForwardMovement = () => {
@@ -258,8 +260,9 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       if (currentPositionZ > LEFT_GLOVE_POSITION.INITIAL_Z) {
         directionRef.current = GLOVE_DIRECTION.FORWARD;
         setSpeed(GLOVE_SPEED.INITIAL);
-
+        setIsFirstCollide(true);
         initializeGlovePosition();
+
         onAnimationEnd();
       }
     }
