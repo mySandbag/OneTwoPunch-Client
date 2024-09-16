@@ -125,7 +125,6 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
           y: (originalBoundingBox.max.y - originalBoundingBox.min.y) / 2,
           z: (originalBoundingBox.max.z - originalBoundingBox.min.z) / 2,
         };
-        console.log(getRightGloveOBB(), getSandbagOBB(), "이게없어?");
 
         setRightGloveOBB({
           center: centerPoint,
