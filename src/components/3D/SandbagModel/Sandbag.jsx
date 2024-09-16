@@ -30,13 +30,11 @@ function SandbagModel() {
 
   useEffect(() => {
     if (sandbagRef.current) {
-      if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
-        const originalBox = new THREE.Box3().setFromObject(
-          sandbagRef.current,
-          true,
-        );
-        setOriginalBoundingBox(originalBox.clone());
-      }
+      const originalBox = new THREE.Box3().setFromObject(
+        sandbagRef.current,
+        true,
+      );
+      setOriginalBoundingBox(originalBox.clone());
 
       sandbagRef.current.position.y = SANDBAG_POSITION.INITIAL_Y;
 
@@ -49,7 +47,9 @@ function SandbagModel() {
           movedBox,
           new THREE.Color(0x0000ff),
         );
-        scene.add(movedHelper);
+        if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
+          scene.add(movedHelper);
+        }
       }
       return () => {
         scene.remove(sandbag.scene);
@@ -95,7 +95,9 @@ function SandbagModel() {
           sandbagZ: helperCenter.z,
           isSandbagInitialized: true,
         });
-        scene.add(helper);
+        if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
+          scene.add(helper);
+        }
       }
 
       const xyzPosition = [

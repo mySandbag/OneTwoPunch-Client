@@ -90,21 +90,17 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
 
   useEffect(() => {
     if (gloveRightRef.current) {
-      if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
-        const originalBox = new THREE.Box3().setFromObject(
-          gloveRightRef.current,
-        );
-        setOriginalBoundingBox(originalBox.clone());
-      }
+      const originalBox = new THREE.Box3().setFromObject(gloveRightRef.current);
+      setOriginalBoundingBox(originalBox.clone());
 
       initializeGlovePosition();
 
+      const movedBox = new THREE.Box3().setFromObject(gloveRightRef.current);
+      const movedHelper = new THREE.Box3Helper(
+        movedBox,
+        new THREE.Color(0x00ff00),
+      );
       if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
-        const movedBox = new THREE.Box3().setFromObject(gloveRightRef.current);
-        const movedHelper = new THREE.Box3Helper(
-          movedBox,
-          new THREE.Color(0x00ff00),
-        );
         scene.add(movedHelper);
       }
 
@@ -129,6 +125,7 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
           y: (originalBoundingBox.max.y - originalBoundingBox.min.y) / 2,
           z: (originalBoundingBox.max.z - originalBoundingBox.min.z) / 2,
         };
+        console.log(getRightGloveOBB(), getSandbagOBB(), "이게없어?");
 
         setRightGloveOBB({
           center: centerPoint,
@@ -152,7 +149,9 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
           rightZ: helperCenter.z,
           isRightInitialized: true,
         });
-        scene.add(helper);
+        if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
+          scene.add(helper);
+        }
       }
 
       const xyzPosition = [

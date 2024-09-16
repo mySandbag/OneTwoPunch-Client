@@ -7,28 +7,33 @@ import {
 } from "three";
 
 export const drawDynamicAxesAtPoint = (x, y, z, rotation, ref, scene) => {
-  ref.current.forEach((axis) => scene.remove(axis));
-  ref.current = [];
+  if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
+    ref.current.forEach((axis) => scene.remove(axis));
+    ref.current = [];
+  }
 
   const center = new Vector3(x, y, z);
 
   const xEnd = new Vector3(10, 0, 0).applyEuler(rotation).add(center);
   const xGeometry = new BufferGeometry().setFromPoints([center, xEnd]);
   const xLine = new Line(xGeometry, new LineBasicMaterial({ color: 0xff0000 }));
-  scene.add(xLine);
-  ref.current.push(xLine);
 
   const yEnd = new Vector3(0, 10, 0).applyEuler(rotation).add(center);
   const yGeometry = new BufferGeometry().setFromPoints([center, yEnd]);
   const yLine = new Line(yGeometry, new LineBasicMaterial({ color: 0x00ff00 }));
-  scene.add(yLine);
-  ref.current.push(yLine);
 
   const zEnd = new Vector3(0, 0, 10).applyEuler(rotation).add(center);
   const zGeometry = new BufferGeometry().setFromPoints([center, zEnd]);
   const zLine = new Line(zGeometry, new LineBasicMaterial({ color: 0x0000ff }));
-  scene.add(zLine);
-  ref.current.push(zLine);
+
+  if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
+    scene.add(xLine);
+    ref.current.push(xLine);
+    scene.add(yLine);
+    ref.current.push(yLine);
+    scene.add(zLine);
+    ref.current.push(zLine);
+  }
 
   const xAxis = new Vector3();
   const yAxis = new Vector3();

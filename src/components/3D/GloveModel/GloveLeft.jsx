@@ -89,21 +89,18 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
 
   useEffect(() => {
     if (gloveLeftRef.current) {
-      if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
-        const originalBox = new THREE.Box3().setFromObject(
-          gloveLeftRef.current,
-        );
-        setOriginalBoundingBox(originalBox.clone());
-      }
+      const originalBox = new THREE.Box3().setFromObject(gloveLeftRef.current);
+      setOriginalBoundingBox(originalBox.clone());
 
       initializeGlovePosition();
 
+      const movedBox = new THREE.Box3().setFromObject(gloveLeftRef.current);
+      const movedHelper = new THREE.Box3Helper(
+        movedBox,
+        new THREE.Color(0xff00ff),
+      );
+
       if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
-        const movedBox = new THREE.Box3().setFromObject(gloveLeftRef.current);
-        const movedHelper = new THREE.Box3Helper(
-          movedBox,
-          new THREE.Color(0xff00ff),
-        );
         scene.add(movedHelper);
       }
 
@@ -150,7 +147,9 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
           leftZ: helperCenter.z,
           isLeftInitialized: true,
         });
-        scene.add(helper);
+        if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
+          scene.add(helper);
+        }
       }
 
       const xyzPosition = [
