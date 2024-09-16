@@ -8,8 +8,11 @@ import GloveLeft from "../3D/GloveModel/GloveLeft";
 import GloveRight from "../3D/GloveModel/GloveRight";
 
 function MainGameCanvas() {
+  const [animateSandbag, setAnimateSandbag] = useState(false);
   const [animateLeft, setAnimateLeft] = useState(false);
   const [animateRight, setAnimateRight] = useState(false);
+
+  const isDev = import.meta.env.VITE_ENVIRONMENT === "DEV";
 
   const CameraControls = () => {
     const { camera } = useThree();
@@ -18,6 +21,12 @@ function MainGameCanvas() {
     }, [camera]);
 
     return null;
+  };
+
+  const handleSandbagAnimationTrigger = (event) => {
+    if (event.key === "Y" || event.key === "y") {
+      setAnimateSandbag(true);
+    }
   };
 
   const handleLeftGloveAnimationTrigger = (event) => {
@@ -32,19 +41,17 @@ function MainGameCanvas() {
     }
   };
 
-  const handleAnimationRightEnd = () => {
-    setAnimateRight(false);
-  };
-
-  const handleAnimationLeftEnd = () => {
-    setAnimateLeft(false);
-  };
+  const handleAnimationSandbagEnd = () => setAnimateSandbag(false);
+  const handleAnimationRightEnd = () => setAnimateRight(false);
+  const handleAnimationLeftEnd = () => setAnimateLeft(false);
 
   useEffect(() => {
+    window.addEventListener("keydown", handleSandbagAnimationTrigger);
     window.addEventListener("keydown", handleRightGloveAnimationTrigger);
     window.addEventListener("keydown", handleLeftGloveAnimationTrigger);
 
     return () => {
+      window.removeEventListener("keydown", handleSandbagAnimationTrigger);
       window.removeEventListener("keydown", handleRightGloveAnimationTrigger);
       window.removeEventListener("keydown", handleLeftGloveAnimationTrigger);
     };
@@ -79,7 +86,10 @@ function MainGameCanvas() {
           />
 
           <GarageModel />
-          <SandbagModel />
+          <SandbagModel
+            triggerAnimation={animateSandbag}
+            onAnimationEnd={handleAnimationSandbagEnd}
+          />
           <GloveLeft
             triggerAnimation={animateLeft}
             onAnimationEnd={handleAnimationLeftEnd}
@@ -89,7 +99,7 @@ function MainGameCanvas() {
             onAnimationEnd={handleAnimationRightEnd}
           />
 
-          <OrbitControls />
+          {isDev ? <OrbitControls /> : null}
         </Canvas>
       </div>
     </div>

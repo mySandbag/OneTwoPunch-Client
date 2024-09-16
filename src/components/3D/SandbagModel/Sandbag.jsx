@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import * as THREE from "three";
-import { useLoader, useThree } from "@react-three/fiber";
+import { useLoader, useThree, useFrame } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import { SANDBAG_POSITION } from "../../../constants/gloveMotionSettings";
@@ -8,13 +8,20 @@ import { SANDBAG_POSITION } from "../../../constants/gloveMotionSettings";
 import { drawAxesAtPoint } from "../../../common/drawAxesAtPoint";
 import usePackageStore from "../../../store";
 
-function SandbagModel() {
-  const sandbag = useLoader(GLTFLoader, "/src/assets/model/sandbag/scene.gltf");
+function SandbagModel({ triggerAnimation, onAnimationEnd }) {
+  const sandbag = useLoader(
+    GLTFLoader,
+    "/src/assets/model/sandbag/sandbag.gltf",
+  );
   const { setSummonPosition, getSummonPosition, setSandbagOBB } =
     usePackageStore();
   const { scene } = useThree();
 
   const [originalBoundingBox, setOriginalBoundingBox] = useState(null);
+  const [angle, setAngle] = useState(Math.PI / 4);
+  const [angleAccelerate, setAngleAccelerate] = useState(0);
+  const [angleVelocity, setAngleVelocity] = useState(0);
+  const [isStart, setIsStart] = useState(false);
 
   const sandbagRef = useRef();
   const axesRef = useRef([]);
@@ -38,18 +45,35 @@ function SandbagModel() {
 
       sandbagRef.current.position.y = SANDBAG_POSITION.INITIAL_Y;
 
+      const movedBox = new THREE.Box3().setFromObject(sandbagRef.current, true);
+      const movedHelper = new THREE.Box3Helper(
+        movedBox,
+        new THREE.Color(0x0000ff),
+      );
+
+      let centerPoint = new THREE.Vector3();
+      movedBox.getCenter(centerPoint);
+      const boxHalfSize = {
+        x: (movedBox.max.x - movedBox.min.x) / 2,
+        y: (movedBox.max.y - movedBox.min.y) / 2,
+        z: (movedBox.max.z - movedBox.min.z) / 2,
+      };
+
+      const rotationMatrix = new THREE.Matrix3();
+      rotationMatrix.set(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
+      setSandbagOBB({
+        center: centerPoint,
+        halfSize: {
+          x: boxHalfSize.x,
+          y: boxHalfSize.y,
+          z: boxHalfSize.z,
+        },
+        rotation: rotationMatrix,
+      });
+
       if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
-        const movedBox = new THREE.Box3().setFromObject(
-          sandbagRef.current,
-          true,
-        );
-        const movedHelper = new THREE.Box3Helper(
-          movedBox,
-          new THREE.Color(0x0000ff),
-        );
-        if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
-          scene.add(movedHelper);
-        }
+        scene.add(movedHelper);
       }
       return () => {
         scene.remove(sandbag.scene);
@@ -61,27 +85,6 @@ function SandbagModel() {
   useEffect(() => {
     if (originalBoundingBox) {
       if (!getSummonPosition().isSandbagInitialized) {
-        let centerPoint = new THREE.Vector3();
-        originalBoundingBox.getCenter(centerPoint);
-        const boxHalfSize = {
-          x: (originalBoundingBox.max.x - originalBoundingBox.min.x) / 2,
-          y: (originalBoundingBox.max.y - originalBoundingBox.min.y) / 2,
-          z: (originalBoundingBox.max.z - originalBoundingBox.min.z) / 2,
-        };
-
-        const rotationMatrix = new THREE.Matrix3();
-        rotationMatrix.set(1, 0, 0, 0, 1, 0, 0, 0, 1);
-
-        setSandbagOBB({
-          center: centerPoint,
-          halfSize: {
-            x: boxHalfSize.x,
-            y: boxHalfSize.y,
-            z: boxHalfSize.z,
-          },
-          rotation: rotationMatrix,
-        });
-
         const helper = new THREE.Box3Helper(
           originalBoundingBox,
           new THREE.Color(0x800080),
@@ -118,6 +121,37 @@ function SandbagModel() {
       };
     }
   }, [originalBoundingBox]);
+
+  useFrame(() => {
+    if (triggerAnimation && sandbagRef.current) {
+      const damping = 0.94;
+      const gravity = 0.01;
+
+      if (sandbagRef.current) {
+        let force = gravity * Math.sin(angle);
+        setAngleAccelerate((prevAccelerlate) => -1 * force);
+
+        setAngleVelocity(
+          (prevVelocity) => (prevVelocity + angleAccelerate) * damping,
+        );
+
+        if (isStart && Math.abs(angleAccelerate) < 0.00001) {
+          setAngle(Math.PI / 4);
+          setAngleAccelerate(0);
+          setAngleVelocity(0);
+          setIsStart(false);
+
+          onAnimationEnd();
+          return;
+        }
+        setIsStart(true);
+
+        setAngle((prevAngle) => prevAngle + angleVelocity);
+
+        sandbagRef.current.rotation.x = angle;
+      }
+    }
+  });
 
   return <primitive object={sandbag.scene} ref={sandbagRef} />;
 }
