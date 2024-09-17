@@ -184,12 +184,32 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     gloveLeftRef.current.rotation.y = (
       Math.PI / Math.max(yRotation, RIGHT_ANGLE)
     ).toFixed(2);
+  };
 
+  const handleCollision = () => {
     const isCollide = checkOBBCollision(getLeftGloveOBB(), getSandbagOBB());
     if (isCollide && isFirstCollide) {
       updateHitCount();
       setIsFirstCollide(false);
     }
+  };
+
+  const updateGloveState = () => {
+    let centerPoint = new THREE.Vector3(
+      gloveLeftRef.current.position.x,
+      gloveLeftRef.current.position.y,
+      gloveLeftRef.current.position.z,
+    );
+
+    const currentAxis = drawDynamicAxesAtPoint(
+      gloveLeftRef.current.position.x,
+      gloveLeftRef.current.position.y,
+      gloveLeftRef.current.position.z,
+      gloveLeftRef.current.rotation,
+      axesRef,
+      scene,
+    );
+    setLeftGloveOBB({ center: centerPoint, rotation: currentAxis });
   };
 
   const handleForwardMovement = () => {
@@ -233,22 +253,8 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       const isMovingForward = directionRef.current < 0;
 
       transformGloveRef();
-
-      let centerPoint = new THREE.Vector3(
-        gloveLeftRef.current.position.x,
-        gloveLeftRef.current.position.y,
-        gloveLeftRef.current.position.z,
-      );
-
-      const currentAxis = drawDynamicAxesAtPoint(
-        gloveLeftRef.current.position.x,
-        gloveLeftRef.current.position.y,
-        gloveLeftRef.current.position.z,
-        gloveLeftRef.current.rotation,
-        axesRef,
-        scene,
-      );
-      setLeftGloveOBB({ center: centerPoint, rotation: currentAxis });
+      handleCollision();
+      updateGloveState();
 
       isMovingForward ? handleForwardMovement() : handleBackwardMovement();
 
