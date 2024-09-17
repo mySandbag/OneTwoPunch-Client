@@ -2,6 +2,13 @@ export const SANDBAG_POSITION = {
   INITIAL_Y: 4.8,
 };
 
+export const SANDBAG_PENDULUM = {
+  INITIAL_ANGLE_VELOCITY: 0.03,
+  DAMPING: 0.94,
+  GRAVITY: 9.8 / 1000,
+  STOP_CONDITION: 0.0001,
+};
+
 export const GLOVE_SPEED = {
   INITIAL: 0.15,
   INCREMENT: 0.005,

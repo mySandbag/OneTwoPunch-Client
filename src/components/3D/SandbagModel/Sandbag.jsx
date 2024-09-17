@@ -3,7 +3,10 @@ import * as THREE from "three";
 import { useLoader, useThree, useFrame } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-import { SANDBAG_POSITION } from "../../../constants/gloveMotionSettings";
+import {
+  SANDBAG_POSITION,
+  SANDBAG_PENDULUM,
+} from "../../../constants/gloveMotionSettings";
 
 import { drawAxesAtPoint } from "../../../common/drawAxesAtPoint";
 import usePackageStore from "../../../store";
@@ -17,11 +20,13 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     usePackageStore();
   const { scene } = useThree();
 
+  const damping = SANDBAG_PENDULUM.DAMPING;
+  const gravity = SANDBAG_PENDULUM.GRAVITY;
+
   const [originalBoundingBox, setOriginalBoundingBox] = useState(null);
   const [angle, setAngle] = useState(0);
   const [angleAccelerate, setAngleAccelerate] = useState(0);
   const [angleVelocity, setAngleVelocity] = useState(0);
-  const initialVelocity = 0.03;
   const [isStart, setIsStart] = useState(false);
 
   const sandbagRef = useRef();
@@ -123,41 +128,45 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     }
   }, [originalBoundingBox]);
 
+  const animatePendulum = () => {
+    if (!isStart) {
+      setAngleVelocity(SANDBAG_PENDULUM.INITIAL_ANGLE_VELOCITY);
+      setIsStart(true);
+    }
+
+    const force = gravity * Math.sin(angle);
+    setAngleAccelerate(-1 * force);
+    setAngleVelocity(
+      (prevVelocity) => (prevVelocity + angleAccelerate) * damping,
+    );
+    setAngle((prevAngle) => prevAngle + angleVelocity);
+
+    sandbagRef.current.rotation.x = angle;
+  };
+
+  const stopPendulum = () => {
+    sandbagRef.current.rotation.x = 0;
+    setAngle(0);
+    setAngleAccelerate(0);
+    setAngleVelocity(0);
+    setIsStart(false);
+
+    onAnimationEnd();
+    return;
+  };
+
   useFrame(() => {
     if (triggerAnimation && sandbagRef.current) {
-      const damping = 0.94;
-      const gravity = 9.8 / 1000;
-
       if (sandbagRef.current) {
-        if (!isStart) {
-          setAngleVelocity(initialVelocity);
-          setIsStart(true);
-        }
-
-        const force = gravity * Math.sin(angle);
-        setAngleAccelerate(-1 * force);
-
-        setAngleVelocity(
-          (prevVelocity) => (prevVelocity + angleAccelerate) * damping,
-        );
-
-        setAngle((prevAngle) => prevAngle + angleVelocity);
+        animatePendulum();
 
         if (
           isStart &&
-          Math.abs(angleVelocity) < 0.0001 &&
-          Math.abs(angle) < 0.0001
+          Math.abs(angleVelocity) < SANDBAG_PENDULUM.STOP_CONDITION &&
+          Math.abs(angle) < SANDBAG_PENDULUM.STOP_CONDITION
         ) {
-          sandbagRef.current.rotation.x = 0;
-          setAngle(0);
-          setAngleAccelerate(0);
-          setAngleVelocity(0);
-          setIsStart(false);
-
-          onAnimationEnd();
-          return;
+          stopPendulum();
         }
-        sandbagRef.current.rotation.x = angle;
       }
     }
   });
