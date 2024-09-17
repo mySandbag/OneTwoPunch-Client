@@ -18,9 +18,10 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
   const { scene } = useThree();
 
   const [originalBoundingBox, setOriginalBoundingBox] = useState(null);
-  const [angle, setAngle] = useState(Math.PI / 4);
+  const [angle, setAngle] = useState(0);
   const [angleAccelerate, setAngleAccelerate] = useState(0);
   const [angleVelocity, setAngleVelocity] = useState(0);
+  const initialVelocity = 0.03;
   const [isStart, setIsStart] = useState(false);
 
   const sandbagRef = useRef();
@@ -125,18 +126,30 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
   useFrame(() => {
     if (triggerAnimation && sandbagRef.current) {
       const damping = 0.94;
-      const gravity = 0.01;
+      const gravity = 9.8 / 1000;
 
       if (sandbagRef.current) {
-        let force = gravity * Math.sin(angle);
-        setAngleAccelerate((prevAccelerlate) => -1 * force);
+        if (!isStart) {
+          setAngleVelocity(initialVelocity);
+          setIsStart(true);
+        }
+
+        const force = gravity * Math.sin(angle);
+        setAngleAccelerate(-1 * force);
 
         setAngleVelocity(
           (prevVelocity) => (prevVelocity + angleAccelerate) * damping,
         );
 
-        if (isStart && Math.abs(angleAccelerate) < 0.00001) {
-          setAngle(Math.PI / 4);
+        setAngle((prevAngle) => prevAngle + angleVelocity);
+
+        if (
+          isStart &&
+          Math.abs(angleVelocity) < 0.0001 &&
+          Math.abs(angle) < 0.0001
+        ) {
+          sandbagRef.current.rotation.x = 0;
+          setAngle(0);
           setAngleAccelerate(0);
           setAngleVelocity(0);
           setIsStart(false);
@@ -144,10 +157,6 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
           onAnimationEnd();
           return;
         }
-        setIsStart(true);
-
-        setAngle((prevAngle) => prevAngle + angleVelocity);
-
         sandbagRef.current.rotation.x = angle;
       }
     }
