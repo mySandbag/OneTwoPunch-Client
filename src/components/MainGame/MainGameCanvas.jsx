@@ -6,6 +6,7 @@ import GarageModel from "../3D/BackgroundModel/Garage";
 import SandbagModel from "../3D/SandbagModel/Sandbag";
 import GloveLeft from "../3D/GloveModel/GloveLeft";
 import GloveRight from "../3D/GloveModel/GloveRight";
+import usePackageStore from "../../store";
 
 function MainGameCanvas() {
   const [animateSandbag, setAnimateSandbag] = useState(false);
@@ -14,6 +15,7 @@ function MainGameCanvas() {
 
   const isDev = import.meta.env.VITE_ENVIRONMENT === "DEV";
 
+  const { getHitInProgress } = usePackageStore();
   const CameraControls = () => {
     const { camera } = useThree();
     useEffect(() => {
@@ -56,6 +58,12 @@ function MainGameCanvas() {
       window.removeEventListener("keydown", handleLeftGloveAnimationTrigger);
     };
   }, []);
+
+  useEffect(() => {
+    if (getHitInProgress()) {
+      setAnimateSandbag(true);
+    }
+  }, [getHitInProgress()]);
 
   return (
     <div className="relative w-full flex-grow">

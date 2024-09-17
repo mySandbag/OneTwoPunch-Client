@@ -16,8 +16,12 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     GLTFLoader,
     "/src/assets/model/sandbag/sandbag.gltf",
   );
-  const { setSummonPosition, getSummonPosition, setSandbagOBB } =
-    usePackageStore();
+  const {
+    setSummonPosition,
+    getSummonPosition,
+    setSandbagOBB,
+    getHitInProgress,
+  } = usePackageStore();
   const { scene } = useThree();
 
   const damping = SANDBAG_PENDULUM.DAMPING;
@@ -31,6 +35,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
 
   const sandbagRef = useRef();
   const axesRef = useRef([]);
+  const watchProgress = getHitInProgress();
 
   useEffect(() => {
     sandbag.scene.traverse((child) => {

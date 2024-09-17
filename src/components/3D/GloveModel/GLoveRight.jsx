@@ -25,6 +25,8 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
 
   const {
     updateHitCount,
+    getHitInProgress,
+    setHitInProgress,
     setSummonPosition,
     getSummonPosition,
     setRightGloveOBB,
@@ -191,7 +193,11 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
     const isCollide = checkOBBCollision(getRightGloveOBB(), getSandbagOBB());
     if (isCollide && isFirstCollide) {
       updateHitCount();
+      setHitInProgress(true);
       setIsFirstCollide(false);
+    }
+    if (!isCollide && !isFirstCollide && getHitInProgress()) {
+      setHitInProgress(false);
     }
   };
 

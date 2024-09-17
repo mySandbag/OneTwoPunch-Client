@@ -8,11 +8,17 @@ import {
   SANDBAG_POSITION,
 } from "../constants/gloveMotionSettings";
 
-const hitCountSlice = (set, get) => ({
+const hitStateSlice = (set, get) => ({
+  hitInProgress: false,
   hitCount: 0,
   updateHitCount: () =>
     set((state) => ({
       hitCount: state.hitCount + 1,
+    })),
+  getHitInProgress: () => get().hitInProgress,
+  setHitInProgress: (setValue) =>
+    set(() => ({
+      hitInProgress: setValue,
     })),
   getHitCount: () => get().hitCount,
   resetHitCount: () =>
@@ -145,7 +151,7 @@ const createCurrentGloveStateSlice = (set, get) => ({
 });
 
 const usePackageStore = create((set, get) => ({
-  ...hitCountSlice(set, get),
+  ...hitStateSlice(set, get),
   ...createGloveOBBSlice(set, get),
   ...createSandbagOBBSlice(set, get),
   ...createSummonGloveStateSlice(set, get),
