@@ -12,10 +12,13 @@ import {
   RIGHT_ANGLE,
 } from "../../../constants/gloveMotionSettings";
 
+import usePackageStore from "../../../store";
 import { checkOBBCollision } from "../../../common/checkOBBCollision";
 import { drawAxesAtPoint } from "../../../common/drawAxesAtPoint";
 import { drawDynamicAxesAtPoint } from "../../../common/drawDynamicAxesAtPoint";
-import usePackageStore from "../../../store";
+
+import punchTargetSound from "../../../assets/sound/punchTarget.mp3";
+import punchAirSound from "../../../assets/sound/punchAir.mp3";
 
 function GloveRight({ triggerAnimation, onAnimationEnd }) {
   const gloveRight = useLoader(
@@ -50,6 +53,8 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
   const gloveRightRef = useRef();
   const directionRef = useRef(GLOVE_DIRECTION.FORWARD);
   const axesRef = useRef([]);
+  const punchTargetSoundRef = useRef(null);
+  const punchAirSoundRef = useRef(null);
 
   const initializeGlovePosition = () => {
     gloveRightRef.current.position.x = RIGHT_GLOVE_POSITION.INITIAL_X;
@@ -93,6 +98,11 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
   }, [gloveRight]);
 
   useEffect(() => {
+    punchTargetSoundRef.current = new Audio(punchTargetSound);
+    punchAirSoundRef.current = new Audio(punchAirSound);
+    punchTargetSoundRef.current.load();
+    punchAirSoundRef.current.load();
+
     if (gloveRightRef.current) {
       const originalBox = new THREE.Box3().setFromObject(gloveRightRef.current);
       setOriginalBoundingBox(originalBox.clone());
@@ -190,9 +200,13 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
       setAnotherHit(true);
     }
     if (isCollide && isFirstCollision) {
+      punchTargetSoundRef.current.play();
       updateHitCount();
       setHitInProgress(true);
       setIsFirstCollision(false);
+    }
+    if (!isCollide && isFirstCollision && punchAirSoundRef.current.paused) {
+      punchAirSoundRef.current.play();
     }
     if (!isCollide && !isFirstCollision && getHitInProgress()) {
       setHitInProgress(false);

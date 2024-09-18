@@ -12,10 +12,13 @@ import {
   RIGHT_ANGLE,
 } from "../../../constants/gloveMotionSettings";
 
+import usePackageStore from "../../../store";
 import { checkOBBCollision } from "../../../common/checkOBBCollision";
 import { drawAxesAtPoint } from "../../../common/drawAxesAtPoint";
 import { drawDynamicAxesAtPoint } from "../../../common/drawDynamicAxesAtPoint";
-import usePackageStore from "../../../store";
+
+import punchTargetSound from "../../../assets/sound/punchTarget.mp3";
+import punchAirSound from "../../../assets/sound/punchAir.mp3";
 
 function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   const gloveLeft = useLoader(
@@ -49,6 +52,8 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   const gloveLeftRef = useRef();
   const directionRef = useRef(GLOVE_DIRECTION.FORWARD);
   const axesRef = useRef([]);
+  const punchTargetSoundRef = useRef(null);
+  const punchAirSoundRef = useRef(null);
 
   const initializeGlovePosition = () => {
     gloveLeftRef.current.position.x = LEFT_GLOVE_POSITION.INITIAL_X;
@@ -92,6 +97,11 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   }, [gloveLeft]);
 
   useEffect(() => {
+    punchTargetSoundRef.current = new Audio(punchTargetSound);
+    punchAirSoundRef.current = new Audio(punchAirSound);
+    punchTargetSoundRef.current.load();
+    punchAirSoundRef.current.load();
+
     if (gloveLeftRef.current) {
       const originalBox = new THREE.Box3().setFromObject(gloveLeftRef.current);
       setOriginalBoundingBox(originalBox.clone());
@@ -190,9 +200,13 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       setAnotherHit(true);
     }
     if (isCollide && isFirstCollision) {
+      punchTargetSoundRef.current.play();
       updateHitCount();
       setHitInProgress(true);
       setIsFirstCollision(false);
+    }
+    if (!isCollide && isFirstCollision && punchAirSoundRef.current.paused) {
+      punchAirSoundRef.current.play();
     }
     if (!isCollide && !isFirstCollision && getHitInProgress()) {
       setHitInProgress(false);
