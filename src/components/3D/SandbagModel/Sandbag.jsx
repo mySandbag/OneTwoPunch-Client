@@ -175,12 +175,12 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
 
   const stopPendulum = () => {
     sandbagRef.current.rotation.x = 0;
+
     setAngle(0);
     setAngleAccelerate(0);
     setAngleVelocity(0);
     setIsStart(false);
     setAnotherHit(false);
-
     setSandbagInMotion(false);
 
     onAnimationEnd();
@@ -189,10 +189,8 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
 
   useFrame(() => {
     if (triggerAnimation && sandbagRef.current) {
-      console.log("샌드백 무빙");
       if (getAnotherHit()) {
         setAnotherHit(false);
-
         setAngleVelocity(SANDBAG_PENDULUM.INITIAL_ANGLE_VELOCITY);
       }
 
@@ -203,7 +201,6 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
         Math.abs(angleVelocity) < SANDBAG_PENDULUM.STOP_CONDITION &&
         Math.abs(angle) < SANDBAG_PENDULUM.STOP_CONDITION
       ) {
-        console.log("종료조건쓰");
         stopPendulum();
       }
     }

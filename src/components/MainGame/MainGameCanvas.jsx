@@ -77,7 +77,7 @@ function MainGameCanvas() {
           }}
         >
           <CameraControls />
-          <ambientLight color="#a3c1da" intensity={1.2} />
+          <ambientLight color="#a3c1da" intensity={1} />
           <directionalLight
             castShadow
             position={[10, 10, 10]}
