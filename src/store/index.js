@@ -11,6 +11,8 @@ import {
 const hitStateSlice = (set, get) => ({
   hitInProgress: false,
   hitCount: 0,
+  sandbagInMotion: false,
+  anotherHit: false,
   updateHitCount: () =>
     set((state) => ({
       hitCount: state.hitCount + 1,
@@ -19,6 +21,16 @@ const hitStateSlice = (set, get) => ({
   setHitInProgress: (setValue) =>
     set(() => ({
       hitInProgress: setValue,
+    })),
+  getSandbagInMotion: () => get().sandbagInMotion,
+  setSandbagInMotion: (setValue) =>
+    set(() => ({
+      sandbagInMotion: setValue,
+    })),
+  getAnotherHit: () => get().anotherHit,
+  setAnotherHit: (setValue) =>
+    set(() => ({
+      anotherHit: setValue,
     })),
   getHitCount: () => get().hitCount,
   resetHitCount: () =>
@@ -58,9 +70,9 @@ const createSandbagOBBSlice = (set, get) => ({
   },
   setSandbagOBB: (setValue) =>
     set((state) => ({
-      rightSandbagOBB: { ...state.rightSandbagOBB, ...setValue },
+      sandbagOBB: { ...state.sandbagOBB, ...setValue },
     })),
-  getSandbagOBB: () => get().rightSandbagOBB,
+  getSandbagOBB: () => get().sandbagOBB,
 });
 
 const createSummonGloveStateSlice = (set, get) => ({

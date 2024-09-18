@@ -21,7 +21,9 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     setSummonPosition,
     getSummonPosition,
     setSandbagOBB,
-    getHitInProgress,
+    getAnotherHit,
+    setAnotherHit,
+    setSandbagInMotion,
   } = usePackageStore();
   const { scene } = useThree();
 
@@ -141,6 +143,8 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     if (!isStart) {
       setAngleVelocity(SANDBAG_PENDULUM.INITIAL_ANGLE_VELOCITY);
       setIsStart(true);
+
+      setSandbagInMotion(true);
     }
 
     const force = gravity * Math.sin(angle);
@@ -175,6 +179,9 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     setAngleAccelerate(0);
     setAngleVelocity(0);
     setIsStart(false);
+    setAnotherHit(false);
+
+    setSandbagInMotion(false);
 
     onAnimationEnd();
     return;
@@ -182,16 +189,22 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
 
   useFrame(() => {
     if (triggerAnimation && sandbagRef.current) {
-      if (sandbagRef.current) {
-        animatePendulum();
+      console.log("샌드백 무빙");
+      if (getAnotherHit()) {
+        setAnotherHit(false);
 
-        if (
-          isStart &&
-          Math.abs(angleVelocity) < SANDBAG_PENDULUM.STOP_CONDITION &&
-          Math.abs(angle) < SANDBAG_PENDULUM.STOP_CONDITION
-        ) {
-          stopPendulum();
-        }
+        setAngleVelocity(SANDBAG_PENDULUM.INITIAL_ANGLE_VELOCITY);
+      }
+
+      animatePendulum();
+
+      if (
+        isStart &&
+        Math.abs(angleVelocity) < SANDBAG_PENDULUM.STOP_CONDITION &&
+        Math.abs(angle) < SANDBAG_PENDULUM.STOP_CONDITION
+      ) {
+        console.log("종료조건쓰");
+        stopPendulum();
       }
     }
   });

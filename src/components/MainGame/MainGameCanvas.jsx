@@ -77,13 +77,13 @@ function MainGameCanvas() {
           }}
         >
           <CameraControls />
-          <ambientLight color="#FFFFFF" intensity={1.2} />
+          <ambientLight color="#a3c1da" intensity={1.2} />
           <directionalLight
             castShadow
             position={[10, 10, 10]}
             intensity={1.3}
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
+            shadow-mapSize-width={1048}
+            shadow-mapSize-height={1048}
             shadow-camera-far={100}
             shadow-camera-near={0.1}
             shadow-camera-left={-20}

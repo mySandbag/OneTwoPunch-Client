@@ -26,6 +26,8 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     updateHitCount,
     getHitInProgress,
     setHitInProgress,
+    getSandbagInMotion,
+    setAnotherHit,
     setSummonPosition,
     getSummonPosition,
     setLeftGloveOBB,
@@ -41,7 +43,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   const { scene } = useThree();
 
   const [speed, setSpeed] = useState(GLOVE_SPEED.INITIAL);
-  const [isFirstCollide, setIsFirstCollide] = useState(true);
+  const [isFirstCollision, setIsFirstCollision] = useState(true);
   const [originalBoundingBox, setOriginalBoundingBox] = useState(null);
 
   const gloveLeftRef = useRef();
@@ -184,13 +186,15 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
 
   const handleCollision = () => {
     const isCollide = checkOBBCollision(getLeftGloveOBB(), getSandbagOBB());
-    if (isCollide && isFirstCollide) {
-      console.log([getLeftGloveOBB(), getSandbagOBB()]);
+    if (isCollide && isFirstCollision && getSandbagInMotion()) {
+      setAnotherHit(true);
+    }
+    if (isCollide && isFirstCollision) {
       updateHitCount();
       setHitInProgress(true);
-      setIsFirstCollide(false);
+      setIsFirstCollision(false);
     }
-    if (!isCollide && !isFirstCollide && getHitInProgress()) {
+    if (!isCollide && !isFirstCollision && getHitInProgress()) {
       setHitInProgress(false);
     }
   };
@@ -266,7 +270,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       if (currentPositionZ > LEFT_GLOVE_POSITION.INITIAL_Z) {
         directionRef.current = GLOVE_DIRECTION.FORWARD;
         setSpeed(GLOVE_SPEED.INITIAL);
-        setIsFirstCollide(true);
+        setIsFirstCollision(true);
         initializeGlovePosition();
 
         onAnimationEnd();
