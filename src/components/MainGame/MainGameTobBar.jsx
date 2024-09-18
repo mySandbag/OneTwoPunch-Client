@@ -35,13 +35,13 @@ function MainGameTobBar() {
           className="w-40 rounded-lg bg-punch-blue p-2 text-xl font-bold text-white"
           onClick={openModal}
         >
-          How to
+          How to Play
         </button>
         <div className="w-40 rounded-lg bg-white p-2 text-center text-xl font-bold">
           Hit: {String(getHitCount()).padStart(4, "0")}
         </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <h2 className="mb- text-xl font-bold">How to Game Play</h2>
+          <h2 className="mb- text-xl font-bold">How to Play</h2>
           <p>추후 업데이트 예정</p>
           <div className="flex justify-center">
             <button
