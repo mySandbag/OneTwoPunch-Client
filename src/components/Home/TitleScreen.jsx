@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import titleImage from "../../assets/onetwopunch.png";
+import titleImage from "../../assets/onetwopunch.webp";
 
 function TitleScreen() {
   const buttonRef = useRef(null);
@@ -26,9 +26,13 @@ function TitleScreen() {
 
   return (
     <main className="flex h-screen select-none flex-col items-center justify-center bg-black">
-      <img className="mb-16 w-[680px]" src={titleImage} />
+      <img
+        className="mb-16 h-[618px] w-[796px]"
+        src={titleImage}
+        alt="one two punch logo"
+      />
       <button
-        className="bg-punch-red text-punch-white hover:bg-punch-dark-red transform rounded-lg px-6 py-4 text-4xl font-bold shadow-lg transition duration-300 ease-in-out hover:scale-105"
+        className="transform rounded-lg bg-punch-red px-6 py-4 text-4xl font-bold text-punch-white shadow-lg transition duration-300 ease-in-out hover:scale-105 hover:bg-punch-dark-red"
         onClick={navigateToMainGame}
         ref={buttonRef}
       >

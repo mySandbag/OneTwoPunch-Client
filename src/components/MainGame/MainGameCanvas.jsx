@@ -81,7 +81,7 @@ function MainGameCanvas() {
           <directionalLight
             castShadow
             position={[10, 10, 10]}
-            intensity={1.3}
+            intensity={1.5}
             shadow-mapSize-width={1048}
             shadow-mapSize-height={1048}
             shadow-camera-far={100}
