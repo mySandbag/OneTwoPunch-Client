@@ -116,12 +116,6 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
   useEffect(() => {
     if (originalBoundingBox) {
       if (!getSummonPosition().isRightInitialized) {
-        const centerPoint = new THREE.Vector3(
-          getCurrentPosition().rightX,
-          getCurrentPosition().rightY,
-          getCurrentPosition().rightZ,
-        );
-
         const boxHalfSize = {
           x: (originalBoundingBox.max.x - originalBoundingBox.min.x) / 2,
           y: (originalBoundingBox.max.y - originalBoundingBox.min.y) / 2,
@@ -129,7 +123,6 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
         };
 
         setRightGloveOBB({
-          center: centerPoint,
           halfSize: {
             x: boxHalfSize.x,
             y: boxHalfSize.y,

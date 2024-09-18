@@ -116,11 +116,6 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   useEffect(() => {
     if (originalBoundingBox) {
       if (!getSummonPosition().isLeftInitialized) {
-        const centerPoint = new THREE.Vector3(
-          getCurrentPosition().leftX,
-          getCurrentPosition().leftY,
-          getCurrentPosition().leftZ,
-        );
         const boxHalfSize = {
           x: (originalBoundingBox.max.x - originalBoundingBox.min.x) / 2,
           y: (originalBoundingBox.max.y - originalBoundingBox.min.y) / 2,
@@ -128,7 +123,6 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
         };
 
         setLeftGloveOBB({
-          center: centerPoint,
           halfSize: {
             x: boxHalfSize.x,
             y: boxHalfSize.y,
@@ -191,6 +185,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   const handleCollision = () => {
     const isCollide = checkOBBCollision(getLeftGloveOBB(), getSandbagOBB());
     if (isCollide && isFirstCollide) {
+      console.log([getLeftGloveOBB(), getSandbagOBB()]);
       updateHitCount();
       setHitInProgress(true);
       setIsFirstCollide(false);

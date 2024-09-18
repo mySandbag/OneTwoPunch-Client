@@ -9,6 +9,7 @@ import {
 } from "../../../constants/gloveMotionSettings";
 
 import { drawAxesAtPoint } from "../../../common/drawAxesAtPoint";
+import { drawDynamicAxesAtPoint } from "../../../common/drawDynamicAxesAtPoint";
 import usePackageStore from "../../../store";
 
 function SandbagModel({ triggerAnimation, onAnimationEnd }) {
@@ -35,7 +36,6 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
 
   const sandbagRef = useRef();
   const axesRef = useRef([]);
-  const watchProgress = getHitInProgress();
 
   useEffect(() => {
     sandbag.scene.traverse((child) => {
@@ -64,23 +64,9 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
 
       let centerPoint = new THREE.Vector3();
       movedBox.getCenter(centerPoint);
-      const boxHalfSize = {
-        x: (movedBox.max.x - movedBox.min.x) / 2,
-        y: (movedBox.max.y - movedBox.min.y) / 2,
-        z: (movedBox.max.z - movedBox.min.z) / 2,
-      };
-
-      const rotationMatrix = new THREE.Matrix3();
-      rotationMatrix.set(1, 0, 0, 0, 1, 0, 0, 0, 1);
 
       setSandbagOBB({
         center: centerPoint,
-        halfSize: {
-          x: boxHalfSize.x,
-          y: boxHalfSize.y,
-          z: boxHalfSize.z,
-        },
-        rotation: rotationMatrix,
       });
 
       if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
@@ -96,6 +82,24 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
   useEffect(() => {
     if (originalBoundingBox) {
       if (!getSummonPosition().isSandbagInitialized) {
+        const boxHalfSize = {
+          x: (originalBoundingBox.max.x - originalBoundingBox.min.x) / 2,
+          y: originalBoundingBox.max.y - originalBoundingBox.min.y,
+          z: (originalBoundingBox.max.z - originalBoundingBox.min.z) / 2,
+        };
+
+        const rotationMatrix = new THREE.Matrix3();
+        rotationMatrix.set(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
+        setSandbagOBB({
+          halfSize: {
+            x: boxHalfSize.x,
+            y: boxHalfSize.y,
+            z: boxHalfSize.z,
+          },
+          rotation: rotationMatrix,
+        });
+
         const helper = new THREE.Box3Helper(
           originalBoundingBox,
           new THREE.Color(0x800080),
@@ -147,6 +151,22 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     setAngle((prevAngle) => prevAngle + angleVelocity);
 
     sandbagRef.current.rotation.x = angle;
+
+    let centerPoint = new THREE.Vector3(
+      sandbagRef.current.position.x,
+      sandbagRef.current.position.y,
+      sandbagRef.current.position.z,
+    );
+
+    const currentAxis = drawDynamicAxesAtPoint(
+      sandbagRef.current.position.x,
+      sandbagRef.current.position.y,
+      sandbagRef.current.position.z,
+      sandbagRef.current.rotation,
+      axesRef,
+      scene,
+    );
+    setSandbagOBB({ center: centerPoint, rotation: currentAxis });
   };
 
   const stopPendulum = () => {
