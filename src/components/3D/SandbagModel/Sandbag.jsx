@@ -24,6 +24,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     getAnotherHit,
     setAnotherHit,
     setSandbagInMotion,
+    getHitRotation,
   } = usePackageStore();
   const { scene } = useThree();
 
@@ -154,7 +155,21 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     );
     setAngle((prevAngle) => prevAngle + angleVelocity);
 
-    sandbagRef.current.rotation.x = angle;
+    const hitRotation = getHitRotation();
+
+    const yVector = new THREE.Vector3(
+      hitRotation[2],
+      hitRotation[5],
+      hitRotation[8],
+    );
+    const xAngle = Math.atan2(yVector.x, yVector.y);
+    const zAngle = Math.atan2(yVector.z, yVector.y);
+    const isXMinus = xAngle < 0 ? -1 : 1;
+
+    sandbagRef.current.rotation.x =
+      (angle * xAngle * isXMinus) / (Math.abs(xAngle) + Math.abs(zAngle));
+    sandbagRef.current.rotation.z =
+      -(angle * zAngle * isXMinus) / (Math.abs(xAngle) + Math.abs(zAngle));
 
     let centerPoint = new THREE.Vector3(
       sandbagRef.current.position.x,
@@ -189,6 +204,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
 
   useFrame(() => {
     if (triggerAnimation && sandbagRef.current) {
+      // console.log("샌드백진행중");
       if (getAnotherHit()) {
         setAnotherHit(false);
         setAngleVelocity(SANDBAG_PENDULUM.INITIAL_ANGLE_VELOCITY);

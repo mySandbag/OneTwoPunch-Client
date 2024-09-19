@@ -40,6 +40,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     setCurrentRotation,
     getCurrentPosition,
     getCurrentRotation,
+    setHitRotation,
     initializeCurrentState,
   } = usePackageStore();
 
@@ -200,10 +201,12 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       setAnotherHit(true);
     }
     if (isCollide && isFirstCollision) {
+      punchTargetSoundRef.current.currentTime = 0;
       punchTargetSoundRef.current.play();
+      setIsFirstCollision(false);
       updateHitCount();
       setHitInProgress(true);
-      setIsFirstCollision(false);
+      setHitRotation(getLeftGloveOBB().rotation.elements);
     }
     if (!isCollide && isFirstCollision && punchAirSoundRef.current.paused) {
       punchAirSoundRef.current.play();

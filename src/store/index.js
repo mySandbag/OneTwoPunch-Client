@@ -13,6 +13,7 @@ const hitStateSlice = (set, get) => ({
   hitCount: 0,
   sandbagInMotion: false,
   anotherHit: false,
+  hitRotation: [],
   updateHitCount: () =>
     set((state) => ({
       hitCount: state.hitCount + 1,
@@ -31,6 +32,11 @@ const hitStateSlice = (set, get) => ({
   setAnotherHit: (setValue) =>
     set(() => ({
       anotherHit: setValue,
+    })),
+  getHitRotation: () => get().hitRotation,
+  setHitRotation: (setValue) =>
+    set(() => ({
+      hitRotation: setValue,
     })),
   getHitCount: () => get().hitCount,
   resetHitCount: () =>
