@@ -1,6 +1,5 @@
-import { useEffect } from "react";
 import { BackSide, SRGBColorSpace } from "three";
-import { useLoader, useThree } from "@react-three/fiber";
+import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 
 function GarageModel() {
@@ -17,21 +16,12 @@ function GarageModel() {
     "/src/assets/model/background/brickWall_FB.jpg",
   );
 
-  function SetColorSpace() {
-    const { gl } = useThree();
-    useEffect(() => {
-      gl.outputColorSpace = SRGBColorSpace;
-      if (concreteFloor) concreteFloor.colorSpace = SRGBColorSpace;
-      if (brickWallLR) brickWallLR.colorSpace = SRGBColorSpace;
-      if (brickWallFB) brickWallFB.colorSpace = SRGBColorSpace;
-    }, [gl, concreteFloor, brickWallLR, brickWallFB]);
-
-    return null;
-  }
+  concreteFloor.colorSpace = SRGBColorSpace;
+  brickWallLR.colorSpace = SRGBColorSpace;
+  brickWallFB.colorSpace = SRGBColorSpace;
 
   return (
     <>
-      <SetColorSpace />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 3, 0]} receiveShadow>
         <boxGeometry args={[12, 12, 7]} />
         <meshStandardMaterial

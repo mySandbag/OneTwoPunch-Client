@@ -27,7 +27,7 @@ export const RIGHT_ANGLE = 2;
 export const RIGHT_GLOVE_POSITION = {
   INITIAL_X: 0.6,
   INITIAL_Y: 1.8,
-  INITIAL_Z: 2.3,
+  INITIAL_Z: 1.8,
   DELTA_X: 0.03,
 };
 
@@ -41,13 +41,13 @@ export const RIGHT_GLOVE_ROTATION = {
 export const LEFT_GLOVE_POSITION = {
   INITIAL_X: -0.6,
   INITIAL_Y: 1.8,
-  INITIAL_Z: 2.3,
+  INITIAL_Z: 1.8,
   DELTA_X: 0.03,
 };
 
 export const LEFT_GLOVE_ROTATION = {
-  INITIAL_X: 30,
+  INITIAL_X: 20,
   INITIAL_Y: 20,
-  DELTA_X: 3,
-  DELTA_Y: 1.4,
+  DELTA_X: 3.3,
+  DELTA_Y: 1.8,
 };
