@@ -27,7 +27,7 @@ function TitleScreen() {
   return (
     <main className="flex h-screen select-none flex-col items-center justify-center bg-black">
       <img
-        className="mb-16 h-[618px] w-[796px]"
+        className="mb-16 md:h-[618px] md:w-[796px]"
         src={titleImage}
         alt="one two punch logo"
       />

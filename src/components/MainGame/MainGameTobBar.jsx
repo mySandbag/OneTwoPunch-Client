@@ -26,23 +26,26 @@ function MainGameTobBar() {
     <div className="flex-none">
       <div className="m-6 flex w-screen justify-evenly">
         <button
-          className="w-40 rounded-lg bg-punch-red p-2 text-xl font-bold text-white"
+          className="m-2 w-40 rounded-lg bg-punch-red p-2 text-xl font-bold text-white md:m-0"
           onClick={navigateToTitle}
         >
           Back to Title
         </button>
         <button
-          className="w-40 rounded-lg bg-punch-blue p-2 text-xl font-bold text-white"
+          className="m-2 w-40 rounded-lg bg-punch-blue p-2 text-xl font-bold text-white md:m-0"
           onClick={openModal}
         >
           How to Play
         </button>
-        <div className="w-40 rounded-lg bg-white p-2 text-center text-xl font-bold">
-          Hit: {String(getHitCount()).padStart(4, "0")}
+        <div className="m-2 w-40 rounded-lg bg-white p-2 text-center text-xl font-bold md:m-0">
+          <span className="block md:inline">Hit: </span>
+          <span className="block md:inline">
+            {String(getHitCount()).padStart(4, "0")}
+          </span>
         </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           <h2 className="mb-4 text-4xl font-bold">How to Play🥊</h2>
-          <p className="mb-4 text-2xl">press the key to control your Fist!</p>
+          <p className="mb-4 text-2xl">Press the key to control your fist!</p>
           <div className="my-1 flex flex-row text-3xl">
             <div className="flex flex-col justify-between">
               <div className="m-2">

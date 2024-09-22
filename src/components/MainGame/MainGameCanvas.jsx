@@ -26,7 +26,7 @@ function MainGameCanvas() {
   };
 
   const handleLeftGloveHookAnimationTrigger = (event) => {
-    if (event.key === "E" || event.key === "e" || event.key === "ㄷ") {
+    if (event.key === "E" || event.key === "e") {
       setCurrentGloveAnimation({ left: "hook" });
       setAnimateLeft(true);
     }
@@ -133,6 +133,44 @@ function MainGameCanvas() {
 
           {isDev ? <OrbitControls /> : null}
         </Canvas>
+      </div>
+      <div className="grid grid-cols-2 gap-4 p-4 md:hidden">
+        <button
+          className="h-28 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
+          onClick={() => {
+            setCurrentGloveAnimation({ left: "hook" });
+            setAnimateLeft(true);
+          }}
+        >
+          Left Hook
+        </button>
+        <button
+          className="h-28 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
+          onClick={() => {
+            setCurrentGloveAnimation({ right: "hook" });
+            setAnimateRight(true);
+          }}
+        >
+          Right Hook
+        </button>
+        <button
+          className="h-28 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
+          onClick={() => {
+            setCurrentGloveAnimation({ left: "punch" });
+            setAnimateLeft(true);
+          }}
+        >
+          Left Punch
+        </button>
+        <button
+          className="h-28 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
+          onClick={() => {
+            setCurrentGloveAnimation({ right: "punch" });
+            setAnimateRight(true);
+          }}
+        >
+          Right Punch
+        </button>
       </div>
     </div>
   );
