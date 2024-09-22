@@ -26,7 +26,7 @@ function MainGameCanvas() {
   };
 
   const handleLeftGloveHookAnimationTrigger = (event) => {
-    if (event.key === "E" || event.key === "e") {
+    if (event.key === "E" || event.key === "e" || event.key === "ㄷ") {
       setCurrentGloveAnimation({ left: "hook" });
       setAnimateLeft(true);
     }
