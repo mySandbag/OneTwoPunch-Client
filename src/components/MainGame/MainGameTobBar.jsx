@@ -45,8 +45,10 @@ function MainGameTobBar() {
         </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           <h2 className="mb-4 text-4xl font-bold">How to Play🥊</h2>
-          <p className="mb-4 text-2xl">Press the key to control your fist!</p>
-          <div className="my-1 flex flex-row text-3xl">
+          <p className="mb-4 text-xl md:text-2xl">
+            Press the key to control your fist!
+          </p>
+          <div className="text-md my-1 flex flex-row md:text-3xl">
             <div className="flex flex-col justify-between">
               <div className="m-2">
                 <span className="mr-2 inline-block h-[45px] w-[45px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[45px] text-gray-800 shadow-lg">
