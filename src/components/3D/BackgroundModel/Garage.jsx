@@ -5,15 +5,15 @@ import { TextureLoader } from "three/src/loaders/TextureLoader";
 function GarageModel() {
   const concreteFloor = useLoader(
     TextureLoader,
-    "/src/assets/model/background/concreteFloor.jpg",
+    "/model/background/concreteFloor.jpg",
   );
   const brickWallLR = useLoader(
     TextureLoader,
-    "/src/assets/model/background/brickWall_LR.jpg",
+    "/model/background/brickWall_LR.jpg",
   );
   const brickWallFB = useLoader(
     TextureLoader,
-    "/src/assets/model/background/brickWall_FB.jpg",
+    "/model/background/brickWall_FB.jpg",
   );
 
   concreteFloor.colorSpace = SRGBColorSpace;

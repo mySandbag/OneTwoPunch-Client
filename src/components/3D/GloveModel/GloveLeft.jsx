@@ -17,20 +17,19 @@ import { checkOBBCollision } from "../../../common/checkOBBCollision";
 import { drawAxesAtPoint } from "../../../common/drawAxesAtPoint";
 import { drawDynamicAxesAtPoint } from "../../../common/drawDynamicAxesAtPoint";
 
-import punchTargetSound from "../../../assets/sound/punchTarget.mp3";
-import punchAirSound from "../../../assets/sound/punchAir.mp3";
+import punchTargetSound from "/sound/punchTarget.mp3";
+import punchAirSound from "/sound/punchAir.mp3";
 
 function GloveLeft({ triggerAnimation, onAnimationEnd }) {
-  const gloveLeft = useLoader(
-    GLTFLoader,
-    "/src/assets/model/glove_left/gloveLeft.gltf",
-  );
+  const gloveLeft = useLoader(GLTFLoader, "/model/glove_left/gloveLeft.gltf");
   const {
     updateHitCount,
     getHitInProgress,
     setHitInProgress,
     getSandbagInMotion,
     setAnotherHit,
+    getCurrentGloveAnimation,
+    setCurrentGloveAnimation,
     setSummonPosition,
     getSummonPosition,
     setLeftGloveOBB,
@@ -46,12 +45,13 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
 
   const { scene } = useThree();
 
-  const [speed, setSpeed] = useState(GLOVE_SPEED.INITIAL);
+  const [speed, setSpeed] = useState(GLOVE_SPEED.PUNCH_INITIAL);
   const [isFirstCollision, setIsFirstCollision] = useState(true);
   const [originalBoundingBox, setOriginalBoundingBox] = useState(null);
+  const [isHookTurned, setIsHookTurned] = useState(false);
 
   const gloveLeftRef = useRef();
-  const directionRef = useRef(GLOVE_DIRECTION.FORWARD);
+  const directionRef = useRef(GLOVE_DIRECTION.LEFT_FORWARD);
   const axesRef = useRef([]);
   const punchTargetSoundRef = useRef(null);
   const punchAirSoundRef = useRef(null);
@@ -60,11 +60,15 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     gloveLeftRef.current.position.x = LEFT_GLOVE_POSITION.INITIAL_X;
     gloveLeftRef.current.position.y = LEFT_GLOVE_POSITION.INITIAL_Y;
     gloveLeftRef.current.position.z = LEFT_GLOVE_POSITION.INITIAL_Z;
+
     gloveLeftRef.current.rotation.x = -(
       Math.PI / LEFT_GLOVE_ROTATION.INITIAL_X
     ).toFixed(2);
-    gloveLeftRef.current.rotation.y = (
+    gloveLeftRef.current.rotation.y = -(
       Math.PI / LEFT_GLOVE_ROTATION.INITIAL_Y
+    ).toFixed(2);
+    gloveLeftRef.current.rotation.z = -(
+      Math.PI / LEFT_GLOVE_ROTATION.INITIAL_Z
     ).toFixed(2);
 
     let centerPoint = new THREE.Vector3(
@@ -72,7 +76,6 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       gloveLeftRef.current.position.y,
       gloveLeftRef.current.position.z,
     );
-
     const currentAxis = drawDynamicAxesAtPoint(
       gloveLeftRef.current.position.x,
       gloveLeftRef.current.position.y,
@@ -181,18 +184,27 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   }, [originalBoundingBox]);
 
   const xPosition = getCurrentPosition().leftX;
+
   const xRotation = getCurrentRotation().leftX;
   const yRotation = getCurrentRotation().leftY;
+  const zRotation = getCurrentRotation().leftZ;
 
   const transformGloveRef = () => {
     gloveLeftRef.current.position.x = xPosition;
     gloveLeftRef.current.position.z += speed * directionRef.current;
+
     gloveLeftRef.current.rotation.x = -(
       Math.PI / Math.max(xRotation, RIGHT_ANGLE)
     ).toFixed(2);
     gloveLeftRef.current.rotation.y = (
       Math.PI / Math.max(yRotation, RIGHT_ANGLE)
     ).toFixed(2);
+    if (getCurrentGloveAnimation().left === "punch") {
+      gloveLeftRef.current.rotation.z = (Math.PI / 360).toFixed(2);
+    }
+    if (getCurrentGloveAnimation().left === "hook") {
+      gloveLeftRef.current.rotation.z = -(Math.PI / zRotation).toFixed(2);
+    }
   };
 
   const handleCollision = () => {
@@ -203,6 +215,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     if (isCollide && isFirstCollision) {
       punchTargetSoundRef.current.currentTime = 0;
       punchTargetSoundRef.current.play();
+
       setIsFirstCollision(false);
       updateHitCount();
       setHitInProgress(true);
@@ -235,60 +248,119 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   };
 
   const handleForwardMovement = () => {
-    setSpeed((previousSpeed) => previousSpeed + GLOVE_SPEED.INCREMENT);
-    setCurrentPosition({
-      leftX: Math.min(xPosition + LEFT_GLOVE_POSITION.DELTA_X, 0),
-      leftZ: speed + GLOVE_SPEED.INCREMENT,
-    });
-    setCurrentRotation({
-      leftX: Math.max(xRotation - LEFT_GLOVE_ROTATION.DELTA_X, RIGHT_ANGLE),
-      leftY: Math.max(yRotation - LEFT_GLOVE_ROTATION.DELTA_Y, RIGHT_ANGLE),
-    });
+    if (getCurrentGloveAnimation().left === "punch") {
+      setSpeed((previousSpeed) => previousSpeed + GLOVE_SPEED.PUNCH_INCREMENT);
+      setCurrentPosition({
+        leftX: Math.min(xPosition + LEFT_GLOVE_POSITION.PUNCH_DELTA_X, 0),
+        leftZ: speed + GLOVE_SPEED.PUNCH_INCREMENT,
+      });
+      setCurrentRotation({
+        leftX: Math.max(
+          xRotation - LEFT_GLOVE_ROTATION.PUNCH_DELTA_X,
+          RIGHT_ANGLE,
+        ),
+        leftY: Math.max(
+          yRotation - LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y,
+          RIGHT_ANGLE,
+        ),
+      });
+    }
+    if (getCurrentGloveAnimation().left === "hook") {
+      const turnFactor = isHookTurned ? -1 : 1;
+      setSpeed((previousSpeed) => previousSpeed + GLOVE_SPEED.HOOK_INCREMENT);
+      setCurrentPosition({
+        leftX: Math.min(
+          LEFT_GLOVE_POSITION.INITIAL_X,
+          xPosition - LEFT_GLOVE_POSITION.HOOK_DELTA_X * turnFactor,
+        ),
+        leftZ: speed + GLOVE_SPEED.HOOK_INCREMENT,
+      });
+      setCurrentRotation({
+        leftX: Math.max(
+          xRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_X,
+          RIGHT_ANGLE,
+        ),
+        leftY: Math.max(
+          yRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_Y,
+          RIGHT_ANGLE,
+        ),
+        leftZ: Math.max(
+          Math.abs(zRotation) - LEFT_GLOVE_ROTATION.HOOK_DELTA_Z,
+          RIGHT_ANGLE + 1,
+        ),
+      });
+    }
   };
-
   const handleBackwardMovement = () => {
-    setSpeed((previousSpeed) =>
-      Math.max(previousSpeed - GLOVE_SPEED.DECREMENT, GLOVE_SPEED.INITIAL),
-    );
-    setCurrentPosition({
-      leftX: Math.max(
-        xPosition - LEFT_GLOVE_POSITION.DELTA_X,
-        LEFT_GLOVE_POSITION.INITIAL_X,
-      ),
-      leftZ: Math.max(speed - GLOVE_SPEED.DECREMENT, GLOVE_SPEED.INITIAL),
-    });
-    setCurrentRotation({
-      leftX: Math.min(
-        xRotation + LEFT_GLOVE_ROTATION.DELTA_X,
-        LEFT_GLOVE_ROTATION.INITIAL_X,
-      ),
-      leftY: Math.min(
-        yRotation + LEFT_GLOVE_ROTATION.DELTA_Y,
-        LEFT_GLOVE_ROTATION.INITIAL_Y,
-      ),
-    });
+    if (getCurrentGloveAnimation().left === "punch") {
+      setSpeed((previousSpeed) =>
+        Math.max(
+          previousSpeed - GLOVE_SPEED.PUNCH_DECREMENT,
+          GLOVE_SPEED.PUNCH_INITIAL,
+        ),
+      );
+      setCurrentPosition({
+        leftX: Math.min(
+          xPosition - LEFT_GLOVE_POSITION.PUNCH_DELTA_X,
+          LEFT_GLOVE_POSITION.INITIAL_X,
+        ),
+        leftZ: Math.max(
+          speed - GLOVE_SPEED.PUNCH_DECREMENT,
+          GLOVE_SPEED.PUNCH_INITIAL,
+        ),
+      });
+      setCurrentRotation({
+        leftX: Math.min(
+          xRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_X,
+          LEFT_GLOVE_ROTATION.INITIAL_X,
+        ),
+        leftY: Math.min(
+          yRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y,
+          LEFT_GLOVE_ROTATION.INITIAL_Y,
+        ),
+      });
+    }
   };
-
   useFrame(() => {
     if (triggerAnimation && gloveLeftRef.current) {
+      const currentPositionX = gloveLeftRef.current.position.x;
       const currentPositionZ = gloveLeftRef.current.position.z;
       const isMovingForward = directionRef.current < 0;
+
+      if (
+        getCurrentGloveAnimation().left === "hook" &&
+        currentPositionX < MAX_GLOVE_REACH.HOOK_LEFT_X
+      ) {
+        setIsHookTurned((prev) => true);
+      }
+
+      isMovingForward ? handleForwardMovement() : handleBackwardMovement();
 
       transformGloveRef();
       handleCollision();
       updateGloveState();
 
-      isMovingForward ? handleForwardMovement() : handleBackwardMovement();
+      if (
+        getCurrentGloveAnimation().left === "punch" &&
+        currentPositionZ <= MAX_GLOVE_REACH.PUNCH_Z
+      ) {
+        directionRef.current = GLOVE_DIRECTION.LEFT_BACKWARD;
+      }
 
-      if (currentPositionZ <= MAX_GLOVE_REACH) {
-        directionRef.current = GLOVE_DIRECTION.BACKWARD;
+      if (
+        getCurrentGloveAnimation().left === "hook" &&
+        currentPositionZ <= MAX_GLOVE_REACH.HOOK_Z
+      ) {
+        directionRef.current = GLOVE_DIRECTION.LEFT_BACKWARD;
       }
 
       if (currentPositionZ > LEFT_GLOVE_POSITION.INITIAL_Z) {
-        directionRef.current = GLOVE_DIRECTION.FORWARD;
-        setSpeed(GLOVE_SPEED.INITIAL);
+        directionRef.current = GLOVE_DIRECTION.LEFT_FORWARD;
+        setSpeed(GLOVE_SPEED.PUNCH_INITIAL);
         setIsFirstCollision(true);
         initializeGlovePosition();
+        setCurrentGloveAnimation({ left: "" });
+        setIsHookTurned(false);
 
         onAnimationEnd();
       }

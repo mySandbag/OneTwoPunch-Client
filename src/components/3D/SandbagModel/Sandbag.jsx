@@ -13,10 +13,7 @@ import { drawDynamicAxesAtPoint } from "../../../common/drawDynamicAxesAtPoint";
 import usePackageStore from "../../../store";
 
 function SandbagModel({ triggerAnimation, onAnimationEnd }) {
-  const sandbag = useLoader(
-    GLTFLoader,
-    "/src/assets/model/sandbag/sandbag.gltf",
-  );
+  const sandbag = useLoader(GLTFLoader, "/model/sandbag/sandbag.gltf");
   const {
     setSummonPosition,
     getSummonPosition,
@@ -158,18 +155,16 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     const hitRotation = getHitRotation();
 
     const yVector = new THREE.Vector3(
-      hitRotation[2],
-      hitRotation[5],
-      hitRotation[8],
+      hitRotation[1],
+      hitRotation[4],
+      hitRotation[7],
     );
-    const xAngle = Math.atan2(yVector.x, yVector.y);
-    const zAngle = Math.atan2(yVector.z, yVector.y);
-    const isXMinus = xAngle < 0 ? -1 : 1;
+    const xAngle = Math.atan2(yVector.y, yVector.z);
+    const zAngle = -Math.atan2(yVector.x, yVector.y);
+    const totalRotation = Math.abs(xAngle) + Math.abs(zAngle);
 
-    sandbagRef.current.rotation.x =
-      (angle * xAngle * isXMinus) / (Math.abs(xAngle) + Math.abs(zAngle));
-    sandbagRef.current.rotation.z =
-      -(angle * zAngle * isXMinus) / (Math.abs(xAngle) + Math.abs(zAngle));
+    sandbagRef.current.rotation.x = angle * xAngle;
+    sandbagRef.current.rotation.z = angle * zAngle;
 
     let centerPoint = new THREE.Vector3(
       sandbagRef.current.position.x,
@@ -204,7 +199,6 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
 
   useFrame(() => {
     if (triggerAnimation && sandbagRef.current) {
-      // console.log("샌드백진행중");
       if (getAnotherHit()) {
         setAnotherHit(false);
         setAngleVelocity(SANDBAG_PENDULUM.INITIAL_ANGLE_VELOCITY);

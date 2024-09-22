@@ -8,7 +8,7 @@ import {
   SANDBAG_POSITION,
 } from "../constants/gloveMotionSettings";
 
-const hitStateSlice = (set, get) => ({
+const createHitStateSlice = (set, get) => ({
   hitInProgress: false,
   hitCount: 0,
   sandbagInMotion: false,
@@ -42,6 +42,22 @@ const hitStateSlice = (set, get) => ({
   resetHitCount: () =>
     set(() => ({
       hitCount: 0,
+    })),
+});
+
+const createAnimationSlice = (set, get) => ({
+  currentGloveAnimation: {
+    left: "",
+    right: "",
+  },
+  getCurrentGloveAnimation: () => get().currentGloveAnimation,
+  setCurrentGloveAnimation: (setValue) =>
+    set((state) => ({
+      currentGloveAnimation: { ...state.currentGloveAnimation, ...setValue },
+    })),
+  resetCurrentGloveAnimation: () =>
+    set((state) => ({
+      currentGloveAnimation: "",
     })),
 });
 
@@ -138,10 +154,10 @@ const defaultConfiguredPosition = {
 const defaultConfiguredRotation = {
   leftX: LEFT_GLOVE_ROTATION.INITIAL_X,
   leftY: LEFT_GLOVE_ROTATION.INITIAL_Y,
-  leftZ: 0,
+  leftZ: LEFT_GLOVE_ROTATION.INITIAL_Z,
   rightX: RIGHT_GLOVE_ROTATION.INITIAL_X,
   rightY: RIGHT_GLOVE_ROTATION.INITIAL_X,
-  rightZ: 0,
+  rightZ: RIGHT_GLOVE_ROTATION.INITIAL_Z,
   sandbagX: 0,
   sandbagY: 0,
   sandbagZ: 0,
@@ -169,7 +185,8 @@ const createCurrentGloveStateSlice = (set, get) => ({
 });
 
 const usePackageStore = create((set, get) => ({
-  ...hitStateSlice(set, get),
+  ...createHitStateSlice(set, get),
+  ...createAnimationSlice(set, get),
   ...createGloveOBBSlice(set, get),
   ...createSandbagOBBSlice(set, get),
   ...createSummonGloveStateSlice(set, get),

@@ -15,7 +15,7 @@ function MainGameCanvas() {
 
   const isDev = import.meta.env.VITE_ENVIRONMENT === "DEV";
 
-  const { getHitInProgress } = usePackageStore();
+  const { getHitInProgress, setCurrentGloveAnimation } = usePackageStore();
   const CameraControls = () => {
     const { camera } = useThree();
     useEffect(() => {
@@ -25,20 +25,30 @@ function MainGameCanvas() {
     return null;
   };
 
-  const handleSandbagAnimationTrigger = (event) => {
-    if (event.key === "Y" || event.key === "y") {
-      setAnimateSandbag(true);
-    }
-  };
-
-  const handleLeftGloveAnimationTrigger = (event) => {
-    if (event.key === "F" || event.key === "f") {
+  const handleLeftGloveHookAnimationTrigger = (event) => {
+    if (event.key === "E" || event.key === "e") {
+      setCurrentGloveAnimation({ left: "hook" });
       setAnimateLeft(true);
     }
   };
 
-  const handleRightGloveAnimationTrigger = (event) => {
+  const handleLeftGlovePunchAnimationTrigger = (event) => {
+    if (event.key === "F" || event.key === "f") {
+      setCurrentGloveAnimation({ left: "punch" });
+      setAnimateLeft(true);
+    }
+  };
+
+  const handleRightGlovePunchAnimationTrigger = (event) => {
     if (event.key === "J" || event.key === "j") {
+      setCurrentGloveAnimation({ right: "punch" });
+      setAnimateRight(true);
+    }
+  };
+
+  const handleRightGloveHookAnimationTrigger = (event) => {
+    if (event.key === "I" || event.key === "i") {
+      setCurrentGloveAnimation({ right: "hook" });
       setAnimateRight(true);
     }
   };
@@ -48,14 +58,28 @@ function MainGameCanvas() {
   const handleAnimationLeftEnd = () => setAnimateLeft(false);
 
   useEffect(() => {
-    window.addEventListener("keydown", handleSandbagAnimationTrigger);
-    window.addEventListener("keydown", handleRightGloveAnimationTrigger);
-    window.addEventListener("keydown", handleLeftGloveAnimationTrigger);
+    window.addEventListener("keydown", handleLeftGloveHookAnimationTrigger);
+    window.addEventListener("keydown", handleRightGlovePunchAnimationTrigger);
+    window.addEventListener("keydown", handleRightGloveHookAnimationTrigger);
+    window.addEventListener("keydown", handleLeftGlovePunchAnimationTrigger);
 
     return () => {
-      window.removeEventListener("keydown", handleSandbagAnimationTrigger);
-      window.removeEventListener("keydown", handleRightGloveAnimationTrigger);
-      window.removeEventListener("keydown", handleLeftGloveAnimationTrigger);
+      window.removeEventListener(
+        "keydown",
+        handleLeftGloveHookAnimationTrigger,
+      );
+      window.removeEventListener(
+        "keydown",
+        handleRightGlovePunchAnimationTrigger,
+      );
+      window.removeEventListener(
+        "keydown",
+        handleRightGloveHookAnimationTrigger,
+      );
+      window.removeEventListener(
+        "keydown",
+        handleLeftGlovePunchAnimationTrigger,
+      );
     };
   }, []);
 

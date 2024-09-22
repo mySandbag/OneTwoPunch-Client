@@ -1,3 +1,5 @@
+export const RIGHT_ANGLE = 2;
+
 export const SANDBAG_POSITION = {
   INITIAL_Y: 4.8,
 };
@@ -9,45 +11,61 @@ export const SANDBAG_PENDULUM = {
   STOP_CONDITION: 0.001,
 };
 
-export const GLOVE_SPEED = {
-  INITIAL: 0.18,
-  INCREMENT: 0.005,
-  DECREMENT: 0.004,
-};
-
 export const GLOVE_DIRECTION = {
-  FORWARD: -1,
-  BACKWARD: 1,
+  RIGHT_FORWARD: -1,
+  RIGHT_BACKWARD: 1,
+  LEFT_FORWARD: -1,
+  LEFT_BACKWARD: 1,
 };
 
-export const MAX_GLOVE_REACH = 0.8;
+export const GLOVE_SPEED = {
+  PUNCH_INITIAL: 0.05,
+  PUNCH_INCREMENT: 0.01,
+  PUNCH_DECREMENT: 0.004,
+  HOOK_INCREMENT: 0.008,
+};
 
-export const RIGHT_ANGLE = 2;
+export const MAX_GLOVE_REACH = {
+  PUNCH_Z: 0.8,
+  HOOK_Z: 0.3,
+  HOOK_LEFT_X: -1.3,
+  HOOK_RIGHT_X: 1.3,
+};
 
 export const RIGHT_GLOVE_POSITION = {
   INITIAL_X: 0.6,
   INITIAL_Y: 1.8,
   INITIAL_Z: 1.8,
-  DELTA_X: 0.03,
+  PUNCH_DELTA_X: 0.03,
+  HOOK_DELTA_X: 0.12,
 };
 
 export const RIGHT_GLOVE_ROTATION = {
   INITIAL_X: 7,
   INITIAL_Y: 20,
-  DELTA_X: 0.6,
-  DELTA_Y: 1.4,
+  INITIAL_Z: 180,
+  PUNCH_DELTA_X: 0.6,
+  PUNCH_DELTA_Y: 1.4,
+  HOOK_DELTA_X: 0.45,
+  HOOK_DELTA_Y: 0,
+  HOOK_DELTA_Z: 11,
 };
 
 export const LEFT_GLOVE_POSITION = {
   INITIAL_X: -0.6,
   INITIAL_Y: 1.8,
   INITIAL_Z: 1.8,
-  DELTA_X: 0.03,
+  PUNCH_DELTA_X: 0.03,
+  HOOK_DELTA_X: 0.12,
 };
 
 export const LEFT_GLOVE_ROTATION = {
   INITIAL_X: 20,
   INITIAL_Y: 20,
-  DELTA_X: 3.3,
-  DELTA_Y: 1.8,
+  INITIAL_Z: 180,
+  PUNCH_DELTA_X: 3.3,
+  PUNCH_DELTA_Y: 2.1,
+  HOOK_DELTA_X: 1.32,
+  HOOK_DELTA_Y: 0,
+  HOOK_DELTA_Z: 11,
 };
