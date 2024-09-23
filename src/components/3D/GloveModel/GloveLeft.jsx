@@ -274,7 +274,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       setSpeed((previousSpeed) => previousSpeed + GLOVE_SPEED.HOOK_INCREMENT);
       setCurrentPosition({
         leftX: Math.min(
-          LEFT_GLOVE_POSITION.INITIAL_X,
+          LEFT_GLOVE_POSITION.HOOK_MIN_X,
           xPosition - LEFT_GLOVE_POSITION.HOOK_DELTA_X * turnFactor,
         ),
         leftZ: speed + GLOVE_SPEED.HOOK_INCREMENT,
@@ -348,29 +348,37 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       directionRef.current = GLOVE_DIRECTION.LEFT_BACKWARD;
     }
   };
+  const [frameCount, setFrameCount] = useState(0);
   useFrame(() => {
     if (triggerAnimation && gloveLeftRef.current) {
-      const currentPositionZ = gloveLeftRef.current.position.z;
-      const isMovingForward = directionRef.current < 0;
+      if (
+        (import.meta.env.VITE_SPEED_SETTING === "SLOW" &&
+          frameCount % 5 === 0) ||
+        import.meta.env.VITE_SPEED_SETTING !== "SLOW"
+      ) {
+        const currentPositionZ = gloveLeftRef.current.position.z;
+        const isMovingForward = directionRef.current < 0;
 
-      computeTurningPoint();
+        computeTurningPoint();
 
-      isMovingForward ? handleForwardMovement() : handleBackwardMovement();
+        isMovingForward ? handleForwardMovement() : handleBackwardMovement();
 
-      transformGloveRef();
-      handleCollision();
-      updateGloveOBBState();
+        transformGloveRef();
+        handleCollision();
+        updateGloveOBBState();
 
-      if (currentPositionZ > LEFT_GLOVE_POSITION.INITIAL_Z) {
-        directionRef.current = GLOVE_DIRECTION.LEFT_FORWARD;
-        setSpeed(GLOVE_SPEED.PUNCH_INITIAL);
-        setIsFirstCollisionInCycle(true);
-        initializeGlovePosition();
-        setCurrentGloveAnimation({ left: "" });
-        setIsHookTurned(false);
+        if (currentPositionZ > LEFT_GLOVE_POSITION.INITIAL_Z) {
+          directionRef.current = GLOVE_DIRECTION.LEFT_FORWARD;
+          setSpeed(GLOVE_SPEED.PUNCH_INITIAL);
+          setIsFirstCollisionInCycle(true);
+          initializeGlovePosition();
+          setCurrentGloveAnimation({ left: "" });
+          setIsHookTurned(false);
 
-        onAnimationEnd();
+          onAnimationEnd();
+        }
       }
+      setFrameCount((prev) => prev + 1);
     }
   });
 

@@ -37,7 +37,8 @@ export const RIGHT_GLOVE_POSITION = {
   INITIAL_Y: 1.8,
   INITIAL_Z: 1.8,
   PUNCH_DELTA_X: 0.03,
-  HOOK_DELTA_X: 0.12,
+  HOOK_DELTA_X: 0.15,
+  HOOK_MIN_X: 0.4,
 };
 
 export const RIGHT_GLOVE_ROTATION = {
@@ -56,7 +57,8 @@ export const LEFT_GLOVE_POSITION = {
   INITIAL_Y: 1.8,
   INITIAL_Z: 1.8,
   PUNCH_DELTA_X: 0.03,
-  HOOK_DELTA_X: 0.12,
+  HOOK_DELTA_X: 0.15,
+  HOOK_MIN_X: -0.4,
 };
 
 export const LEFT_GLOVE_ROTATION = {
@@ -65,7 +67,7 @@ export const LEFT_GLOVE_ROTATION = {
   INITIAL_Z: 180,
   PUNCH_DELTA_X: 3.3,
   PUNCH_DELTA_Y: 2.1,
-  HOOK_DELTA_X: 1.32,
+  HOOK_DELTA_X: 1.82,
   HOOK_DELTA_Y: 0,
   HOOK_DELTA_Z: 11,
 };
