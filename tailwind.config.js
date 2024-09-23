@@ -9,6 +9,9 @@ export default {
         "punch-dark-red": "#C7343A",
         "punch-white": "#FBFBE9",
       },
+      aspectRatio: {
+        "4/3": "4 / 3",
+      },
     },
   },
   plugins: [],

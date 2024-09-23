@@ -24,7 +24,7 @@ function MainGameTobBar() {
 
   return (
     <div className="flex-none">
-      <div className="m-6 flex w-screen justify-evenly">
+      <div className="m-2 flex w-screen justify-evenly md:m-6">
         <button
           className="m-2 w-40 rounded-lg bg-punch-red p-2 text-xl font-bold text-white md:m-0"
           onClick={navigateToTitle}

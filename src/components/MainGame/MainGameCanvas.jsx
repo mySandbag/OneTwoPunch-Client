@@ -134,7 +134,7 @@ function MainGameCanvas() {
           {isDev ? <OrbitControls /> : null}
         </Canvas>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-4 p-4 md:hidden">
+      <div className="mt-2 grid grid-cols-2 gap-4 p-4 md:hidden">
         <button
           className="h-28 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
           onClick={() => {
