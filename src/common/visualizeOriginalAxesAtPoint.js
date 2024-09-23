@@ -1,6 +1,6 @@
 import { Vector3, BufferGeometry, Line, LineBasicMaterial } from "three";
 
-export const drawAxesAtPoint = (x, y, z, ref, scene) => {
+export const visualizeOriginalAxesAtPoint = (x, y, z, ref, scene) => {
   ref.current.forEach((axis) => scene.remove(axis));
   ref.current = [];
 
@@ -11,23 +11,24 @@ export const drawAxesAtPoint = (x, y, z, ref, scene) => {
     center,
     new Vector3(x + 10, y, z),
   ]);
-  const xLine = new Line(xGeometry, lineMaterial);
-  scene.add(xLine);
-  ref.current.push(xLine);
-
   const yGeometry = new BufferGeometry().setFromPoints([
     center,
     new Vector3(x, y + 10, z),
   ]);
-  const yLine = new Line(yGeometry, lineMaterial);
-  scene.add(yLine);
-  ref.current.push(yLine);
-
   const zGeometry = new BufferGeometry().setFromPoints([
     center,
     new Vector3(x, y, z + 10),
   ]);
+
+  const xLine = new Line(xGeometry, lineMaterial);
+  const yLine = new Line(yGeometry, lineMaterial);
   const zLine = new Line(zGeometry, lineMaterial);
+
+  scene.add(xLine);
+  scene.add(yLine);
   scene.add(zLine);
+
+  ref.current.push(xLine);
+  ref.current.push(yLine);
   ref.current.push(zLine);
 };

@@ -6,7 +6,7 @@ import {
   Matrix3,
 } from "three";
 
-export const drawDynamicAxesAtPoint = (x, y, z, rotation, ref, scene) => {
+export const computeAxesAtPoint = (x, y, z, rotation, ref, scene) => {
   if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
     ref.current.forEach((axis) => scene.remove(axis));
     ref.current = [];
@@ -28,10 +28,10 @@ export const drawDynamicAxesAtPoint = (x, y, z, rotation, ref, scene) => {
 
   if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
     scene.add(xLine);
-    ref.current.push(xLine);
     scene.add(yLine);
-    ref.current.push(yLine);
     scene.add(zLine);
+    ref.current.push(xLine);
+    ref.current.push(yLine);
     ref.current.push(zLine);
   }
 
