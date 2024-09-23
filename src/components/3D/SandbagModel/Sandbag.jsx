@@ -6,10 +6,10 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import {
   SANDBAG_POSITION,
   SANDBAG_PENDULUM,
-} from "../../../constants/gloveMotionSettings";
+} from "../../../constants/animationSettings";
 
-import { drawAxesAtPoint } from "../../../common/drawAxesAtPoint";
-import { drawDynamicAxesAtPoint } from "../../../common/drawDynamicAxesAtPoint";
+import { visualizeOriginalAxesAtPoint } from "../../../common/visualizeOriginalAxesAtPoint";
+import { computeAxesAtPoint } from "../../../common/computeAxesAtPoint";
 import usePackageStore from "../../../store";
 
 function SandbagModel({ triggerAnimation, onAnimationEnd }) {
@@ -62,7 +62,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
         new THREE.Color(0x0000ff),
       );
 
-      let centerPoint = new THREE.Vector3();
+      const centerPoint = new THREE.Vector3();
       movedBox.getCenter(centerPoint);
 
       setSandbagOBB({
@@ -125,7 +125,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
       ];
 
       if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
-        drawAxesAtPoint(...xyzPosition, axesRef, scene);
+        visualizeOriginalAxesAtPoint(...xyzPosition, axesRef, scene);
       }
 
       return () => {
@@ -161,18 +161,16 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     );
     const xAngle = Math.atan2(yVector.y, yVector.z);
     const zAngle = -Math.atan2(yVector.x, yVector.y);
-    const totalRotation = Math.abs(xAngle) + Math.abs(zAngle);
 
     sandbagRef.current.rotation.x = angle * xAngle;
     sandbagRef.current.rotation.z = angle * zAngle;
 
-    let centerPoint = new THREE.Vector3(
+    const centerPoint = new THREE.Vector3(
       sandbagRef.current.position.x,
       sandbagRef.current.position.y,
       sandbagRef.current.position.z,
     );
-
-    const currentAxis = drawDynamicAxesAtPoint(
+    const currentAxis = computeAxesAtPoint(
       sandbagRef.current.position.x,
       sandbagRef.current.position.y,
       sandbagRef.current.position.z,
@@ -200,8 +198,8 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
   useFrame(() => {
     if (triggerAnimation && sandbagRef.current) {
       if (getAnotherHit()) {
-        setAnotherHit(false);
         setAngleVelocity(SANDBAG_PENDULUM.INITIAL_ANGLE_VELOCITY);
+        setAnotherHit(false);
       }
 
       animatePendulum();

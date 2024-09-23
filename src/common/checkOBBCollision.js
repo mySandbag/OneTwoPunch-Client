@@ -5,7 +5,7 @@ const getAxis = (obb, index) => {
 };
 
 const projectOBB = (obb, axis) => {
-  let r =
+  const r =
     obb.halfSize.x * Math.abs(axis.dot(getAxis(obb, 0))) +
     obb.halfSize.y * Math.abs(axis.dot(getAxis(obb, 1))) +
     obb.halfSize.z * Math.abs(axis.dot(getAxis(obb, 2)));
@@ -13,10 +13,10 @@ const projectOBB = (obb, axis) => {
 };
 
 const testAxisSeparation = (axis, obb1, obb2) => {
-  let r1 = projectOBB(obb1, axis);
-  let r2 = projectOBB(obb2, axis);
+  const r1 = projectOBB(obb1, axis);
+  const r2 = projectOBB(obb2, axis);
 
-  let distance = Math.abs(
+  const distance = Math.abs(
     axis.dot(new Vector3().subVectors(obb2.center, obb1.center)),
   );
   return distance > r1 + r2;
@@ -30,7 +30,10 @@ export const checkOBBCollision = (obb1, obb2) => {
 
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
-      let axis = new Vector3().crossVectors(getAxis(obb1, i), getAxis(obb2, j));
+      const axis = new Vector3().crossVectors(
+        getAxis(obb1, i),
+        getAxis(obb2, j),
+      );
       if (axis.length() > 0) {
         if (testAxisSeparation(axis, obb1, obb2)) return false;
       }

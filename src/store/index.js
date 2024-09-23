@@ -6,7 +6,7 @@ import {
   RIGHT_GLOVE_POSITION,
   RIGHT_GLOVE_ROTATION,
   SANDBAG_POSITION,
-} from "../constants/gloveMotionSettings";
+} from "../constants/animationSettings";
 
 const createHitStateSlice = (set, get) => ({
   hitInProgress: false,
@@ -54,10 +54,6 @@ const createAnimationSlice = (set, get) => ({
   setCurrentGloveAnimation: (setValue) =>
     set((state) => ({
       currentGloveAnimation: { ...state.currentGloveAnimation, ...setValue },
-    })),
-  resetCurrentGloveAnimation: () =>
-    set((state) => ({
-      currentGloveAnimation: "",
     })),
 });
 
@@ -177,10 +173,35 @@ const createCurrentGloveStateSlice = (set, get) => ({
     })),
   getCurrentPosition: () => get().currentPosition,
   getCurrentRotation: () => get().currentRotation,
-  initializeCurrentState: () =>
-    set(() => ({
-      currentPosition: defaultConfiguredPosition,
-      currentRotation: defaultConfiguredRotation,
+  initializeLeftGloveCurrentState: () =>
+    set((state) => ({
+      currentPosition: {
+        ...state.currentPosition,
+        leftX: LEFT_GLOVE_POSITION.INITIAL_X,
+        leftY: LEFT_GLOVE_POSITION.INITIAL_Y,
+        leftZ: LEFT_GLOVE_POSITION.INITIAL_Z,
+      },
+      currentRotation: {
+        ...state.currentRotation,
+        leftX: LEFT_GLOVE_ROTATION.INITIAL_X,
+        leftY: LEFT_GLOVE_ROTATION.INITIAL_Y,
+        leftZ: LEFT_GLOVE_ROTATION.INITIAL_Z,
+      },
+    })),
+  initializeRightGloveCurrentState: () =>
+    set((state) => ({
+      currentPosition: {
+        ...state.currentPosition,
+        rightX: RIGHT_GLOVE_POSITION.INITIAL_X,
+        rightY: RIGHT_GLOVE_POSITION.INITIAL_Y,
+        rightZ: RIGHT_GLOVE_POSITION.INITIAL_Z,
+      },
+      currentRotation: {
+        ...state.currentRotation,
+        rightX: RIGHT_GLOVE_ROTATION.INITIAL_X,
+        rightY: RIGHT_GLOVE_ROTATION.INITIAL_Y,
+        rightZ: RIGHT_GLOVE_ROTATION.INITIAL_Z,
+      },
     })),
 });
 
