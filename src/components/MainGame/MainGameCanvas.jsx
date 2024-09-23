@@ -26,28 +26,28 @@ function MainGameCanvas() {
   };
 
   const handleLeftGloveHookAnimationTrigger = (event) => {
-    if (event.key === "E" || event.key === "e") {
+    if (event.code === "KeyE") {
       setCurrentGloveAnimation({ left: "hook" });
       setAnimateLeft(true);
     }
   };
 
   const handleLeftGlovePunchAnimationTrigger = (event) => {
-    if (event.key === "F" || event.key === "f") {
+    if (event.code === "KeyF") {
       setCurrentGloveAnimation({ left: "punch" });
       setAnimateLeft(true);
     }
   };
 
   const handleRightGlovePunchAnimationTrigger = (event) => {
-    if (event.key === "J" || event.key === "j") {
+    if (event.code === "KeyJ") {
       setCurrentGloveAnimation({ right: "punch" });
       setAnimateRight(true);
     }
   };
 
   const handleRightGloveHookAnimationTrigger = (event) => {
-    if (event.key === "I" || event.key === "i") {
+    if (event.code === "KeyI") {
       setCurrentGloveAnimation({ right: "hook" });
       setAnimateRight(true);
     }
@@ -91,7 +91,7 @@ function MainGameCanvas() {
 
   return (
     <div className="relative w-full flex-grow">
-      <div className="aspect-video max-h-[90vh] w-full">
+      <div className="aspect-[4/3] max-h-[90vh] w-full md:aspect-video">
         <Canvas
           className="h-full w-full"
           shadows
