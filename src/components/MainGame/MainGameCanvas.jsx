@@ -93,7 +93,7 @@ function MainGameCanvas() {
 
   return (
     <div className="w-full overflow-hidden">
-      <div className="aspect-4/3 max-h-screen w-full md:aspect-video">
+      <div className="relative aspect-4/3 max-h-screen w-full md:aspect-video">
         <Canvas
           className="h-full w-full"
           shadows
@@ -139,7 +139,7 @@ function MainGameCanvas() {
           <div className="p-4">
             <div>
               <button
-                className="absolute bottom-28 left-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                className="text-shadow absolute bottom-40 left-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm shadow-black"
                 onClick={() => {
                   setCurrentGloveAnimation({ left: "hook" });
                   setAnimateLeft(true);
@@ -148,7 +148,7 @@ function MainGameCanvas() {
                 Left Hook
               </button>
               <button
-                className="absolute bottom-5 left-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                className="text-shadow absolute bottom-16 left-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm shadow-black"
                 onClick={() => {
                   setCurrentGloveAnimation({ left: "punch" });
                   setAnimateLeft(true);
@@ -159,7 +159,7 @@ function MainGameCanvas() {
             </div>
             <div>
               <button
-                className="absolute bottom-28 right-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                className="text-shadow absolute bottom-40 right-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm shadow-black"
                 onClick={() => {
                   setCurrentGloveAnimation({ right: "hook" });
                   setAnimateRight(true);
@@ -168,7 +168,7 @@ function MainGameCanvas() {
                 Right Hook
               </button>
               <button
-                className="absolute bottom-5 right-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                className="text-shadow absolute bottom-16 right-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm shadow-black"
                 onClick={() => {
                   setCurrentGloveAnimation({ right: "punch" });
                   setAnimateRight(true);

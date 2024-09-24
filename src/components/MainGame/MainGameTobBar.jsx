@@ -26,13 +26,13 @@ function MainGameTobBar() {
     <div className="absolute z-50 flex-none">
       <div className="my-1 flex w-screen justify-evenly md:m-4">
         <button
-          className="text-md m-2 w-40 rounded-lg border border-gray-400 bg-punch-red p-1 font-bold text-white shadow-md sm:p-2 sm:text-lg md:m-0 md:text-xl"
+          className="text-md text-shadow m-2 w-40 rounded-lg border border-gray-400 bg-punch-red p-1 font-bold text-white shadow-md shadow-black sm:p-2 sm:text-lg md:m-0 md:text-xl"
           onClick={navigateToTitle}
         >
           Back to Title
         </button>
         <button
-          className="text-md m-2 w-40 rounded-lg border border-gray-400 bg-punch-blue p-1 font-bold text-white shadow-md sm:p-2 sm:text-lg md:m-0 md:text-xl"
+          className="text-md text-shadow m-2 w-40 rounded-lg border border-gray-400 bg-punch-blue p-1 font-bold text-white shadow-md shadow-black sm:p-2 sm:text-lg md:m-0 md:text-xl"
           onClick={openModal}
         >
           How to Play
@@ -44,10 +44,10 @@ function MainGameTobBar() {
           </span>
         </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <h2 className="mb-2 text-2xl font-bold md:mb-4 md:text-4xl">
+          <h2 className="mb-1 text-xl font-bold md:mb-4 md:text-4xl">
             How to Play🥊
           </h2>
-          <p className="mb-2 text-lg md:mb-4 lg:text-2xl">
+          <p className="mb-1 text-base md:mb-4 lg:text-2xl">
             Press the key to control your fist!
           </p>
           <div className="text-md my-1 flex flex-row md:text-3xl">
@@ -83,7 +83,7 @@ function MainGameTobBar() {
           <div className="flex justify-center">
             <button
               onClick={closeModal}
-              className="mt-2 rounded-md bg-punch-red px-3 py-1 text-center text-lg font-bold text-white md:mt-4 md:text-2xl lg:px-4 lg:py-2"
+              className="mt-1 rounded-md bg-punch-red px-3 py-1 text-center text-base font-bold text-white md:mt-4 md:text-2xl lg:px-4 lg:py-2"
             >
               OK
             </button>
