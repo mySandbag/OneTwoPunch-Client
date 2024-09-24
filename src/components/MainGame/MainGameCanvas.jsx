@@ -92,7 +92,7 @@ function MainGameCanvas() {
   }, [getHitInProgress()]);
 
   return (
-    <div className="w-full flex-grow">
+    <div className="w-full overflow-hidden">
       <div className="aspect-4/3 max-h-screen w-full md:aspect-video">
         <Canvas
           className="h-full w-full"
@@ -139,7 +139,7 @@ function MainGameCanvas() {
           <div className="p-4">
             <div>
               <button
-                className="absolute bottom-28 left-0 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                className="absolute bottom-28 left-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
                 onClick={() => {
                   setCurrentGloveAnimation({ left: "hook" });
                   setAnimateLeft(true);
@@ -148,7 +148,7 @@ function MainGameCanvas() {
                 Left Hook
               </button>
               <button
-                className="absolute bottom-5 left-0 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                className="absolute bottom-5 left-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
                 onClick={() => {
                   setCurrentGloveAnimation({ left: "punch" });
                   setAnimateLeft(true);
@@ -159,7 +159,7 @@ function MainGameCanvas() {
             </div>
             <div>
               <button
-                className="absolute bottom-28 right-0 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                className="absolute bottom-28 right-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
                 onClick={() => {
                   setCurrentGloveAnimation({ right: "hook" });
                   setAnimateRight(true);
@@ -168,7 +168,7 @@ function MainGameCanvas() {
                 Right Hook
               </button>
               <button
-                className="absolute bottom-5 right-0 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                className="absolute bottom-5 right-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
                 onClick={() => {
                   setCurrentGloveAnimation({ right: "punch" });
                   setAnimateRight(true);
@@ -180,7 +180,7 @@ function MainGameCanvas() {
           </div>
         </div>
       </div>
-      <div className="mt-3 md:hidden">
+      <div className="mt-3 block sm:hidden">
         <div className="flex flex-col items-center text-center text-sm text-white">
           <img src={landScapeIcon} width="50px" />
           Landscape mode is recommended for mobile devices.
