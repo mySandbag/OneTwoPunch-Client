@@ -27,12 +27,12 @@ function TitleScreen() {
   return (
     <main className="flex h-screen select-none flex-col items-center justify-center bg-black">
       <img
-        className="mb-16 w-5/6 md:h-[618px] md:w-[796px]"
+        className="mb-4 h-2/3 w-auto object-contain lg:mb-16 lg:h-[618px] lg:w-[796px]"
         src={titleImage}
         alt="one two punch logo"
       />
       <button
-        className="transform rounded-lg bg-punch-red px-6 py-4 text-2xl font-bold text-punch-white shadow-lg transition duration-300 ease-in-out hover:scale-105 hover:bg-punch-dark-red md:text-4xl"
+        className="transform rounded-lg bg-punch-red px-4 py-2 text-2xl font-bold text-punch-white shadow-lg transition duration-300 ease-in-out hover:scale-105 hover:bg-punch-dark-red lg:px-6 lg:py-4 lg:text-4xl"
         onClick={navigateToMainGame}
         ref={buttonRef}
       >

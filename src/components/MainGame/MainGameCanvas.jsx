@@ -8,6 +8,8 @@ import GloveLeft from "../3D/GloveModel/GloveLeft";
 import GloveRight from "../3D/GloveModel/GloveRight";
 import usePackageStore from "../../store";
 
+import landScapeIcon from "../../assets/landscape-icon.svg";
+
 function MainGameCanvas() {
   const [animateSandbag, setAnimateSandbag] = useState(false);
   const [animateLeft, setAnimateLeft] = useState(false);
@@ -90,8 +92,8 @@ function MainGameCanvas() {
   }, [getHitInProgress()]);
 
   return (
-    <div className="relative w-full flex-grow">
-      <div className="aspect-[4/3] max-h-[90vh] w-full md:aspect-video">
+    <div className="w-full flex-grow">
+      <div className="aspect-4/3 max-h-screen w-full md:aspect-video">
         <Canvas
           className="h-full w-full"
           shadows
@@ -133,44 +135,94 @@ function MainGameCanvas() {
 
           {isDev ? <OrbitControls /> : null}
         </Canvas>
+        <div className="z-50 hidden sm:block lg:hidden">
+          <div className="p-4">
+            <div>
+              <button
+                className="absolute bottom-28 left-0 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                onClick={() => {
+                  setCurrentGloveAnimation({ left: "hook" });
+                  setAnimateLeft(true);
+                }}
+              >
+                Left Hook
+              </button>
+              <button
+                className="absolute bottom-5 left-0 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                onClick={() => {
+                  setCurrentGloveAnimation({ left: "punch" });
+                  setAnimateLeft(true);
+                }}
+              >
+                Left Punch
+              </button>
+            </div>
+            <div>
+              <button
+                className="absolute bottom-28 right-0 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                onClick={() => {
+                  setCurrentGloveAnimation({ right: "hook" });
+                  setAnimateRight(true);
+                }}
+              >
+                Right Hook
+              </button>
+              <button
+                className="absolute bottom-5 right-0 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm"
+                onClick={() => {
+                  setCurrentGloveAnimation({ right: "punch" });
+                  setAnimateRight(true);
+                }}
+              >
+                Right Punch
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="mt-2 grid grid-cols-2 gap-4 p-4 md:hidden">
-        <button
-          className="h-28 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
-          onClick={() => {
-            setCurrentGloveAnimation({ left: "hook" });
-            setAnimateLeft(true);
-          }}
-        >
-          Left Hook
-        </button>
-        <button
-          className="h-28 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
-          onClick={() => {
-            setCurrentGloveAnimation({ right: "hook" });
-            setAnimateRight(true);
-          }}
-        >
-          Right Hook
-        </button>
-        <button
-          className="h-28 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
-          onClick={() => {
-            setCurrentGloveAnimation({ left: "punch" });
-            setAnimateLeft(true);
-          }}
-        >
-          Left Punch
-        </button>
-        <button
-          className="h-28 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
-          onClick={() => {
-            setCurrentGloveAnimation({ right: "punch" });
-            setAnimateRight(true);
-          }}
-        >
-          Right Punch
-        </button>
+      <div className="mt-3 md:hidden">
+        <div className="flex flex-col items-center text-center text-sm text-white">
+          <img src={landScapeIcon} width="50px" />
+          Landscape mode is recommended for mobile devices.
+        </div>
+        <div className="grid grid-cols-2 gap-3 p-4">
+          <button
+            className="h-24 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
+            onClick={() => {
+              setCurrentGloveAnimation({ left: "hook" });
+              setAnimateLeft(true);
+            }}
+          >
+            Left Hook
+          </button>
+          <button
+            className="h-24 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
+            onClick={() => {
+              setCurrentGloveAnimation({ right: "hook" });
+              setAnimateRight(true);
+            }}
+          >
+            Right Hook
+          </button>
+          <button
+            className="h-24 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
+            onClick={() => {
+              setCurrentGloveAnimation({ left: "punch" });
+              setAnimateLeft(true);
+            }}
+          >
+            Left Punch
+          </button>
+          <button
+            className="h-24 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
+            onClick={() => {
+              setCurrentGloveAnimation({ right: "punch" });
+              setAnimateRight(true);
+            }}
+          >
+            Right Punch
+          </button>
+        </div>
       </div>
     </div>
   );

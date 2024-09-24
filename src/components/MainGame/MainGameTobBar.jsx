@@ -23,41 +23,43 @@ function MainGameTobBar() {
   }, []);
 
   return (
-    <div className="flex-none">
-      <div className="m-2 flex w-screen justify-evenly md:m-6">
+    <div className="absolute z-50 flex-none">
+      <div className="m-1 flex w-screen justify-evenly md:m-4">
         <button
-          className="m-2 w-40 rounded-lg bg-punch-red p-2 text-xl font-bold text-white md:m-0"
+          className="text-md m-2 w-40 rounded-lg bg-punch-red p-1 font-bold text-white shadow-md sm:p-2 sm:text-lg md:m-0 md:text-xl"
           onClick={navigateToTitle}
         >
           Back to Title
         </button>
         <button
-          className="m-2 w-40 rounded-lg bg-punch-blue p-2 text-xl font-bold text-white md:m-0"
+          className="text-md m-2 w-40 rounded-lg bg-punch-blue p-1 font-bold text-white sm:p-2 sm:text-lg md:m-0 md:text-xl"
           onClick={openModal}
         >
           How to Play
         </button>
-        <div className="m-2 w-40 rounded-lg bg-white p-2 text-center text-xl font-bold md:m-0">
-          <span className="block md:inline">Hit: </span>
-          <span className="block md:inline">
-            {String(getHitCount()).padStart(4, "0")}
+        <div className="text-md m-2 w-40 rounded-lg bg-white p-1 text-center font-bold sm:p-2 sm:text-lg md:m-0 md:text-xl">
+          <span className="inline">Hit: </span>
+          <span className="inline">
+            {String(getHitCount()).padStart(5, "0")}
           </span>
         </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <h2 className="mb-4 text-4xl font-bold">How to Play🥊</h2>
-          <p className="mb-4 text-xl md:text-2xl">
+          <h2 className="mb-2 text-2xl font-bold md:mb-4 md:text-4xl">
+            How to Play🥊
+          </h2>
+          <p className="mb-2 text-xl md:mb-4 md:text-2xl">
             Press the key to control your fist!
           </p>
           <div className="text-md my-1 flex flex-row md:text-3xl">
             <div className="flex flex-col justify-between">
               <div className="m-2">
-                <span className="mr-2 inline-block h-[45px] w-[45px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[45px] text-gray-800 shadow-lg">
+                <span className="mr-2 inline-block h-[30px] w-[30px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[30px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
                   E
                 </span>
                 : Left Hook
               </div>
               <div className="m-2">
-                <span className="mr-2 inline-block h-[45px] w-[45px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[45px] text-gray-800 shadow-lg">
+                <span className="mr-2 inline-block h-[30px] w-[30px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[30px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
                   F
                 </span>
                 : Left Punch
@@ -65,13 +67,13 @@ function MainGameTobBar() {
             </div>
             <div className="flex flex-col justify-between">
               <div className="m-2">
-                <span className="mr-2 inline-block h-[45px] w-[45px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[45px] text-gray-800 shadow-lg">
+                <span className="mr-2 inline-block h-[30px] w-[30px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[30px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
                   I
                 </span>
                 : Right Hook
               </div>
               <div className="m-2">
-                <span className="mr-2 inline-block h-[45px] w-[45px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[45px] text-gray-800 shadow-lg">
+                <span className="mr-2 inline-block h-[30px] w-[30px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[30px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
                   J
                 </span>
                 : Right Punch
@@ -81,7 +83,7 @@ function MainGameTobBar() {
           <div className="flex justify-center">
             <button
               onClick={closeModal}
-              className="mt-4 rounded-md bg-punch-red px-4 py-2 text-center text-2xl font-bold text-white"
+              className="mt-2 rounded-md bg-punch-red px-4 py-2 text-center text-lg font-bold text-white md:mt-4 md:text-2xl"
             >
               OK
             </button>
