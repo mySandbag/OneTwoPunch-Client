@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import * as THREE from "three";
+import { Vector3, Box3, Box3Helper, Color } from "three";
 import { useLoader, useFrame, useThree } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
@@ -75,7 +75,7 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
       Math.PI / RIGHT_GLOVE_ROTATION.INITIAL_Z
     ).toFixed(2);
 
-    const centerPoint = new THREE.Vector3(
+    const centerPoint = new Vector3(
       gloveRightRef.current.position.x,
       gloveRightRef.current.position.y,
       gloveRightRef.current.position.z,
@@ -111,16 +111,13 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
     punchAirSoundRef.current.load();
 
     if (gloveRightRef.current) {
-      const originalBox = new THREE.Box3().setFromObject(gloveRightRef.current);
+      const originalBox = new Box3().setFromObject(gloveRightRef.current);
       setOriginalBoundingBox(originalBox.clone());
 
       initializeGlovePosition();
 
-      const movedBox = new THREE.Box3().setFromObject(gloveRightRef.current);
-      const movedHelper = new THREE.Box3Helper(
-        movedBox,
-        new THREE.Color(0x00ff00),
-      );
+      const movedBox = new Box3().setFromObject(gloveRightRef.current);
+      const movedHelper = new Box3Helper(movedBox, new Color(0x00ff00));
       if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
         scene.add(movedHelper);
       }
@@ -149,11 +146,8 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
           },
         });
 
-        const helper = new THREE.Box3Helper(
-          originalBoundingBox,
-          new THREE.Color(0x00ffff),
-        );
-        const helperCenter = new THREE.Vector3();
+        const helper = new Box3Helper(originalBoundingBox, new Color(0x00ffff));
+        const helperCenter = new Vector3();
         originalBoundingBox.getCenter(helperCenter);
 
         setSummonPosition({
@@ -237,7 +231,7 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
   };
 
   const updateGloveOBBState = () => {
-    const centerPoint = new THREE.Vector3(
+    const centerPoint = new Vector3(
       gloveRightRef.current.position.x,
       gloveRightRef.current.position.y,
       gloveRightRef.current.position.z,
