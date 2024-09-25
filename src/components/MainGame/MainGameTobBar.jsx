@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../Modal/Modal";
 import usePackageStore from "../../store";
 
+import homeIcon from "../../assets/home-icon.svg";
+
 function MainGameTobBar() {
   const { getHitCount, resetHitCount } = usePackageStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,25 +26,23 @@ function MainGameTobBar() {
 
   return (
     <div className="absolute z-50 flex-none">
-      <div className="my-1 flex w-screen justify-evenly md:m-4">
+      <div className="my-1 flex w-screen items-center justify-evenly bg-black bg-opacity-50 md:m-4">
         <button
-          className="text-md text-shadow m-2 w-40 rounded-lg border border-gray-400 bg-punch-red p-1 font-bold text-white shadow-md shadow-black sm:p-2 sm:text-lg md:m-0 md:text-xl"
+          className="text-md m-2 flex h-6 w-6 items-center justify-center rounded-lg border border-gray-800 bg-punch-red p-1 font-bold text-white shadow-md shadow-black text-shadow sm:text-lg md:m-0 md:h-12 md:w-12 md:text-xl lg:h-16 lg:w-16"
           onClick={navigateToTitle}
         >
-          Back to Title
+          <img src={homeIcon} className="lg:w-10" />
         </button>
+        <div className="text-md font-hitFont text-shadow-white textShadow-lg text- m-2 flex items-center justify-between rounded-lg bg-slate-900 bg-gradient-to-r from-punch-red via-violet-400 to-sky-500 bg-clip-text p-1 text-center font-bold text-transparent shadow-md sm:p-1 sm:text-2xl md:m-0 md:w-60 md:text-5xl">
+          <span className="">Hit: </span>
+          <span className="">{String(getHitCount()).padStart(5, "0")}</span>
+        </div>
         <button
-          className="text-md text-shadow m-2 w-40 rounded-lg border border-gray-400 bg-punch-blue p-1 font-bold text-white shadow-md shadow-black sm:p-2 sm:text-lg md:m-0 md:text-xl"
+          className="text-md font-hitFont m-2 hidden h-6 w-6 rounded-lg border border-gray-800 bg-punch-blue p-1 font-bold text-white shadow-md shadow-black text-shadow sm:text-lg md:m-0 md:h-8 md:w-8 md:text-xl lg:block lg:h-16 lg:w-16 lg:text-4xl"
           onClick={openModal}
         >
-          How to Play
+          ?
         </button>
-        <div className="text-md m-2 w-40 rounded-lg border border-gray-400 bg-white p-1 text-center font-bold shadow-md sm:p-2 sm:text-lg md:m-0 md:text-xl">
-          <span className="inline">Hit: </span>
-          <span className="inline">
-            {String(getHitCount()).padStart(5, "0")}
-          </span>
-        </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           <h2 className="mb-1 text-xl font-bold md:mb-4 md:text-4xl">
             How to Play🥊

@@ -5,3 +5,11 @@
 body {
   @apply bg-black;
 }
+
+@font-face {
+  font-family: "hitFont";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/font/Square.ttf) format("truetype");
+}
