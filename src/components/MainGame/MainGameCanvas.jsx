@@ -17,7 +17,11 @@ function MainGameCanvas() {
 
   const isDev = import.meta.env.VITE_ENVIRONMENT === "DEV";
 
-  const { getHitInProgress, setCurrentGloveAnimation } = usePackageStore();
+  const {
+    getHitInProgress,
+    getCurrentGloveAnimation,
+    setCurrentGloveAnimation,
+  } = usePackageStore();
   const CameraControls = () => {
     const { camera } = useThree();
     useEffect(() => {
@@ -28,28 +32,28 @@ function MainGameCanvas() {
   };
 
   const handleLeftGloveHookAnimationTrigger = (event) => {
-    if (event.code === "KeyE") {
+    if (event.code === "KeyE" && !getCurrentGloveAnimation().left) {
       setCurrentGloveAnimation({ left: "hook" });
       setAnimateLeft(true);
     }
   };
 
   const handleLeftGlovePunchAnimationTrigger = (event) => {
-    if (event.code === "KeyF") {
+    if (event.code === "KeyF" && !getCurrentGloveAnimation().left) {
       setCurrentGloveAnimation({ left: "punch" });
       setAnimateLeft(true);
     }
   };
 
   const handleRightGlovePunchAnimationTrigger = (event) => {
-    if (event.code === "KeyJ") {
+    if (event.code === "KeyJ" && !getCurrentGloveAnimation().right) {
       setCurrentGloveAnimation({ right: "punch" });
       setAnimateRight(true);
     }
   };
 
   const handleRightGloveHookAnimationTrigger = (event) => {
-    if (event.code === "KeyI") {
+    if (event.code === "KeyI" && !getCurrentGloveAnimation().right) {
       setCurrentGloveAnimation({ right: "hook" });
       setAnimateRight(true);
     }
