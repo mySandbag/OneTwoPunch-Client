@@ -32,7 +32,7 @@ function TitleScreen() {
         alt="one two punch logo"
       />
       <button
-        className="transform rounded-full bg-punch-red px-4 py-2 text-2xl font-bold text-punch-white transition duration-300 ease-in-out hover:scale-105 hover:bg-punch-dark-red lg:px-6 lg:py-4 lg:text-4xl"
+        className="transform rounded-full bg-punch-red px-4 py-2 text-2xl font-bold text-punch-white shadow-lg transition duration-300 ease-in-out hover:scale-105 hover:bg-punch-dark-red lg:px-6 lg:py-4 lg:text-4xl"
         onClick={navigateToMainGame}
         ref={buttonRef}
       >

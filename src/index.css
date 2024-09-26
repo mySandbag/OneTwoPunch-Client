@@ -10,14 +10,14 @@ body {
   font-family: "square";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
-  src: url(/font/Square.ttf) format("truetype");
+  font-display: block;
+  src: url(/font/Square.woff) format("truetype");
 }
 
 @font-face {
   font-family: "comicy";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
-  src: url(/font/Comicy.ttf) format("truetype");
+  font-display: block;
+  src: url(/font/Comicy.woff) format("truetype");
 }
