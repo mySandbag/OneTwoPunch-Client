@@ -18,7 +18,6 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     setSummonPosition,
     getSummonPosition,
     setSandbagOBB,
-    getSandbagOBB,
     getAnotherHit,
     setAnotherHit,
     setSandbagInMotion,
@@ -30,12 +29,13 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
   const gravity = SANDBAG_PENDULUM.GRAVITY;
 
   const [originalBoundingBox, setOriginalBoundingBox] = useState(null);
-  const [angle, setAngle] = useState(0);
-  const [angleAccelerate, setAngleAccelerate] = useState(0);
-  const [angleVelocity, setAngleVelocity] = useState(0);
-  const [isStart, setIsStart] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [frameCount, setFrameCount] = useState(0);
+
+  const angleRef = useRef(0);
+  const angleAccelerateRef = useRef(0);
+  const angleVelocityRef = useRef(0);
+  const isStartRef = useRef(false);
+  const isAnimatingRef = useRef(false);
+  const frameCountRef = useRef(0);
 
   const sandbagRef = useRef();
   const axesRef = useRef([]);
@@ -47,7 +47,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
 
   useEffect(() => {
     if (triggerAnimation) {
-      setIsAnimating(true);
+      isAnimatingRef.current = true;
     }
   }, [triggerAnimation]);
 
@@ -164,11 +164,11 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
   }, [originalBoundingBox]);
 
   const stopPendulum = () => {
-    setAngle(0);
-    setAngleAccelerate(0);
-    setAngleVelocity(0);
-    setIsStart(false);
-    setIsAnimating(false);
+    angleRef.current = 0;
+    angleAccelerateRef.current = 0;
+    angleVelocityRef.current = 0;
+    isStartRef.current = false;
+    isAnimatingRef.current = false;
 
     setAnotherHit(false);
     setSandbagInMotion(false);
@@ -178,13 +178,13 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
   };
 
   const animatePendulum = () => {
-    let currentAngle = angle;
-    let currentAngleVelocity = angleVelocity;
-    let currentAngleAccelerate = angleAccelerate;
+    let currentAngle = angleRef.current;
+    let currentAngleVelocity = angleVelocityRef.current;
+    let currentAngleAccelerate = angleAccelerateRef.current;
 
-    if (!isStart) {
+    if (!isStartRef.current) {
       currentAngleVelocity = SANDBAG_PENDULUM.INITIAL_ANGLE_VELOCITY;
-      setIsStart(true);
+      isStartRef.current = true;
       setSandbagInMotion(true);
 
       const hitRotation = getHitRotation();
@@ -244,14 +244,14 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     );
     setSandbagOBB({ center: centerPoint, rotation: currentAxis });
 
-    setAngle(currentAngle);
-    setAngleVelocity(currentAngleVelocity);
-    setAngleAccelerate(currentAngleAccelerate);
+    angleRef.current = currentAngle;
+    angleVelocityRef.current = currentAngleVelocity;
+    angleAccelerateRef.current = currentAngleAccelerate;
 
     if (
-      isStart &&
-      Math.abs(angle) < SANDBAG_PENDULUM.STOP_CONDITION &&
-      Math.abs(angleVelocity) < SANDBAG_PENDULUM.STOP_CONDITION &&
+      isStartRef.current &&
+      Math.abs(angleRef.current) < SANDBAG_PENDULUM.STOP_CONDITION &&
+      Math.abs(angleVelocityRef.current) < SANDBAG_PENDULUM.STOP_CONDITION &&
       Math.abs(sandbagRef.current.rotation.x) <
         SANDBAG_PENDULUM.STOP_CONDITION &&
       Math.abs(sandbagRef.current.rotation.z) < SANDBAG_PENDULUM.STOP_CONDITION
@@ -262,15 +262,15 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
   };
 
   useFrame(() => {
-    if (isAnimating && sandbagRef.current) {
+    if (isAnimatingRef.current && sandbagRef.current) {
       if (
         (import.meta.env.VITE_SPEED_SETTING === "SLOW" &&
-          frameCount % 5 === 0) ||
+          frameCountRef.current % 5 === 0) ||
         import.meta.env.VITE_SPEED_SETTING !== "SLOW"
       ) {
         animatePendulum();
       }
-      setFrameCount((prev) => prev + 1);
+      frameCountRef.current += 1;
     }
   });
 
