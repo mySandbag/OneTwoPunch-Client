@@ -28,6 +28,8 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     setHitInProgress,
     getSandbagInMotion,
     setAnotherHit,
+    updateComboCount,
+    resetComboCount,
     getCurrentGloveAnimation,
     setCurrentGloveAnimation,
     setSummonPosition,
@@ -52,6 +54,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   const directionRef = useRef(GLOVE_DIRECTION.LEFT_FORWARD);
   const isHookTurnedRef = useRef(false);
   const isFirstCollisionInCycleRef = useRef(true);
+  const validHitCount = useRef(0);
 
   const axesRef = useRef([]);
   const punchTargetSoundRef = useRef(null);
@@ -224,7 +227,9 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       punchTargetSoundRef.current.play();
 
       isFirstCollisionInCycleRef.current = false;
+      validHitCount.current += 1;
       updateHitCount();
+      updateComboCount();
       setHitInProgress(true);
       setHitRotation(getLeftGloveOBB().rotation.elements);
     }
@@ -385,6 +390,11 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
           initializeGlovePosition();
           setCurrentGloveAnimation({ left: "" });
           isHookTurnedRef.current = false;
+
+          if (!validHitCount.current) {
+            resetComboCount();
+          }
+          validHitCount.current = 0;
 
           onAnimationEnd();
         }

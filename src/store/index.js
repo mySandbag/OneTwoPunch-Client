@@ -11,37 +11,45 @@ import {
 const createHitStateSlice = (set, get) => ({
   hitInProgress: false,
   hitCount: 0,
-  sandbagInMotion: false,
   anotherHit: false,
+  comboCount: -1,
   hitRotation: [],
   updateHitCount: () =>
     set((state) => ({
       hitCount: state.hitCount + 1,
     })),
+  getHitCount: () => get().hitCount,
+  resetHitCount: () =>
+    set(() => ({
+      hitCount: 0,
+    })),
+
   getHitInProgress: () => get().hitInProgress,
   setHitInProgress: (setValue) =>
     set(() => ({
       hitInProgress: setValue,
     })),
-  getSandbagInMotion: () => get().sandbagInMotion,
-  setSandbagInMotion: (setValue) =>
-    set(() => ({
-      sandbagInMotion: setValue,
-    })),
+
   getAnotherHit: () => get().anotherHit,
   setAnotherHit: (setValue) =>
     set(() => ({
       anotherHit: setValue,
     })),
+
+  updateComboCount: () =>
+    set((state) => ({
+      comboCount: state.comboCount + 1,
+    })),
+  getComboCount: () => get().comboCount,
+  resetComboCount: () =>
+    set(() => ({
+      comboCount: -1,
+    })),
+
   getHitRotation: () => get().hitRotation,
   setHitRotation: (setValue) =>
     set(() => ({
       hitRotation: setValue,
-    })),
-  getHitCount: () => get().hitCount,
-  resetHitCount: () =>
-    set(() => ({
-      hitCount: 0,
     })),
 });
 
@@ -50,10 +58,16 @@ const createAnimationSlice = (set, get) => ({
     left: "",
     right: "",
   },
+  sandbagInMotion: false,
   getCurrentGloveAnimation: () => get().currentGloveAnimation,
   setCurrentGloveAnimation: (setValue) =>
     set((state) => ({
       currentGloveAnimation: { ...state.currentGloveAnimation, ...setValue },
+    })),
+  getSandbagInMotion: () => get().sandbagInMotion,
+  setSandbagInMotion: (setValue) =>
+    set(() => ({
+      sandbagInMotion: setValue,
     })),
 });
 

@@ -21,6 +21,7 @@ function MainGameCanvas() {
     getHitInProgress,
     getCurrentGloveAnimation,
     setCurrentGloveAnimation,
+    getComboCount,
   } = usePackageStore();
   const CameraControls = () => {
     const { camera } = useThree();
@@ -141,6 +142,14 @@ function MainGameCanvas() {
 
           {isDev ? <OrbitControls /> : null}
         </Canvas>
+        {getComboCount() > 0 && (
+          <div
+            className={`font-comicy ${getComboCount() % 2 === 0 ? "skew-y-2 text-punch-blue" : "-skew-y-3 text-punch-red"} fixed -inset-x-1/2 inset-y-1/4 text-center text-3xl drop-shadow-[0_2px_2px_rgba(0,0,0,1)] text-shadow-lg md:text-5xl lg:text-7xl`}
+          >
+            <span>{getComboCount()}</span>
+            <span>{" " + "COMBO"}</span>
+          </div>
+        )}
         <div className="z-50 hidden sm:block lg:hidden">
           <div className="p-4">
             <div>

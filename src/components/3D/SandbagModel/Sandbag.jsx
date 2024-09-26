@@ -22,6 +22,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     setAnotherHit,
     setSandbagInMotion,
     getHitRotation,
+    resetComboCount,
   } = usePackageStore();
   const { scene } = useThree();
 
@@ -170,6 +171,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     isStartRef.current = false;
     isAnimatingRef.current = false;
 
+    resetComboCount();
     setAnotherHit(false);
     setSandbagInMotion(false);
 

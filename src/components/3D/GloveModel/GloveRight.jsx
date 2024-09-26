@@ -32,6 +32,8 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
     setHitInProgress,
     getSandbagInMotion,
     setAnotherHit,
+    updateComboCount,
+    resetComboCount,
     getCurrentGloveAnimation,
     setCurrentGloveAnimation,
     setSummonPosition,
@@ -56,6 +58,7 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
   const directionRef = useRef(GLOVE_DIRECTION.RIGHT_FORWARD);
   const isHookTurnedRef = useRef(false);
   const isFirstCollisionInCycleRef = useRef(true);
+  const validHitCount = useRef(0);
 
   const axesRef = useRef([]);
   const punchTargetSoundRef = useRef(null);
@@ -227,7 +230,9 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
       punchTargetSoundRef.current.play();
 
       isFirstCollisionInCycleRef.current = false;
+      validHitCount.current += 1;
       updateHitCount();
+      updateComboCount();
       setHitInProgress(true);
       setHitRotation(getRightGloveOBB().rotation.elements);
     }
@@ -388,6 +393,11 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
           initializeGlovePosition();
           setCurrentGloveAnimation({ right: "" });
           isHookTurnedRef.current = false;
+
+          if (!validHitCount.current) {
+            resetComboCount();
+          }
+          validHitCount.current = 0;
 
           onAnimationEnd();
         }

@@ -20,7 +20,8 @@ export default {
         lg: "0 8px 16px var(--tw-shadow-color)",
       },
       fontFamily: {
-        hitFont: ["hitFont", "sans-serif"],
+        square: ["square", "sans-serif"],
+        comicy: ["comicy", "sans-serif"],
       },
     },
   },
