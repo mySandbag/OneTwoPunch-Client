@@ -1,4 +1,5 @@
-export const RIGHT_ANGLE = 2;
+import { degToRad } from "../common/mathUtils";
+export const RIGHT_ANGLE = degToRad(90);
 
 export const SANDBAG_POSITION = {
   INITIAL_Y: 4.8,
@@ -44,14 +45,14 @@ export const RIGHT_GLOVE_POSITION = {
 };
 
 export const RIGHT_GLOVE_ROTATION = {
-  INITIAL_X: 7,
-  INITIAL_Y: 20,
-  INITIAL_Z: 180,
-  PUNCH_DELTA_X: 0.6,
-  PUNCH_DELTA_Y: 2.4,
-  HOOK_DELTA_X: 0.45,
-  HOOK_DELTA_Y: 0,
-  HOOK_DELTA_Z: 11,
+  INITIAL_X: degToRad(18),
+  INITIAL_Y: degToRad(15),
+  INITIAL_Z: degToRad(-10),
+  PUNCH_DELTA_X: degToRad(9),
+  PUNCH_DELTA_Y: degToRad(10),
+  HOOK_DELTA_X: degToRad(2),
+  HOOK_DELTA_Y: degToRad(0),
+  HOOK_DELTA_Z: degToRad(8),
 };
 
 export const LEFT_GLOVE_POSITION = {
@@ -64,12 +65,12 @@ export const LEFT_GLOVE_POSITION = {
 };
 
 export const LEFT_GLOVE_ROTATION = {
-  INITIAL_X: 20,
-  INITIAL_Y: 20,
-  INITIAL_Z: 180,
-  PUNCH_DELTA_X: 3.3,
-  PUNCH_DELTA_Y: 2.1,
-  HOOK_DELTA_X: 1.82,
-  HOOK_DELTA_Y: 0,
-  HOOK_DELTA_Z: 11,
+  INITIAL_X: degToRad(-10),
+  INITIAL_Y: degToRad(9),
+  INITIAL_Z: degToRad(-1),
+  PUNCH_DELTA_X: degToRad(10),
+  PUNCH_DELTA_Y: degToRad(7),
+  HOOK_DELTA_X: degToRad(4),
+  HOOK_DELTA_Y: degToRad(0),
+  HOOK_DELTA_Z: degToRad(7),
 };

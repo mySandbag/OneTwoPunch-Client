@@ -13,7 +13,7 @@ const createHitStateSlice = (set, get) => ({
   hitCount: 0,
   anotherHit: false,
   comboCount: -1,
-  hitRotation: [],
+  latestHitState: { hitRotation: [], latestPart: "", latestAnimation: "" },
   updateHitCount: () =>
     set((state) => ({
       hitCount: state.hitCount + 1,
@@ -46,10 +46,10 @@ const createHitStateSlice = (set, get) => ({
       comboCount: -1,
     })),
 
-  getHitRotation: () => get().hitRotation,
-  setHitRotation: (setValue) =>
-    set(() => ({
-      hitRotation: setValue,
+  getLatestHitState: () => get().latestHitState,
+  setLatestHitState: (setValue) =>
+    set((state) => ({
+      latestHitState: { ...state.latestHitState, ...setValue },
     })),
 });
 

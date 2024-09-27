@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Vector3, Box3, Box3Helper, Color } from "three";
 import { useLoader, useFrame, useThree } from "@react-three/fiber";
+import { degToRad } from "../../../common/mathUtils";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import {
@@ -41,7 +42,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     setCurrentRotation,
     getCurrentPosition,
     getCurrentRotation,
-    setHitRotation,
+    setLatestHitState,
     initializeLeftGloveCurrentState,
   } = usePackageStore();
 
@@ -65,15 +66,9 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     gloveLeftRef.current.position.y = LEFT_GLOVE_POSITION.INITIAL_Y;
     gloveLeftRef.current.position.z = LEFT_GLOVE_POSITION.INITIAL_Z;
 
-    gloveLeftRef.current.rotation.x = -(
-      Math.PI / LEFT_GLOVE_ROTATION.INITIAL_X
-    ).toFixed(2);
-    gloveLeftRef.current.rotation.y = -(
-      Math.PI / LEFT_GLOVE_ROTATION.INITIAL_Y
-    ).toFixed(2);
-    gloveLeftRef.current.rotation.z = -(
-      Math.PI / LEFT_GLOVE_ROTATION.INITIAL_Z
-    ).toFixed(2);
+    gloveLeftRef.current.rotation.x = LEFT_GLOVE_ROTATION.INITIAL_X;
+    gloveLeftRef.current.rotation.y = LEFT_GLOVE_ROTATION.INITIAL_Y;
+    gloveLeftRef.current.rotation.z = LEFT_GLOVE_ROTATION.INITIAL_Z;
 
     const centerPoint = new Vector3(
       gloveLeftRef.current.position.x,
@@ -199,17 +194,13 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     gloveLeftRef.current.position.x = xPosition;
     gloveLeftRef.current.position.z += speedRef.current * directionRef.current;
 
-    gloveLeftRef.current.rotation.x = -(
-      Math.PI / Math.max(xRotation, RIGHT_ANGLE)
-    ).toFixed(2);
-    gloveLeftRef.current.rotation.y = (
-      Math.PI / Math.max(yRotation, RIGHT_ANGLE)
-    ).toFixed(2);
+    gloveLeftRef.current.rotation.x = -Math.min(xRotation, RIGHT_ANGLE);
+    gloveLeftRef.current.rotation.y = Math.min(yRotation, RIGHT_ANGLE);
     if (getCurrentGloveAnimation().left === "punch") {
-      gloveLeftRef.current.rotation.z = (Math.PI / 360).toFixed(2);
+      gloveLeftRef.current.rotation.z = degToRad(0.5);
     }
     if (getCurrentGloveAnimation().left === "hook") {
-      gloveLeftRef.current.rotation.z = -(Math.PI / zRotation).toFixed(2);
+      gloveLeftRef.current.rotation.z = -zRotation;
     }
   };
 
@@ -231,7 +222,11 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       updateHitCount();
       updateComboCount();
       setHitInProgress(true);
-      setHitRotation(getLeftGloveOBB().rotation.elements);
+      setLatestHitState({
+        hitRotation: getLeftGloveOBB().rotation.elements,
+        latestPart: "left",
+        latestAnimation: getCurrentGloveAnimation().left,
+      });
     }
     if (
       !isCollide &&
@@ -276,12 +271,12 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
         leftZ: speedRef.current + GLOVE_SPEED.PUNCH_INCREMENT,
       });
       setCurrentRotation({
-        leftX: Math.max(
-          xRotation - LEFT_GLOVE_ROTATION.PUNCH_DELTA_X,
+        leftX: Math.min(
+          xRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_X,
           RIGHT_ANGLE,
         ),
-        leftY: Math.max(
-          yRotation - LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y,
+        leftY: Math.min(
+          yRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y,
           RIGHT_ANGLE,
         ),
       });
@@ -297,21 +292,22 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
         leftZ: speedRef.current + GLOVE_SPEED.HOOK_INCREMENT,
       });
       setCurrentRotation({
-        leftX: Math.max(
-          xRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_X,
+        leftX: Math.min(
+          xRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_X,
           RIGHT_ANGLE,
         ),
-        leftY: Math.max(
-          yRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_Y,
+        leftY: Math.min(
+          yRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_Y,
           RIGHT_ANGLE,
         ),
-        leftZ: Math.max(
-          Math.abs(zRotation) - LEFT_GLOVE_ROTATION.HOOK_DELTA_Z,
-          RIGHT_ANGLE + 1,
+        leftZ: Math.min(
+          zRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_Z,
+          RIGHT_ANGLE,
         ),
       });
     }
   };
+
   const handleBackwardMovement = () => {
     if (getCurrentGloveAnimation().left === "punch") {
       speedRef.current = Math.max(
@@ -319,7 +315,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
         GLOVE_SPEED.PUNCH_INITIAL,
       );
       setCurrentPosition({
-        leftX: Math.min(
+        leftX: Math.max(
           xPosition - LEFT_GLOVE_POSITION.PUNCH_DELTA_X,
           LEFT_GLOVE_POSITION.INITIAL_X,
         ),
@@ -329,12 +325,12 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
         ),
       });
       setCurrentRotation({
-        leftX: Math.min(
-          xRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_X,
+        leftX: Math.max(
+          xRotation - LEFT_GLOVE_ROTATION.PUNCH_DELTA_X,
           LEFT_GLOVE_ROTATION.INITIAL_X,
         ),
         leftY: Math.min(
-          yRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y,
+          Math.abs(yRotation) + LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y,
           LEFT_GLOVE_ROTATION.INITIAL_Y,
         ),
       });
@@ -367,6 +363,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   useFrame(() => {
     if (triggerAnimation && gloveLeftRef.current) {
       const frameCount = frameCountRef.current;
+
       if (
         (import.meta.env.VITE_SPEED_SETTING === "SLOW" &&
           frameCount % 5 === 0) ||

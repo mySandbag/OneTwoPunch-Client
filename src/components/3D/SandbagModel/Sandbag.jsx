@@ -21,7 +21,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     getAnotherHit,
     setAnotherHit,
     setSandbagInMotion,
-    getHitRotation,
+    getLatestHitState,
     resetComboCount,
   } = usePackageStore();
   const { scene } = useThree();
@@ -189,14 +189,14 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
       isStartRef.current = true;
       setSandbagInMotion(true);
 
-      const hitRotation = getHitRotation();
-      const yVector = new THREE.Vector3(
-        hitRotation[1],
-        hitRotation[4],
-        hitRotation[7],
-      );
-      targetXAngleRef.current = Math.atan2(yVector.y, yVector.z);
-      targetZAngleRef.current = -Math.atan2(yVector.x, yVector.y);
+      const xHookFactor =
+        getLatestHitState().latestAnimation === "hook" ? 0.5 : 1;
+      const zHookFactor =
+        getLatestHitState().latestAnimation === "hook" ? 2 : 1;
+      const zLeftFactor = getLatestHitState().latestPart === "left" ? -1 : 1;
+
+      targetXAngleRef.current = xHookFactor;
+      targetZAngleRef.current = -zLeftFactor * zHookFactor;
       currentXAngleRef.current = targetXAngleRef.current;
       currentZAngleRef.current = targetZAngleRef.current;
     }
@@ -205,14 +205,14 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
       currentAngleVelocity += SANDBAG_PENDULUM.DELTA_VELOCITY;
       setAnotherHit(false);
 
-      const hitRotation = getHitRotation();
-      const yVector = new THREE.Vector3(
-        hitRotation[1],
-        hitRotation[4],
-        hitRotation[7],
-      );
-      targetXAngleRef.current = Math.atan2(yVector.y, yVector.z);
-      targetZAngleRef.current = -Math.atan2(yVector.x, yVector.y);
+      const xHookFactor =
+        getLatestHitState().latestAnimation === "hook" ? 0.5 : 1;
+      const zHookFactor =
+        getLatestHitState().latestAnimation === "hook" ? 2 : 1;
+      const zLeftFactor = getLatestHitState().latestPart === "left" ? -1 : 1;
+
+      targetXAngleRef.current = xHookFactor;
+      targetZAngleRef.current = -zLeftFactor * zHookFactor;
     }
 
     const force = gravity * Math.sin(currentAngle);

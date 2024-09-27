@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Vector3, Box3, Box3Helper, Color } from "three";
 import { useLoader, useFrame, useThree } from "@react-three/fiber";
+import { degToRad } from "../../../common/mathUtils";
+
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import {
@@ -45,7 +47,7 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
     setCurrentRotation,
     getCurrentPosition,
     getCurrentRotation,
-    setHitRotation,
+    setLatestHitState,
     initializeRightGloveCurrentState,
   } = usePackageStore();
 
@@ -69,15 +71,9 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
     gloveRightRef.current.position.y = RIGHT_GLOVE_POSITION.INITIAL_Y;
     gloveRightRef.current.position.z = RIGHT_GLOVE_POSITION.INITIAL_Z;
 
-    gloveRightRef.current.rotation.x = -(
-      Math.PI / RIGHT_GLOVE_ROTATION.INITIAL_X
-    ).toFixed(2);
-    gloveRightRef.current.rotation.y = -(
-      Math.PI / RIGHT_GLOVE_ROTATION.INITIAL_Y
-    ).toFixed(2);
-    gloveRightRef.current.rotation.z = -(
-      Math.PI / RIGHT_GLOVE_ROTATION.INITIAL_Z
-    ).toFixed(2);
+    gloveRightRef.current.rotation.x = -RIGHT_GLOVE_ROTATION.INITIAL_X;
+    gloveRightRef.current.rotation.y = -RIGHT_GLOVE_ROTATION.INITIAL_Y;
+    gloveRightRef.current.rotation.z = -RIGHT_GLOVE_ROTATION.INITIAL_Z;
 
     const centerPoint = new Vector3(
       gloveRightRef.current.position.x,
@@ -202,17 +198,19 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
     gloveRightRef.current.position.x = xPosition;
     gloveRightRef.current.position.z += speedRef.current * directionRef.current;
 
-    gloveRightRef.current.rotation.x = -(
-      Math.PI / Math.max(xRotation, RIGHT_ANGLE)
+    gloveRightRef.current.rotation.x = -Math.min(
+      xRotation,
+      RIGHT_ANGLE,
     ).toFixed(2);
-    gloveRightRef.current.rotation.y = -(
-      Math.PI / Math.max(yRotation, RIGHT_ANGLE)
+    gloveRightRef.current.rotation.y = -Math.min(
+      yRotation,
+      RIGHT_ANGLE,
     ).toFixed(2);
     if (getCurrentGloveAnimation().right === "punch") {
-      gloveRightRef.current.rotation.z = -(Math.PI / 360).toFixed(2);
+      gloveRightRef.current.rotation.z = degToRad(0);
     }
     if (getCurrentGloveAnimation().right === "hook") {
-      gloveRightRef.current.rotation.z = (Math.PI / zRotation).toFixed(2);
+      gloveRightRef.current.rotation.z = zRotation;
     }
   };
 
@@ -234,7 +232,11 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
       updateHitCount();
       updateComboCount();
       setHitInProgress(true);
-      setHitRotation(getRightGloveOBB().rotation.elements);
+      setLatestHitState({
+        hitRotation: getRightGloveOBB().rotation.elements,
+        latestPart: "right",
+        latestAnimation: getCurrentGloveAnimation().right,
+      });
     }
     if (
       !isCollide &&
@@ -278,13 +280,13 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
         rightZ: speedRef.current + GLOVE_SPEED.PUNCH_INCREMENT,
       });
       setCurrentRotation({
-        rightX: Math.max(
-          xRotation - RIGHT_GLOVE_ROTATION.PUNCH_DELTA_X,
+        rightX: Math.min(
+          xRotation + RIGHT_GLOVE_ROTATION.PUNCH_DELTA_X,
           RIGHT_ANGLE,
         ),
-        rightY: Math.max(
-          yRotation - RIGHT_GLOVE_ROTATION.PUNCH_DELTA_Y,
-          -RIGHT_ANGLE,
+        rightY: Math.min(
+          yRotation + RIGHT_GLOVE_ROTATION.PUNCH_DELTA_Y,
+          RIGHT_ANGLE,
         ),
       });
     }
@@ -299,17 +301,17 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
         rightZ: speedRef.current + GLOVE_SPEED.HOOK_INCREMENT,
       });
       setCurrentRotation({
-        rightX: Math.max(
+        rightX: Math.min(
           xRotation - RIGHT_GLOVE_ROTATION.HOOK_DELTA_X,
           RIGHT_ANGLE,
         ),
-        rightY: Math.max(
+        rightY: Math.min(
           yRotation - RIGHT_GLOVE_ROTATION.HOOK_DELTA_Y,
           RIGHT_ANGLE,
         ),
-        rightZ: Math.max(
-          Math.abs(zRotation) - RIGHT_GLOVE_ROTATION.HOOK_DELTA_Z,
-          RIGHT_ANGLE + 1,
+        rightZ: Math.min(
+          zRotation + RIGHT_GLOVE_ROTATION.HOOK_DELTA_Z,
+          RIGHT_ANGLE,
         ),
       });
     }
