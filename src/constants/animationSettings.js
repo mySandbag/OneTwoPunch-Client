@@ -1,4 +1,4 @@
-import { degToRad } from "../common/mathUtils";
+import { degToRad } from "../common/utils/mathUtils";
 export const RIGHT_ANGLE = degToRad(90);
 
 export const SANDBAG_POSITION = {
@@ -11,7 +11,7 @@ export const SANDBAG_PENDULUM = {
   INTERPOLATION_SPEED: 0.2,
   DAMPING: 0.94,
   GRAVITY: 9.8 / 1000,
-  STOP_CONDITION: 0.002,
+  STOP_CONDITION: 0.001,
 };
 
 export const GLOVE_DIRECTION = {
@@ -26,22 +26,27 @@ export const GLOVE_SPEED = {
   PUNCH_INCREMENT: 0.01,
   PUNCH_DECREMENT: 0.004,
   HOOK_INCREMENT: 0.008,
+  HOOK_DECREMENT: 0.004,
+  UPPERCUT_INCREMENT: 0.01,
+  UPPERCUT_DECREMENT: 0.004,
 };
 
 export const MAX_GLOVE_REACH = {
   PUNCH_Z: 0.8,
   HOOK_Z: 0.3,
+  UPPER_Z: 0.4,
   HOOK_LEFT_X: -1.3,
   HOOK_RIGHT_X: 1.3,
 };
 
 export const RIGHT_GLOVE_POSITION = {
   INITIAL_X: 0.6,
-  INITIAL_Y: 1.8,
+  INITIAL_Y: 2.1,
   INITIAL_Z: 2,
   PUNCH_DELTA_X: 0.03,
   HOOK_DELTA_X: 0.13,
   HOOK_MIN_X: 0.2,
+  UPPERCUT_MIN_Y: 1.4,
 };
 
 export const RIGHT_GLOVE_ROTATION = {
@@ -57,11 +62,14 @@ export const RIGHT_GLOVE_ROTATION = {
 
 export const LEFT_GLOVE_POSITION = {
   INITIAL_X: -0.6,
-  INITIAL_Y: 1.8,
+  INITIAL_Y: 2.1,
   INITIAL_Z: 2,
   PUNCH_DELTA_X: 0.03,
   HOOK_DELTA_X: 0.13,
+  UPPERCUT_DELTA_X: 0.13,
+  UPPERCUT_DELTA_Y: 0.05,
   HOOK_MIN_X: -0.2,
+  UPPERCUT_MIN_Y: 1.4,
 };
 
 export const LEFT_GLOVE_ROTATION = {
@@ -73,4 +81,7 @@ export const LEFT_GLOVE_ROTATION = {
   HOOK_DELTA_X: degToRad(2),
   HOOK_DELTA_Y: degToRad(0),
   HOOK_DELTA_Z: degToRad(7),
+  UPPERCUT_DELTA_X: degToRad(2),
+  UPPERCUT_DELTA_Y: degToRad(13),
+  UPPERCUT_DELTA_Z: degToRad(14),
 };
