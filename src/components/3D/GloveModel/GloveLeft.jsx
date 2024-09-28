@@ -57,6 +57,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   const speedRef = useRef(GLOVE_SPEED.PUNCH_INITIAL);
   const directionRef = useRef(GLOVE_DIRECTION.LEFT_FORWARD);
   const isHookTurnedRef = useRef(false);
+  const isUppercutTurnedRef = useRef(false);
   const isFirstCollisionInCycleRef = useRef(true);
   const validHitCount = useRef(0);
 
@@ -96,6 +97,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     speedRef.current = GLOVE_SPEED.PUNCH_INITIAL;
     isFirstCollisionInCycleRef.current = true;
     isHookTurnedRef.current = false;
+    isUppercutTurnedRef.current = false;
 
     updateGloveOBBState();
 
@@ -267,7 +269,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
         const isMovingForward = directionRef.current < 0;
         const isGloveReturnToOriginPoint = currentPositionZ > LEFT_GLOVE_POSITION.INITIAL_Z;
 
-        computeTurningPoint(punchType, gloveLeftRef, isHookTurnedRef, directionRef);
+        computeTurningPoint(punchType, gloveLeftRef, isHookTurnedRef, isUppercutTurnedRef, directionRef);
 
         if (isMovingForward) {
           const { newPosition, newRotation } = computeForwardMovement(
@@ -276,6 +278,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
             getCurrentRotation(),
             FPSFactor,
             isHookTurnedRef,
+            isUppercutTurnedRef,
             speedRef,
           );
 
