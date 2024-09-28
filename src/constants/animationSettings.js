@@ -7,11 +7,11 @@ export const SANDBAG_POSITION = {
 
 export const SANDBAG_PENDULUM = {
   INITIAL_ANGLE_VELOCITY: 0.04,
-  DELTA_VELOCITY: 0.03,
+  DELTA_VELOCITY: 0.02,
   INTERPOLATION_SPEED: 0.2,
-  DAMPING: 0.92,
+  DAMPING: 0.94,
   GRAVITY: 9.8 / 1000,
-  STOP_CONDITION: 0.001,
+  STOP_CONDITION: 0.002,
 };
 
 export const GLOVE_DIRECTION = {
@@ -38,10 +38,10 @@ export const MAX_GLOVE_REACH = {
 export const RIGHT_GLOVE_POSITION = {
   INITIAL_X: 0.6,
   INITIAL_Y: 1.8,
-  INITIAL_Z: 1.8,
+  INITIAL_Z: 2,
   PUNCH_DELTA_X: 0.03,
-  HOOK_DELTA_X: 0.15,
-  HOOK_MIN_X: 0.4,
+  HOOK_DELTA_X: 0.13,
+  HOOK_MIN_X: 0.2,
 };
 
 export const RIGHT_GLOVE_ROTATION = {
@@ -50,7 +50,7 @@ export const RIGHT_GLOVE_ROTATION = {
   INITIAL_Z: degToRad(-10),
   PUNCH_DELTA_X: degToRad(9),
   PUNCH_DELTA_Y: degToRad(10),
-  HOOK_DELTA_X: degToRad(2),
+  HOOK_DELTA_X: degToRad(1),
   HOOK_DELTA_Y: degToRad(0),
   HOOK_DELTA_Z: degToRad(8),
 };
@@ -58,10 +58,10 @@ export const RIGHT_GLOVE_ROTATION = {
 export const LEFT_GLOVE_POSITION = {
   INITIAL_X: -0.6,
   INITIAL_Y: 1.8,
-  INITIAL_Z: 1.8,
+  INITIAL_Z: 2,
   PUNCH_DELTA_X: 0.03,
-  HOOK_DELTA_X: 0.15,
-  HOOK_MIN_X: -0.4,
+  HOOK_DELTA_X: 0.13,
+  HOOK_MIN_X: -0.2,
 };
 
 export const LEFT_GLOVE_ROTATION = {
@@ -70,7 +70,7 @@ export const LEFT_GLOVE_ROTATION = {
   INITIAL_Z: degToRad(-1),
   PUNCH_DELTA_X: degToRad(10),
   PUNCH_DELTA_Y: degToRad(7),
-  HOOK_DELTA_X: degToRad(4),
+  HOOK_DELTA_X: degToRad(2),
   HOOK_DELTA_Y: degToRad(0),
   HOOK_DELTA_Z: degToRad(7),
 };

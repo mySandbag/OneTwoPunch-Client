@@ -61,6 +61,8 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   const punchTargetSoundRef = useRef(null);
   const punchAirSoundRef = useRef(null);
 
+  const frameCountRef = useRef(0);
+
   const initializeGlovePosition = () => {
     gloveLeftRef.current.position.x = LEFT_GLOVE_POSITION.INITIAL_X;
     gloveLeftRef.current.position.y = LEFT_GLOVE_POSITION.INITIAL_Y;
@@ -190,9 +192,10 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   const yRotation = getCurrentRotation().leftY;
   const zRotation = getCurrentRotation().leftZ;
 
-  const transformGloveRef = () => {
+  const transformGloveRef = (FPSFactor) => {
     gloveLeftRef.current.position.x = xPosition;
-    gloveLeftRef.current.position.z += speedRef.current * directionRef.current;
+    gloveLeftRef.current.position.z +=
+      speedRef.current * directionRef.current * FPSFactor;
 
     gloveLeftRef.current.rotation.x = -Math.min(xRotation, RIGHT_ANGLE);
     gloveLeftRef.current.rotation.y = Math.min(yRotation, RIGHT_ANGLE);
@@ -262,21 +265,24 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     setLeftGloveOBB({ center: centerPoint, rotation: currentAxis });
   };
 
-  const handleForwardMovement = () => {
+  const handleForwardMovement = (FPSFactor) => {
     if (getCurrentGloveAnimation().left === "punch") {
       speedRef.current += GLOVE_SPEED.PUNCH_INCREMENT;
 
       setCurrentPosition({
-        leftX: Math.min(xPosition + LEFT_GLOVE_POSITION.PUNCH_DELTA_X, 0),
-        leftZ: speedRef.current + GLOVE_SPEED.PUNCH_INCREMENT,
+        leftX: Math.min(
+          xPosition + LEFT_GLOVE_POSITION.PUNCH_DELTA_X * FPSFactor,
+          0,
+        ),
+        leftZ: speedRef.current + GLOVE_SPEED.PUNCH_INCREMENT * FPSFactor,
       });
       setCurrentRotation({
         leftX: Math.min(
-          xRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_X,
+          xRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_X * FPSFactor,
           RIGHT_ANGLE,
         ),
         leftY: Math.min(
-          yRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y,
+          yRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y * FPSFactor,
           RIGHT_ANGLE,
         ),
       });
@@ -287,51 +293,87 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       setCurrentPosition({
         leftX: Math.min(
           LEFT_GLOVE_POSITION.HOOK_MIN_X,
-          xPosition - LEFT_GLOVE_POSITION.HOOK_DELTA_X * turnFactor,
+          xPosition - LEFT_GLOVE_POSITION.HOOK_DELTA_X * FPSFactor * turnFactor,
         ),
-        leftZ: speedRef.current + GLOVE_SPEED.HOOK_INCREMENT,
+        leftZ: speedRef.current + GLOVE_SPEED.HOOK_INCREMENT * FPSFactor,
       });
       setCurrentRotation({
         leftX: Math.min(
-          xRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_X,
+          xRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_X * FPSFactor,
           RIGHT_ANGLE,
         ),
         leftY: Math.min(
-          yRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_Y,
+          yRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_Y * FPSFactor,
           RIGHT_ANGLE,
         ),
         leftZ: Math.min(
-          zRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_Z,
+          zRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_Z * FPSFactor,
           RIGHT_ANGLE,
         ),
       });
     }
   };
 
-  const handleBackwardMovement = () => {
-    if (getCurrentGloveAnimation().left === "punch") {
+  const handleBackwardMovement = (FPSFactor) => {
+    const currentAnimation = getCurrentGloveAnimation().left;
+
+    if (currentAnimation === "punch") {
       speedRef.current = Math.max(
-        speedRef.current - GLOVE_SPEED.PUNCH_DECREMENT,
+        speedRef.current - GLOVE_SPEED.PUNCH_DECREMENT * FPSFactor,
         GLOVE_SPEED.PUNCH_INITIAL,
       );
       setCurrentPosition({
         leftX: Math.max(
-          xPosition - LEFT_GLOVE_POSITION.PUNCH_DELTA_X,
+          xPosition - LEFT_GLOVE_POSITION.PUNCH_DELTA_X * FPSFactor,
           LEFT_GLOVE_POSITION.INITIAL_X,
         ),
         leftZ: Math.max(
-          speedRef.current - GLOVE_SPEED.PUNCH_DECREMENT,
+          speedRef.current - GLOVE_SPEED.PUNCH_DECREMENT * FPSFactor,
           GLOVE_SPEED.PUNCH_INITIAL,
         ),
       });
       setCurrentRotation({
         leftX: Math.max(
-          xRotation - LEFT_GLOVE_ROTATION.PUNCH_DELTA_X,
+          xRotation - LEFT_GLOVE_ROTATION.PUNCH_DELTA_X * FPSFactor,
           LEFT_GLOVE_ROTATION.INITIAL_X,
         ),
         leftY: Math.min(
-          Math.abs(yRotation) + LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y,
+          Math.abs(yRotation) + LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y * FPSFactor,
           LEFT_GLOVE_ROTATION.INITIAL_Y,
+        ),
+      });
+    }
+
+    if (currentAnimation === "hook") {
+      speedRef.current = Math.max(
+        speedRef.current - GLOVE_SPEED.HOOK_INCREMENT * FPSFactor,
+        GLOVE_SPEED.PUNCH_INITIAL,
+      );
+
+      setCurrentPosition({
+        leftX: Math.min(
+          xPosition + LEFT_GLOVE_POSITION.HOOK_DELTA_X * FPSFactor,
+          LEFT_GLOVE_POSITION.INITIAL_X,
+        ),
+        leftZ: Math.max(
+          gloveLeftRef.current.position.z -
+            GLOVE_SPEED.HOOK_INCREMENT * FPSFactor,
+          LEFT_GLOVE_POSITION.INITIAL_Z,
+        ),
+      });
+
+      setCurrentRotation({
+        leftX: Math.max(
+          xRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_X * FPSFactor,
+          LEFT_GLOVE_ROTATION.INITIAL_X,
+        ),
+        leftY: Math.max(
+          yRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_Y * FPSFactor,
+          LEFT_GLOVE_ROTATION.INITIAL_Y,
+        ),
+        leftZ: Math.max(
+          zRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_Z * FPSFactor,
+          LEFT_GLOVE_ROTATION.INITIAL_Z,
         ),
       });
     }
@@ -359,10 +401,12 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       directionRef.current = GLOVE_DIRECTION.LEFT_BACKWARD;
     }
   };
-  const frameCountRef = useRef(0);
-  useFrame(() => {
+
+  useFrame((state, delta) => {
     if (triggerAnimation && gloveLeftRef.current) {
       const frameCount = frameCountRef.current;
+      const ideal60FPS = 1 / 60;
+      const FPSFactor = delta / ideal60FPS;
 
       if (
         (import.meta.env.VITE_SPEED_SETTING === "SLOW" &&
@@ -374,9 +418,11 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
 
         computeTurningPoint();
 
-        isMovingForward ? handleForwardMovement() : handleBackwardMovement();
+        isMovingForward
+          ? handleForwardMovement(FPSFactor)
+          : handleBackwardMovement(FPSFactor);
 
-        transformGloveRef();
+        transformGloveRef(FPSFactor);
         handleCollision();
         updateGloveOBBState();
 

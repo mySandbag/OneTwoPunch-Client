@@ -41,6 +41,9 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
   const sandbagRef = useRef();
   const axesRef = useRef([]);
 
+  const ideal60FPS = 1 / 60;
+  const accumulatedTimeRef = useRef(0);
+
   const currentXAngleRef = useRef(0);
   const targetXAngleRef = useRef(0);
   const currentZAngleRef = useRef(0);
@@ -192,7 +195,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
       const xHookFactor =
         getLatestHitState().latestAnimation === "hook" ? 0.5 : 1;
       const zHookFactor =
-        getLatestHitState().latestAnimation === "hook" ? 2 : 1;
+        getLatestHitState().latestAnimation === "hook" ? 1.5 : 1;
       const zLeftFactor = getLatestHitState().latestPart === "left" ? -1 : 1;
 
       targetXAngleRef.current = xHookFactor;
@@ -263,14 +266,18 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     }
   };
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     if (isAnimatingRef.current && sandbagRef.current) {
+      accumulatedTimeRef.current += delta;
       if (
         (import.meta.env.VITE_SPEED_SETTING === "SLOW" &&
           frameCountRef.current % 5 === 0) ||
         import.meta.env.VITE_SPEED_SETTING !== "SLOW"
       ) {
-        animatePendulum();
+        while (accumulatedTimeRef.current >= ideal60FPS) {
+          animatePendulum();
+          accumulatedTimeRef.current -= ideal60FPS;
+        }
       }
       frameCountRef.current += 1;
     }
