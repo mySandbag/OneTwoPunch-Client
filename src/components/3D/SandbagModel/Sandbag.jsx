@@ -3,10 +3,7 @@ import * as THREE from "three";
 import { useLoader, useThree, useFrame } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-import {
-  SANDBAG_POSITION,
-  SANDBAG_PENDULUM,
-} from "../../../constants/animationSettings";
+import { SANDBAG_POSITION, SANDBAG_PENDULUM } from "../../../constants/animationSettings";
 
 import { visualizeOriginalAxesAtPoint } from "../../../common/physics/visualizeOriginalAxesAtPoint";
 import { computeAxesAtPoint } from "../../../common/physics/computeAxesAtPoint";
@@ -64,10 +61,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
 
   useEffect(() => {
     if (sandbagRef.current) {
-      const originalBox = new THREE.Box3().setFromObject(
-        sandbagRef.current,
-        true,
-      );
+      const originalBox = new THREE.Box3().setFromObject(sandbagRef.current, true);
       setOriginalBoundingBox(originalBox.clone());
 
       sandbagRef.current.position.y = SANDBAG_POSITION.INITIAL_Y;
@@ -75,10 +69,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
       sandbagRef.current.rotation.z = 0;
 
       const movedBox = new THREE.Box3().setFromObject(sandbagRef.current, true);
-      const movedHelper = new THREE.Box3Helper(
-        movedBox,
-        new THREE.Color(0x0000ff),
-      );
+      const movedHelper = new THREE.Box3Helper(movedBox, new THREE.Color(0x0000ff));
 
       const centerPoint = new THREE.Vector3();
       movedBox.getCenter(centerPoint);
@@ -126,10 +117,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
           rotation: rotationMatrix,
         });
 
-        const helper = new THREE.Box3Helper(
-          originalBoundingBox,
-          new THREE.Color(0x800080),
-        );
+        const helper = new THREE.Box3Helper(originalBoundingBox, new THREE.Color(0x800080));
         const helperCenter = new THREE.Vector3();
         originalBoundingBox.getCenter(helperCenter);
 
@@ -144,11 +132,7 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
         }
       }
 
-      const xyzPosition = [
-        getSummonPosition().sandbagX,
-        getSummonPosition().sandbagY,
-        getSummonPosition().sandbagZ,
-      ];
+      const xyzPosition = [getSummonPosition().sandbagX, getSummonPosition().sandbagY, getSummonPosition().sandbagZ];
 
       if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
         visualizeOriginalAxesAtPoint(...xyzPosition, axesRef, scene);
@@ -252,16 +236,13 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
 
     const force = gravity * Math.sin(currentAngle);
     currentAngleAccelerate = -1 * force;
-    currentAngleVelocity =
-      (currentAngleVelocity + currentAngleAccelerate) * damping;
+    currentAngleVelocity = (currentAngleVelocity + currentAngleAccelerate) * damping;
     currentAngle += currentAngleVelocity;
 
     const interpolationSpeed = SANDBAG_PENDULUM.INTERPOLATION_SPEED;
 
-    currentXAngleRef.current +=
-      (targetXAngleRef.current - currentXAngleRef.current) * interpolationSpeed;
-    currentZAngleRef.current +=
-      (targetZAngleRef.current - currentZAngleRef.current) * interpolationSpeed;
+    currentXAngleRef.current += (targetXAngleRef.current - currentXAngleRef.current) * interpolationSpeed;
+    currentZAngleRef.current += (targetZAngleRef.current - currentZAngleRef.current) * interpolationSpeed;
 
     sandbagRef.current.rotation.x = currentAngle * currentXAngleRef.current;
     sandbagRef.current.rotation.z = currentAngle * currentZAngleRef.current;
@@ -284,28 +265,26 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     angleRef.current = currentAngle;
     angleVelocityRef.current = currentAngleVelocity;
     angleAccelerateRef.current = currentAngleAccelerate;
-
-    if (
-      isStartRef.current &&
-      Math.abs(angleRef.current) < SANDBAG_PENDULUM.STOP_CONDITION &&
-      Math.abs(angleVelocityRef.current) < SANDBAG_PENDULUM.STOP_CONDITION
-    ) {
-      stopPendulum();
-      onAnimationEnd();
-    }
   };
 
   useFrame((state, delta) => {
     if (isAnimatingRef.current && sandbagRef.current) {
       accumulatedTimeRef.current += delta;
       if (
-        (import.meta.env.VITE_SPEED_SETTING === "SLOW" &&
-          frameCountRef.current % 5 === 0) ||
+        (import.meta.env.VITE_SPEED_SETTING === "SLOW" && frameCountRef.current % 5 === 0) ||
         import.meta.env.VITE_SPEED_SETTING !== "SLOW"
       ) {
         while (accumulatedTimeRef.current >= ideal60FPS) {
           animatePendulum();
           accumulatedTimeRef.current -= ideal60FPS;
+        }
+        if (
+          isStartRef.current &&
+          Math.abs(angleRef.current) < SANDBAG_PENDULUM.STOP_CONDITION &&
+          Math.abs(angleVelocityRef.current) < SANDBAG_PENDULUM.STOP_CONDITION
+        ) {
+          stopPendulum();
+          onAnimationEnd();
         }
       }
       frameCountRef.current += 1;
