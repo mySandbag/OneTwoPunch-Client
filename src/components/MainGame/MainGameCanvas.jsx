@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
@@ -8,21 +8,39 @@ import GloveLeft from "../3D/GloveModel/GloveLeft";
 import GloveRight from "../3D/GloveModel/GloveRight";
 import usePackageStore from "../../store";
 
+import { DELTA_MOVING } from "../../constants/animationSettings";
+
 import landScapeIcon from "../../assets/landscape-icon.svg";
 
 function MainGameCanvas() {
   const [animateSandbag, setAnimateSandbag] = useState(false);
   const [animateLeft, setAnimateLeft] = useState(false);
   const [animateRight, setAnimateRight] = useState(false);
+  const [moveLeftRightGloves, setMoveLeftRightGloves] = useState(false);
+
+  const xRef = useRef(0);
+  const zRef = useRef(0);
 
   const isDev = import.meta.env.VITE_ENVIRONMENT === "DEV";
 
-  const { getHitInProgress, getCurrentGloveAnimation, setCurrentGloveAnimation, getComboCount } = usePackageStore();
+  const {
+    setMoveDirection,
+    getMovePosition,
+    setMovePosition,
+    getHitInProgress,
+    getCurrentGloveAnimation,
+    setCurrentGloveAnimation,
+    getComboCount,
+  } = usePackageStore();
+
+  const currentMoving = getMovePosition();
+
   const CameraControls = () => {
-    const { camera } = useThree();
+    const { camera, gl } = useThree();
     useEffect(() => {
-      camera.lookAt(0, 2, 0);
-    }, [camera]);
+      camera.position.set(0 + xRef.current, 2.5, 3.5 + zRef.current);
+      camera.lookAt(0 + xRef.current, 2, 0 + zRef.current);
+    }, [camera, gl, moveLeftRightGloves]);
 
     return null;
   };
@@ -69,9 +87,41 @@ function MainGameCanvas() {
     }
   };
 
+  const handleMoveLeftRightGloves = (event) => {
+    if (!getCurrentGloveAnimation().right && !getCurrentGloveAnimation().left && !moveLeftRightGloves) {
+      switch (event.code) {
+        case "ArrowRight":
+          setMovePosition({ right: (currentMoving.right += DELTA_MOVING) });
+          setMoveDirection("right");
+          xRef.current += DELTA_MOVING;
+          setMoveLeftRightGloves(true);
+          break;
+        case "ArrowLeft":
+          setMovePosition({ left: (currentMoving.left += DELTA_MOVING) });
+          setMoveDirection("left");
+          xRef.current -= DELTA_MOVING;
+          setMoveLeftRightGloves(true);
+          break;
+        case "ArrowUp":
+          setMovePosition({ up: (currentMoving.up += DELTA_MOVING) });
+          setMoveDirection("up");
+          zRef.current -= DELTA_MOVING;
+          setMoveLeftRightGloves(true);
+          break;
+        case "ArrowDown":
+          setMovePosition({ down: (currentMoving.down += DELTA_MOVING) });
+          setMoveDirection("down");
+          zRef.current += DELTA_MOVING;
+          setMoveLeftRightGloves(true);
+          break;
+      }
+    }
+  };
+
   const handleAnimationSandbagEnd = () => setAnimateSandbag(false);
   const handleAnimationRightEnd = () => setAnimateRight(false);
   const handleAnimationLeftEnd = () => setAnimateLeft(false);
+  const handleMoveLeftRightGloveEnd = () => setMoveLeftRightGloves(false);
 
   useEffect(() => {
     window.addEventListener("keydown", handleLeftGloveHookAnimationTrigger);
@@ -80,6 +130,7 @@ function MainGameCanvas() {
     window.addEventListener("keydown", handleLeftGlovePunchAnimationTrigger);
     window.addEventListener("keydown", handleLeftGloveUppercutAnimationTrigger);
     window.addEventListener("keydown", handleRightGloveUppercutAnimationTrigger);
+    window.addEventListener("keydown", handleMoveLeftRightGloves);
 
     return () => {
       window.removeEventListener("keydown", handleLeftGloveHookAnimationTrigger);
@@ -88,6 +139,7 @@ function MainGameCanvas() {
       window.removeEventListener("keydown", handleLeftGlovePunchAnimationTrigger);
       window.removeEventListener("keydown", handleLeftGloveUppercutAnimationTrigger);
       window.removeEventListener("keydown", handleRightGloveUppercutAnimationTrigger);
+      window.removeEventListener("keydown", handleMoveLeftRightGloves);
     };
   }, []);
 
@@ -104,10 +156,9 @@ function MainGameCanvas() {
           className="h-full w-full"
           shadows
           camera={{
-            position: [0, 2.5, 3.5],
             fov: 50,
             near: 0.1,
-            far: 20,
+            far: 200,
           }}
         >
           <CameraControls />
@@ -129,10 +180,20 @@ function MainGameCanvas() {
 
           <GarageModel />
           <SandbagModel triggerAnimation={animateSandbag} onAnimationEnd={handleAnimationSandbagEnd} />
-          <GloveLeft triggerAnimation={animateLeft} onAnimationEnd={handleAnimationLeftEnd} />
-          <GloveRight triggerAnimation={animateRight} onAnimationEnd={handleAnimationRightEnd} />
+          <GloveLeft
+            triggerAnimation={animateLeft}
+            onAnimationEnd={handleAnimationLeftEnd}
+            triggerMove={moveLeftRightGloves}
+            onMovesEnd={handleMoveLeftRightGloveEnd}
+          />
+          <GloveRight
+            triggerAnimation={animateRight}
+            onAnimationEnd={handleAnimationRightEnd}
+            triggerMove={moveLeftRightGloves}
+            onMovesEnd={handleMoveLeftRightGloveEnd}
+          />
 
-          {isDev ? <OrbitControls /> : null}
+          {isDev ? <OrbitControls maxPolarAngle={Math.PI / 2} /> : null}
         </Canvas>
         {getComboCount() > 0 && (
           <div

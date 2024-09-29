@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Vector3, Box3, Box3Helper, Color } from "three";
 import { useLoader, useFrame, useThree } from "@react-three/fiber";
+
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import {
+  DELTA_MOVING,
   GLOVE_SPEED,
   GLOVE_DIRECTION,
   LEFT_GLOVE_POSITION,
@@ -24,9 +26,12 @@ import {
 import punchTargetSound from "/sound/punchTarget.mp3";
 import punchAirSound from "/sound/punchAir.mp3";
 
-function GloveLeft({ triggerAnimation, onAnimationEnd }) {
+function GloveLeft({ triggerAnimation, onAnimationEnd, triggerMove, onMovesEnd }) {
   const gloveLeft = useLoader(GLTFLoader, "/model/glove_left/gloveLeft.gltf");
   const {
+    getMovePosition,
+    getMoveDirection,
+    resetMovePosition,
     updateHitCount,
     getHitInProgress,
     setHitInProgress,
@@ -67,6 +72,10 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
 
   const frameCountRef = useRef(0);
 
+  const currentMoving = getMovePosition();
+  const leftRightFactor = currentMoving.right - currentMoving.left;
+  const forwardBackwardFactor = currentMoving.down - currentMoving.up;
+
   const updateGloveOBBState = () => {
     const centerPoint = new Vector3(
       gloveLeftRef.current.position.x,
@@ -85,9 +94,9 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
   };
 
   const initializeGloveRef = () => {
-    gloveLeftRef.current.position.x = LEFT_GLOVE_POSITION.INITIAL_X;
+    gloveLeftRef.current.position.x = LEFT_GLOVE_POSITION.INITIAL_X + leftRightFactor;
     gloveLeftRef.current.position.y = LEFT_GLOVE_POSITION.INITIAL_Y;
-    gloveLeftRef.current.position.z = LEFT_GLOVE_POSITION.INITIAL_Z;
+    gloveLeftRef.current.position.z = LEFT_GLOVE_POSITION.INITIAL_Z + forwardBackwardFactor;
 
     gloveLeftRef.current.rotation.x = LEFT_GLOVE_ROTATION.INITIAL_X;
     gloveLeftRef.current.rotation.y = LEFT_GLOVE_ROTATION.INITIAL_Y;
@@ -102,7 +111,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     updateGloveOBBState();
 
     setCurrentGloveAnimation({ left: "" });
-    initializeLeftGloveCurrentState();
+    initializeLeftGloveCurrentState(leftRightFactor, forwardBackwardFactor);
   };
 
   useEffect(() => {
@@ -126,6 +135,7 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       }
       scene.remove(gloveLeft.scene);
       gloveLeftRef.current = null;
+      resetMovePosition();
     };
   }, [gloveLeft]);
 
@@ -197,17 +207,13 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
     }
   }, [originalBoundingBox]);
 
-  const { leftX: xPosition, leftY: yPosition } = getCurrentPosition();
+  const { leftX: xPosition, leftY: yPosition, leftZ: zPosition } = getCurrentPosition();
   const { leftX: xRotation, leftY: yRotation, leftZ: zRotation } = getCurrentRotation();
 
   const punchType = getCurrentGloveAnimation().left;
 
-  const transformGloveRef = (FPSFactor) => {
-    gloveLeftRef.current.position.set(
-      xPosition,
-      yPosition,
-      gloveLeftRef.current.position.z + speedRef.current * directionRef.current * FPSFactor,
-    );
+  const transformGloveRef = () => {
+    gloveLeftRef.current.position.set(xPosition, yPosition, zPosition);
 
     if (punchType === "punch") {
       gloveLeftRef.current.rotation.set(-xRotation, yRotation, zRotation);
@@ -267,9 +273,16 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
       ) {
         const currentPositionZ = gloveLeftRef.current.position.z;
         const isMovingForward = directionRef.current < 0;
-        const isGloveReturnToOriginPoint = currentPositionZ > LEFT_GLOVE_POSITION.INITIAL_Z;
-
-        computeTurningPoint(punchType, gloveLeftRef, isHookTurnedRef, isUppercutTurnedRef, directionRef);
+        const isGloveReturnToOriginPoint = currentPositionZ > LEFT_GLOVE_POSITION.INITIAL_Z + forwardBackwardFactor;
+        computeTurningPoint(
+          punchType,
+          gloveLeftRef,
+          isHookTurnedRef,
+          isUppercutTurnedRef,
+          directionRef,
+          leftRightFactor,
+          forwardBackwardFactor,
+        );
 
         if (isMovingForward) {
           const { newPosition, newRotation } = computeForwardMovement(
@@ -280,6 +293,9 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
             isHookTurnedRef,
             isUppercutTurnedRef,
             speedRef,
+            directionRef,
+            leftRightFactor,
+            forwardBackwardFactor,
           );
 
           setCurrentPosition(newPosition);
@@ -292,13 +308,16 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
             FPSFactor,
             isHookTurnedRef,
             speedRef,
+            directionRef,
+            leftRightFactor,
+            forwardBackwardFactor,
           );
 
           setCurrentPosition(newPosition);
           setCurrentRotation(newRotation);
         }
 
-        transformGloveRef(FPSFactor);
+        transformGloveRef();
         handleCollision();
         updateGloveOBBState();
 
@@ -314,6 +333,38 @@ function GloveLeft({ triggerAnimation, onAnimationEnd }) {
         }
       }
       frameCountRef.current += 1;
+    }
+    if (triggerMove) {
+      switch (getMoveDirection()) {
+        case "right":
+          gloveLeftRef.current.position.set(xPosition + DELTA_MOVING, yPosition, zPosition);
+          setCurrentPosition({ leftX: xPosition + DELTA_MOVING, leftY: yPosition, leftZ: zPosition });
+          updateGloveOBBState();
+
+          onMovesEnd();
+          break;
+        case "left":
+          gloveLeftRef.current.position.set(xPosition - DELTA_MOVING, yPosition, zPosition);
+          setCurrentPosition({ leftX: xPosition - DELTA_MOVING, leftY: yPosition, leftZ: zPosition });
+          updateGloveOBBState();
+
+          onMovesEnd();
+          break;
+        case "up":
+          gloveLeftRef.current.position.set(xPosition, yPosition, zPosition - DELTA_MOVING);
+          setCurrentPosition({ leftX: xPosition, leftY: yPosition, leftZ: zPosition - DELTA_MOVING });
+          updateGloveOBBState();
+
+          onMovesEnd();
+          break;
+        case "down":
+          gloveLeftRef.current.position.set(xPosition, yPosition, zPosition + DELTA_MOVING);
+          setCurrentPosition({ leftX: xPosition, leftY: yPosition, leftZ: zPosition + DELTA_MOVING });
+          updateGloveOBBState();
+
+          onMovesEnd();
+          break;
+      }
     }
   });
 

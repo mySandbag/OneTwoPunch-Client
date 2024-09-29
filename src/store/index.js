@@ -8,6 +8,29 @@ import {
   SANDBAG_POSITION,
 } from "../constants/animationSettings";
 
+const createMoveStateSlice = (set, get) => ({
+  movePosition: { left: 0, right: 0, up: 0, down: 0 },
+  getMovePosition: () => get().movePosition,
+  setMovePosition: (setValue) =>
+    set((state) => ({
+      movePosition: { ...state.movePosition, ...setValue },
+    })),
+  resetMovePosition: () =>
+    set(() => ({
+      movePosition: { left: 0, right: 0, up: 0, down: 0 },
+    })),
+  moveDirection: "",
+  getMoveDirection: () => get().moveDirection,
+  setMoveDirection: (setValue) =>
+    set(() => ({
+      moveDirection: setValue,
+    })),
+  clearMoveDirection: () =>
+    set(() => ({
+      moveDirection: "",
+    })),
+});
+
 const createHitStateSlice = (set, get) => ({
   hitInProgress: false,
   hitCount: 0,
@@ -187,13 +210,13 @@ const createCurrentGloveStateSlice = (set, get) => ({
     })),
   getCurrentPosition: () => get().currentPosition,
   getCurrentRotation: () => get().currentRotation,
-  initializeLeftGloveCurrentState: () =>
+  initializeLeftGloveCurrentState: (leftRightFactor, forwardBackwardFactor) =>
     set((state) => ({
       currentPosition: {
         ...state.currentPosition,
-        leftX: LEFT_GLOVE_POSITION.INITIAL_X,
+        leftX: LEFT_GLOVE_POSITION.INITIAL_X + leftRightFactor,
         leftY: LEFT_GLOVE_POSITION.INITIAL_Y,
-        leftZ: LEFT_GLOVE_POSITION.INITIAL_Z,
+        leftZ: LEFT_GLOVE_POSITION.INITIAL_Z + forwardBackwardFactor,
       },
       currentRotation: {
         ...state.currentRotation,
@@ -202,13 +225,13 @@ const createCurrentGloveStateSlice = (set, get) => ({
         leftZ: LEFT_GLOVE_ROTATION.INITIAL_Z,
       },
     })),
-  initializeRightGloveCurrentState: () =>
+  initializeRightGloveCurrentState: (leftRightFactor, forwardBackwardFactor) =>
     set((state) => ({
       currentPosition: {
         ...state.currentPosition,
-        rightX: RIGHT_GLOVE_POSITION.INITIAL_X,
+        rightX: RIGHT_GLOVE_POSITION.INITIAL_X + leftRightFactor,
         rightY: RIGHT_GLOVE_POSITION.INITIAL_Y,
-        rightZ: RIGHT_GLOVE_POSITION.INITIAL_Z,
+        rightZ: RIGHT_GLOVE_POSITION.INITIAL_Z + forwardBackwardFactor,
       },
       currentRotation: {
         ...state.currentRotation,
@@ -220,6 +243,7 @@ const createCurrentGloveStateSlice = (set, get) => ({
 });
 
 const usePackageStore = create((set, get) => ({
+  ...createMoveStateSlice(set, get),
   ...createHitStateSlice(set, get),
   ...createAnimationSlice(set, get),
   ...createGloveOBBSlice(set, get),
