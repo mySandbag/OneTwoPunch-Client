@@ -30,7 +30,7 @@ function MainGameTobBar() {
     <div className="absolute z-50 flex-none px-0">
       <div className="mx-0 my-1 flex w-screen items-center justify-evenly bg-black bg-opacity-50 px-0 md:my-4">
         <button
-          className="text-md m-2 flex h-6 w-6 items-center justify-center rounded-lg border border-gray-800 bg-punch-red p-1 font-bold text-white shadow-md shadow-black text-shadow sm:text-lg md:m-0 md:h-12 md:w-12 md:text-xl lg:h-16 lg:w-16"
+          className="text-md m-2 flex h-7 w-7 items-center justify-center rounded-lg border border-gray-800 bg-punch-red p-1 font-bold text-white shadow-md shadow-black text-shadow sm:text-lg md:m-0 md:h-12 md:w-12 md:text-xl lg:h-16 lg:w-16"
           onClick={navigateToTitle}
         >
           <img src={homeIcon} className="lg:w-10" />

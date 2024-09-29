@@ -189,53 +189,74 @@ function MainGameCanvas() {
           <div className="p-4">
             <div>
               <button
-                className="absolute bottom-40 left-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm shadow-black text-shadow"
+                className="absolute bottom-44 left-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
                 onClick={() => {
                   setCurrentGloveAnimation({ left: "hook" });
                   setAnimateLeft(true);
                 }}
               >
-                Left Hook
+                Hook
               </button>
               <button
-                className="absolute bottom-16 left-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm shadow-black text-shadow"
+                className="absolute bottom-24 left-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
                 onClick={() => {
                   setCurrentGloveAnimation({ left: "punch" });
                   setAnimateLeft(true);
                 }}
               >
-                Left Punch
+                Punch
+              </button>
+              <button
+                className="absolute bottom-4 left-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold leading-6 text-white shadow-sm shadow-black text-shadow"
+                onClick={() => {
+                  setCurrentGloveAnimation({ left: "uppercut" });
+                  setAnimateLeft(true);
+                }}
+              >
+                Uppercut
               </button>
             </div>
             <div>
               <button
-                className="absolute bottom-40 right-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm shadow-black text-shadow"
+                className="absolute bottom-44 right-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
                 onClick={() => {
                   setCurrentGloveAnimation({ right: "hook" });
                   setAnimateRight(true);
                 }}
               >
-                Right Hook
+                Hook
               </button>
               <button
-                className="absolute bottom-16 right-2 h-20 w-40 rounded-full border-2 border-white text-2xl font-semibold text-white shadow-sm shadow-black text-shadow"
+                className="absolute bottom-24 right-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
                 onClick={() => {
                   setCurrentGloveAnimation({ right: "punch" });
                   setAnimateRight(true);
                 }}
               >
-                Right Punch
+                Punch
+              </button>
+              <button
+                className="absolute bottom-4 right-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold leading-6 text-white shadow-sm shadow-black text-shadow"
+                onClick={() => {
+                  setCurrentGloveAnimation({ right: "uppercut" });
+                  setAnimateRight(true);
+                }}
+              >
+                Uppercut
               </button>
             </div>
           </div>
         </div>
       </div>
       <div className="mt-3 block sm:hidden">
-        <div className="flex flex-col items-center text-center text-sm text-white">
+        <div className="text-md flex flex-col items-center text-center text-white">
           <img src={landScapeIcon} width="50px" />
-          Landscape mode is recommended for mobile devices.
+          <div className="block flex flex-col text-xl md:inline md:flex-row">
+            <span className="">Landscape mode is recommended </span>
+            <span className=""> for mobile devices</span>
+          </div>
         </div>
-        <div className="grid grid-cols-2 gap-3 p-4">
+        {/* <div className="grid grid-cols-2 gap-3 p-4">
           <button
             className="h-24 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
             onClick={() => {
@@ -272,7 +293,7 @@ function MainGameCanvas() {
           >
             Right Punch
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
