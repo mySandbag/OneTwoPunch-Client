@@ -17,7 +17,12 @@ function MainGameCanvas() {
 
   const isDev = import.meta.env.VITE_ENVIRONMENT === "DEV";
 
-  const { getHitInProgress, getCurrentGloveAnimation, setCurrentGloveAnimation, getComboCount } = usePackageStore();
+  const {
+    getHitInProgress,
+    getCurrentGloveAnimation,
+    setCurrentGloveAnimation,
+    getComboCount,
+  } = usePackageStore();
   const CameraControls = () => {
     const { camera } = useThree();
     useEffect(() => {
@@ -56,9 +61,24 @@ function MainGameCanvas() {
   };
 
   const handleLeftGloveUppercutAnimationTrigger = (event) => {
-    if (event.code === "KeyV" && !getCurrentGloveAnimation().left) {
+    if (
+      event.code === "KeyV" &&
+      !getCurrentGloveAnimation().left &&
+      getCurrentGloveAnimation().right !== "uppercut"
+    ) {
       setCurrentGloveAnimation({ left: "uppercut" });
       setAnimateLeft(true);
+    }
+  };
+
+  const handleRightGloveUppercutAnimationTrigger = (event) => {
+    if (
+      event.code === "KeyN" &&
+      !getCurrentGloveAnimation().right &&
+      getCurrentGloveAnimation().left !== "uppercut"
+    ) {
+      setCurrentGloveAnimation({ right: "uppercut" });
+      setAnimateRight(true);
     }
   };
 
@@ -72,13 +92,36 @@ function MainGameCanvas() {
     window.addEventListener("keydown", handleRightGloveHookAnimationTrigger);
     window.addEventListener("keydown", handleLeftGlovePunchAnimationTrigger);
     window.addEventListener("keydown", handleLeftGloveUppercutAnimationTrigger);
+    window.addEventListener(
+      "keydown",
+      handleRightGloveUppercutAnimationTrigger,
+    );
 
     return () => {
-      window.removeEventListener("keydown", handleLeftGloveHookAnimationTrigger);
-      window.removeEventListener("keydown", handleRightGlovePunchAnimationTrigger);
-      window.removeEventListener("keydown", handleRightGloveHookAnimationTrigger);
-      window.removeEventListener("keydown", handleLeftGlovePunchAnimationTrigger);
-      window.removeEventListener("keydown", handleLeftGloveUppercutAnimationTrigger);
+      window.removeEventListener(
+        "keydown",
+        handleLeftGloveHookAnimationTrigger,
+      );
+      window.removeEventListener(
+        "keydown",
+        handleRightGlovePunchAnimationTrigger,
+      );
+      window.removeEventListener(
+        "keydown",
+        handleRightGloveHookAnimationTrigger,
+      );
+      window.removeEventListener(
+        "keydown",
+        handleLeftGlovePunchAnimationTrigger,
+      );
+      window.removeEventListener(
+        "keydown",
+        handleLeftGloveUppercutAnimationTrigger,
+      );
+      window.removeEventListener(
+        "keydown",
+        handleRightGloveUppercutAnimationTrigger,
+      );
     };
   }, []);
 
@@ -119,9 +162,18 @@ function MainGameCanvas() {
           />
 
           <GarageModel />
-          <SandbagModel triggerAnimation={animateSandbag} onAnimationEnd={handleAnimationSandbagEnd} />
-          <GloveLeft triggerAnimation={animateLeft} onAnimationEnd={handleAnimationLeftEnd} />
-          <GloveRight triggerAnimation={animateRight} onAnimationEnd={handleAnimationRightEnd} />
+          <SandbagModel
+            triggerAnimation={animateSandbag}
+            onAnimationEnd={handleAnimationSandbagEnd}
+          />
+          <GloveLeft
+            triggerAnimation={animateLeft}
+            onAnimationEnd={handleAnimationLeftEnd}
+          />
+          <GloveRight
+            triggerAnimation={animateRight}
+            onAnimationEnd={handleAnimationRightEnd}
+          />
 
           {isDev ? <OrbitControls /> : null}
         </Canvas>

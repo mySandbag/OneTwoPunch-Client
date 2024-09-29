@@ -30,12 +30,21 @@ export const computeForwardMovement = (
     speedRef.current += GLOVE_SPEED.PUNCH_INCREMENT;
 
     newPosition = {
-      leftX: Math.min(xPosition + LEFT_GLOVE_POSITION.PUNCH_DELTA_X * FPSFactor, 0),
+      leftX: Math.min(
+        xPosition + LEFT_GLOVE_POSITION.PUNCH_DELTA_X * FPSFactor,
+        0,
+      ),
       leftZ: speedRef.current + GLOVE_SPEED.PUNCH_INCREMENT * FPSFactor,
     };
     newRotation = {
-      leftX: Math.min(xRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_X * FPSFactor, RIGHT_ANGLE),
-      leftY: Math.min(yRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y * FPSFactor, RIGHT_ANGLE),
+      leftX: Math.min(
+        xRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_X * FPSFactor,
+        RIGHT_ANGLE,
+      ),
+      leftY: Math.min(
+        yRotation + LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y * FPSFactor,
+        RIGHT_ANGLE,
+      ),
     };
   }
   if (punchType === "hook") {
@@ -49,16 +58,28 @@ export const computeForwardMovement = (
       leftZ: speedRef.current + GLOVE_SPEED.HOOK_INCREMENT * FPSFactor,
     };
     newRotation = {
-      leftX: Math.min(xRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_X * FPSFactor, RIGHT_ANGLE),
-      leftY: Math.min(yRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_Y * FPSFactor, RIGHT_ANGLE),
-      leftZ: Math.min(zRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_Z * FPSFactor, RIGHT_ANGLE),
+      leftX: Math.min(
+        xRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_X * FPSFactor,
+        RIGHT_ANGLE,
+      ),
+      leftY: Math.min(
+        yRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_Y * FPSFactor,
+        RIGHT_ANGLE,
+      ),
+      leftZ: Math.min(
+        zRotation + LEFT_GLOVE_ROTATION.HOOK_DELTA_Z * FPSFactor,
+        RIGHT_ANGLE,
+      ),
     };
   }
   if (punchType === "uppercut") {
     speedRef.current += GLOVE_SPEED.UPPERCUT_INCREMENT;
     if (!isUppercutTurnedRef.current) {
       newPosition = {
-        leftX: Math.min(xPosition + LEFT_GLOVE_POSITION.UPPERCUT_DELTA_X * FPSFactor, 0),
+        leftX: Math.min(
+          xPosition + LEFT_GLOVE_POSITION.UPPERCUT_DELTA_X * FPSFactor,
+          0,
+        ),
         leftY: Math.max(
           yPosition - LEFT_GLOVE_POSITION.UPPERCUT_DELTA_Y * FPSFactor,
           LEFT_GLOVE_POSITION.UPPERCUT_MIN_Y,
@@ -67,25 +88,47 @@ export const computeForwardMovement = (
       };
     } else {
       newPosition = {
-        leftX: Math.min(xPosition + LEFT_GLOVE_POSITION.UPPERCUT_DELTA_X * FPSFactor, 0),
+        leftX: Math.min(
+          xPosition + LEFT_GLOVE_POSITION.UPPERCUT_DELTA_X * FPSFactor,
+          0,
+        ),
         leftY: Math.min(
           yPosition + LEFT_GLOVE_POSITION.UPPERCUT_DELTA_Y * 2 * FPSFactor,
           LEFT_GLOVE_POSITION.INITIAL_Y,
         ),
-        leftZ: Math.min(position.leftZ + speedRef.current * FPSFactor, MAX_GLOVE_REACH.UPPER_Z),
+        leftZ: Math.min(
+          position.leftZ + speedRef.current * FPSFactor,
+          MAX_GLOVE_REACH.UPPER_Z,
+        ),
       };
     }
 
     newRotation = {
-      leftX: Math.min(xRotation + LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_X * FPSFactor, RIGHT_ANGLE),
-      leftY: Math.min(yRotation + LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_Y * FPSFactor, RIGHT_ANGLE),
-      leftZ: Math.min(zRotation + LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_Z * FPSFactor, RIGHT_ANGLE - degToRad(30)),
+      leftX: Math.min(
+        xRotation + LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_X * FPSFactor,
+        RIGHT_ANGLE,
+      ),
+      leftY: Math.min(
+        yRotation + LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_Y * FPSFactor,
+        RIGHT_ANGLE,
+      ),
+      leftZ: Math.min(
+        zRotation + LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_Z * FPSFactor,
+        RIGHT_ANGLE - degToRad(30),
+      ),
     };
   }
   return { newPosition, newRotation };
 };
 
-export const computeBackwardMovement = (punchType, position, rotation, FPSFactor, isHookTurnedRef, speedRef) => {
+export const computeBackwardMovement = (
+  punchType,
+  position,
+  rotation,
+  FPSFactor,
+  isHookTurnedRef,
+  speedRef,
+) => {
   const xPosition = position.leftX;
   const yPosition = position.leftY;
   const zPosition = position.leftZ;
@@ -97,13 +140,25 @@ export const computeBackwardMovement = (punchType, position, rotation, FPSFactor
   let newRotation;
 
   if (punchType === "punch") {
-    speedRef.current = Math.max(speedRef.current - GLOVE_SPEED.PUNCH_DECREMENT * FPSFactor, GLOVE_SPEED.PUNCH_INITIAL);
+    speedRef.current = Math.max(
+      speedRef.current - GLOVE_SPEED.PUNCH_DECREMENT * FPSFactor,
+      GLOVE_SPEED.PUNCH_INITIAL,
+    );
     newPosition = {
-      leftX: Math.max(xPosition - LEFT_GLOVE_POSITION.PUNCH_DELTA_X * FPSFactor, LEFT_GLOVE_POSITION.INITIAL_X),
-      leftZ: Math.max(speedRef.current - GLOVE_SPEED.PUNCH_DECREMENT * FPSFactor, GLOVE_SPEED.PUNCH_INITIAL),
+      leftX: Math.max(
+        xPosition - LEFT_GLOVE_POSITION.PUNCH_DELTA_X * FPSFactor,
+        LEFT_GLOVE_POSITION.INITIAL_X,
+      ),
+      leftZ: Math.max(
+        speedRef.current - GLOVE_SPEED.PUNCH_DECREMENT * FPSFactor,
+        GLOVE_SPEED.PUNCH_INITIAL,
+      ),
     };
     newRotation = {
-      leftX: Math.max(xRotation - LEFT_GLOVE_ROTATION.PUNCH_DELTA_X * FPSFactor, LEFT_GLOVE_ROTATION.INITIAL_X),
+      leftX: Math.max(
+        xRotation - LEFT_GLOVE_ROTATION.PUNCH_DELTA_X * FPSFactor,
+        LEFT_GLOVE_ROTATION.INITIAL_X,
+      ),
       leftY: Math.min(
         Math.abs(yRotation) + LEFT_GLOVE_ROTATION.PUNCH_DELTA_Y * FPSFactor,
         LEFT_GLOVE_ROTATION.INITIAL_Y,
@@ -111,17 +166,35 @@ export const computeBackwardMovement = (punchType, position, rotation, FPSFactor
     };
   }
   if (punchType === "hook") {
-    speedRef.current = Math.max(speedRef.current - GLOVE_SPEED.HOOK_INCREMENT * FPSFactor, GLOVE_SPEED.PUNCH_INITIAL);
+    speedRef.current = Math.max(
+      speedRef.current - GLOVE_SPEED.HOOK_INCREMENT * FPSFactor,
+      GLOVE_SPEED.PUNCH_INITIAL,
+    );
 
     newPosition = {
-      leftX: Math.min(xPosition + LEFT_GLOVE_POSITION.HOOK_DELTA_X * FPSFactor, LEFT_GLOVE_POSITION.INITIAL_X),
-      leftZ: Math.max(zPosition - GLOVE_SPEED.HOOK_INCREMENT * FPSFactor, LEFT_GLOVE_POSITION.INITIAL_Z),
+      leftX: Math.min(
+        xPosition + LEFT_GLOVE_POSITION.HOOK_DELTA_X * FPSFactor,
+        LEFT_GLOVE_POSITION.INITIAL_X,
+      ),
+      leftZ: Math.max(
+        zPosition - GLOVE_SPEED.HOOK_INCREMENT * FPSFactor,
+        LEFT_GLOVE_POSITION.INITIAL_Z,
+      ),
     };
 
     newRotation = {
-      leftX: Math.max(xRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_X * FPSFactor, LEFT_GLOVE_ROTATION.INITIAL_X),
-      leftY: Math.max(yRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_Y * FPSFactor, LEFT_GLOVE_ROTATION.INITIAL_Y),
-      leftZ: Math.max(zRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_Z * FPSFactor, LEFT_GLOVE_ROTATION.INITIAL_Z),
+      leftX: Math.max(
+        xRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_X * FPSFactor,
+        LEFT_GLOVE_ROTATION.INITIAL_X,
+      ),
+      leftY: Math.max(
+        yRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_Y * FPSFactor,
+        LEFT_GLOVE_ROTATION.INITIAL_Y,
+      ),
+      leftZ: Math.max(
+        zRotation - LEFT_GLOVE_ROTATION.HOOK_DELTA_Z * FPSFactor,
+        LEFT_GLOVE_ROTATION.INITIAL_Z,
+      ),
     };
   }
   if (punchType === "uppercut") {
@@ -131,21 +204,45 @@ export const computeBackwardMovement = (punchType, position, rotation, FPSFactor
     );
 
     newPosition = {
-      leftX: Math.max(xPosition - LEFT_GLOVE_POSITION.UPPERCUT_DELTA_X * FPSFactor, LEFT_GLOVE_POSITION.INITIAL_X),
-      leftY: Math.min(yPosition - LEFT_GLOVE_POSITION.UPPERCUT_DELTA_Y * FPSFactor, LEFT_GLOVE_POSITION.INITIAL_Y),
-      leftZ: Math.max(zPosition - speedRef.current * FPSFactor, LEFT_GLOVE_POSITION.INITIAL_Z),
+      leftX: Math.max(
+        xPosition - LEFT_GLOVE_POSITION.UPPERCUT_DELTA_X * FPSFactor,
+        LEFT_GLOVE_POSITION.INITIAL_X,
+      ),
+      leftY: Math.min(
+        yPosition + LEFT_GLOVE_POSITION.UPPERCUT_DELTA_Y * FPSFactor,
+        LEFT_GLOVE_POSITION.INITIAL_Y,
+      ),
+      leftZ: Math.max(
+        zPosition - speedRef.current * FPSFactor,
+        LEFT_GLOVE_POSITION.INITIAL_Z,
+      ),
     };
 
     newRotation = {
-      leftX: Math.max(xRotation - LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_X * FPSFactor, LEFT_GLOVE_ROTATION.INITIAL_X),
-      leftY: Math.max(yRotation - LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_Y * FPSFactor, LEFT_GLOVE_ROTATION.INITIAL_Y),
-      leftZ: Math.min(zRotation + LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_Z * FPSFactor, LEFT_GLOVE_ROTATION.INITIAL_Z),
+      leftX: Math.max(
+        xRotation - LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_X * FPSFactor,
+        LEFT_GLOVE_ROTATION.INITIAL_X,
+      ),
+      leftY: Math.max(
+        yRotation - LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_Y * FPSFactor,
+        LEFT_GLOVE_ROTATION.INITIAL_Y,
+      ),
+      leftZ: Math.min(
+        zRotation + LEFT_GLOVE_ROTATION.UPPERCUT_DELTA_Z * FPSFactor,
+        LEFT_GLOVE_ROTATION.INITIAL_Z,
+      ),
     };
   }
   return { newPosition, newRotation };
 };
 
-export const computeTurningPoint = (punchType, gloveLeftRef, isHookTurnedRef, isUppercutTurnedRef, directionRef) => {
+export const computeTurningPoint = (
+  punchType,
+  gloveLeftRef,
+  isHookTurnedRef,
+  isUppercutTurnedRef,
+  directionRef,
+) => {
   const gloveXPositionRef = gloveLeftRef.current.position.x;
   const gloveYPositionRef = gloveLeftRef.current.position.y;
   const gloveZPositionRef = gloveLeftRef.current.position.z;
@@ -162,11 +259,17 @@ export const computeTurningPoint = (punchType, gloveLeftRef, isHookTurnedRef, is
     directionRef.current = GLOVE_DIRECTION.LEFT_BACKWARD;
   }
 
-  if (punchType === "uppercut" && gloveZPositionRef <= MAX_GLOVE_REACH.HOOK_Z) {
+  if (
+    punchType === "uppercut" &&
+    gloveZPositionRef <= MAX_GLOVE_REACH.UPPER_Z
+  ) {
     directionRef.current = GLOVE_DIRECTION.LEFT_BACKWARD;
   }
 
-  if (punchType === "uppercut" && gloveYPositionRef <= LEFT_GLOVE_POSITION.UPPERCUT_MIN_Y) {
+  if (
+    punchType === "uppercut" &&
+    gloveYPositionRef <= LEFT_GLOVE_POSITION.UPPERCUT_MIN_Y
+  ) {
     isUppercutTurnedRef.current = true;
   }
 };

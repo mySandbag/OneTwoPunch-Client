@@ -29,7 +29,10 @@ import punchTargetSound from "/sound/punchTarget.mp3";
 import punchAirSound from "/sound/punchAir.mp3";
 
 function GloveRight({ triggerAnimation, onAnimationEnd }) {
-  const gloveRight = useLoader(GLTFLoader, "/model/glove_right/gloveRight.gltf");
+  const gloveRight = useLoader(
+    GLTFLoader,
+    "/model/glove_right/gloveRight.gltf",
+  );
 
   const {
     updateHitCount,
@@ -62,6 +65,7 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
   const speedRef = useRef(GLOVE_SPEED.PUNCH_INITIAL);
   const directionRef = useRef(GLOVE_DIRECTION.RIGHT_FORWARD);
   const isHookTurnedRef = useRef(false);
+  const isUppercutTurnedRef = useRef(false);
   const isFirstCollisionInCycleRef = useRef(true);
   const validHitCount = useRef(0);
 
@@ -102,6 +106,7 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
     speedRef.current = GLOVE_SPEED.PUNCH_INITIAL;
     isFirstCollisionInCycleRef.current = true;
     isHookTurnedRef.current = false;
+    isUppercutTurnedRef.current = false;
 
     updateGloveOBBState();
 
@@ -185,7 +190,11 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
         }
       }
 
-      const xyzPosition = [getSummonPosition().rightX, getSummonPosition().rightY, getSummonPosition().rightZ];
+      const xyzPosition = [
+        getSummonPosition().rightX,
+        getSummonPosition().rightY,
+        getSummonPosition().rightZ,
+      ];
 
       if (import.meta.env.VITE_ENVIRONMENT === "DEV") {
         visualizeOriginalAxesAtPoint(...xyzPosition, axesRef, scene);
@@ -200,17 +209,24 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
     }
   }, [originalBoundingBox]);
 
-  const { rightX: xPosition, rightY: yPosition, rightZ: zPosition } = getCurrentPosition();
-  const { rightX: xRotation, rightY: yRotation, rightZ: zRotation } = getCurrentRotation();
+  const { rightX: xPosition, rightY: yPosition } = getCurrentPosition();
+  const {
+    rightX: xRotation,
+    rightY: yRotation,
+    rightZ: zRotation,
+  } = getCurrentRotation();
 
   const punchType = getCurrentGloveAnimation().right;
 
   const transformGloveRef = (FPSFactor) => {
     gloveRightRef.current.position.x = xPosition;
-    gloveRightRef.current.position.z += speedRef.current * directionRef.current * FPSFactor;
+    gloveRightRef.current.position.y = yPosition;
+    gloveRightRef.current.position.z +=
+      speedRef.current * directionRef.current * FPSFactor;
 
     gloveRightRef.current.rotation.x = -Math.min(xRotation, RIGHT_ANGLE);
     gloveRightRef.current.rotation.y = -Math.min(yRotation, RIGHT_ANGLE);
+    gloveRightRef.current.rotation.z = -Math.min(zRotation, RIGHT_ANGLE);
 
     if (getCurrentGloveAnimation().right === "punch") {
       gloveRightRef.current.rotation.z = degToRad(0);
@@ -223,9 +239,14 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
   const handleCollision = () => {
     const isCollide = checkOBBCollision(getRightGloveOBB(), getSandbagOBB());
     const validHit = isCollide && isFirstCollisionInCycleRef.current;
-    const nthHit = isCollide && isFirstCollisionInCycleRef.current && getSandbagInMotion();
-    const isCollisionStateEnd = !isCollide && !isFirstCollisionInCycleRef.current && getHitInProgress();
-    const isAirSoundTriggered = !isCollide && isFirstCollisionInCycleRef.current && punchAirSoundRef.current.paused;
+    const nthHit =
+      isCollide && isFirstCollisionInCycleRef.current && getSandbagInMotion();
+    const isCollisionStateEnd =
+      !isCollide && !isFirstCollisionInCycleRef.current && getHitInProgress();
+    const isAirSoundTriggered =
+      !isCollide &&
+      isFirstCollisionInCycleRef.current &&
+      punchAirSoundRef.current.paused;
 
     if (nthHit) {
       setAnotherHit(true);
@@ -260,14 +281,22 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
       const FPSFactor = delta / ideal60FPS;
 
       if (
-        (import.meta.env.VITE_SPEED_SETTING === "SLOW" && frameCount % 5 === 0) ||
+        (import.meta.env.VITE_SPEED_SETTING === "SLOW" &&
+          frameCount % 5 === 0) ||
         import.meta.env.VITE_SPEED_SETTING !== "SLOW"
       ) {
         const currentPositionZ = gloveRightRef.current.position.z;
         const isMovingForward = directionRef.current < 0;
-        const isGloveReturnToOriginPoint = currentPositionZ > RIGHT_GLOVE_POSITION.INITIAL_Z;
+        const isGloveReturnToOriginPoint =
+          currentPositionZ > RIGHT_GLOVE_POSITION.INITIAL_Z;
 
-        computeTurningPoint(punchType, gloveRightRef, isHookTurnedRef, directionRef);
+        computeTurningPoint(
+          punchType,
+          gloveRightRef,
+          isHookTurnedRef,
+          isUppercutTurnedRef,
+          directionRef,
+        );
 
         if (isMovingForward) {
           const { newPosition, newRotation } = computeForwardMovement(
@@ -276,6 +305,7 @@ function GloveRight({ triggerAnimation, onAnimationEnd }) {
             getCurrentRotation(),
             FPSFactor,
             isHookTurnedRef,
+            isUppercutTurnedRef,
             speedRef,
           );
 

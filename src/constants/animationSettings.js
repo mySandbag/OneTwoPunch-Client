@@ -8,7 +8,7 @@ export const SANDBAG_POSITION = {
 export const SANDBAG_PENDULUM = {
   INITIAL_ANGLE_VELOCITY: 0.04,
   DELTA_VELOCITY: 0.02,
-  INTERPOLATION_SPEED: 0.2,
+  INTERPOLATION_SPEED: 0.3,
   DAMPING: 0.94,
   GRAVITY: 9.8 / 1000,
   STOP_CONDITION: 0.001,
@@ -34,7 +34,7 @@ export const GLOVE_SPEED = {
 export const MAX_GLOVE_REACH = {
   PUNCH_Z: 0.8,
   HOOK_Z: 0.3,
-  UPPER_Z: 0.4,
+  UPPER_Z: 0.6,
   HOOK_LEFT_X: -1.3,
   HOOK_RIGHT_X: 1.3,
 };
@@ -45,8 +45,10 @@ export const RIGHT_GLOVE_POSITION = {
   INITIAL_Z: 2,
   PUNCH_DELTA_X: 0.03,
   HOOK_DELTA_X: 0.13,
+  UPPERCUT_DELTA_X: 0.06,
+  UPPERCUT_DELTA_Y: 0.09,
   HOOK_MIN_X: 0.2,
-  UPPERCUT_MIN_Y: 1.4,
+  UPPERCUT_MIN_Y: 1.5,
 };
 
 export const RIGHT_GLOVE_ROTATION = {
@@ -58,6 +60,9 @@ export const RIGHT_GLOVE_ROTATION = {
   HOOK_DELTA_X: degToRad(1),
   HOOK_DELTA_Y: degToRad(0),
   HOOK_DELTA_Z: degToRad(8),
+  UPPERCUT_DELTA_X: degToRad(2),
+  UPPERCUT_DELTA_Y: degToRad(13),
+  UPPERCUT_DELTA_Z: degToRad(14),
 };
 
 export const LEFT_GLOVE_POSITION = {
