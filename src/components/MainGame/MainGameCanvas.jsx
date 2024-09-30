@@ -17,12 +17,7 @@ function MainGameCanvas() {
 
   const isDev = import.meta.env.VITE_ENVIRONMENT === "DEV";
 
-  const {
-    getHitInProgress,
-    getCurrentGloveAnimation,
-    setCurrentGloveAnimation,
-    getComboCount,
-  } = usePackageStore();
+  const { getHitInProgress, getCurrentGloveAnimation, setCurrentGloveAnimation, getComboCount } = usePackageStore();
   const CameraControls = () => {
     const { camera } = useThree();
     useEffect(() => {
@@ -61,22 +56,14 @@ function MainGameCanvas() {
   };
 
   const handleLeftGloveUppercutAnimationTrigger = (event) => {
-    if (
-      event.code === "KeyV" &&
-      !getCurrentGloveAnimation().left &&
-      getCurrentGloveAnimation().right !== "uppercut"
-    ) {
+    if (event.code === "KeyV" && !getCurrentGloveAnimation().left && getCurrentGloveAnimation().right !== "uppercut") {
       setCurrentGloveAnimation({ left: "uppercut" });
       setAnimateLeft(true);
     }
   };
 
   const handleRightGloveUppercutAnimationTrigger = (event) => {
-    if (
-      event.code === "KeyN" &&
-      !getCurrentGloveAnimation().right &&
-      getCurrentGloveAnimation().left !== "uppercut"
-    ) {
+    if (event.code === "KeyN" && !getCurrentGloveAnimation().right && getCurrentGloveAnimation().left !== "uppercut") {
       setCurrentGloveAnimation({ right: "uppercut" });
       setAnimateRight(true);
     }
@@ -92,36 +79,15 @@ function MainGameCanvas() {
     window.addEventListener("keydown", handleRightGloveHookAnimationTrigger);
     window.addEventListener("keydown", handleLeftGlovePunchAnimationTrigger);
     window.addEventListener("keydown", handleLeftGloveUppercutAnimationTrigger);
-    window.addEventListener(
-      "keydown",
-      handleRightGloveUppercutAnimationTrigger,
-    );
+    window.addEventListener("keydown", handleRightGloveUppercutAnimationTrigger);
 
     return () => {
-      window.removeEventListener(
-        "keydown",
-        handleLeftGloveHookAnimationTrigger,
-      );
-      window.removeEventListener(
-        "keydown",
-        handleRightGlovePunchAnimationTrigger,
-      );
-      window.removeEventListener(
-        "keydown",
-        handleRightGloveHookAnimationTrigger,
-      );
-      window.removeEventListener(
-        "keydown",
-        handleLeftGlovePunchAnimationTrigger,
-      );
-      window.removeEventListener(
-        "keydown",
-        handleLeftGloveUppercutAnimationTrigger,
-      );
-      window.removeEventListener(
-        "keydown",
-        handleRightGloveUppercutAnimationTrigger,
-      );
+      window.removeEventListener("keydown", handleLeftGloveHookAnimationTrigger);
+      window.removeEventListener("keydown", handleRightGlovePunchAnimationTrigger);
+      window.removeEventListener("keydown", handleRightGloveHookAnimationTrigger);
+      window.removeEventListener("keydown", handleLeftGlovePunchAnimationTrigger);
+      window.removeEventListener("keydown", handleLeftGloveUppercutAnimationTrigger);
+      window.removeEventListener("keydown", handleRightGloveUppercutAnimationTrigger);
     };
   }, []);
 
@@ -162,18 +128,9 @@ function MainGameCanvas() {
           />
 
           <GarageModel />
-          <SandbagModel
-            triggerAnimation={animateSandbag}
-            onAnimationEnd={handleAnimationSandbagEnd}
-          />
-          <GloveLeft
-            triggerAnimation={animateLeft}
-            onAnimationEnd={handleAnimationLeftEnd}
-          />
-          <GloveRight
-            triggerAnimation={animateRight}
-            onAnimationEnd={handleAnimationRightEnd}
-          />
+          <SandbagModel triggerAnimation={animateSandbag} onAnimationEnd={handleAnimationSandbagEnd} />
+          <GloveLeft triggerAnimation={animateLeft} onAnimationEnd={handleAnimationLeftEnd} />
+          <GloveRight triggerAnimation={animateRight} onAnimationEnd={handleAnimationRightEnd} />
 
           {isDev ? <OrbitControls /> : null}
         </Canvas>
@@ -189,7 +146,7 @@ function MainGameCanvas() {
           <div className="p-4">
             <div>
               <button
-                className="absolute bottom-44 left-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
+                className="absolute bottom-32 left-3 h-20 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
                 onClick={() => {
                   setCurrentGloveAnimation({ left: "hook" });
                   setAnimateLeft(true);
@@ -198,7 +155,7 @@ function MainGameCanvas() {
                 Hook
               </button>
               <button
-                className="absolute bottom-24 left-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
+                className="absolute bottom-20 left-28 h-20 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
                 onClick={() => {
                   setCurrentGloveAnimation({ left: "punch" });
                   setAnimateLeft(true);
@@ -207,7 +164,7 @@ function MainGameCanvas() {
                 Punch
               </button>
               <button
-                className="absolute bottom-4 left-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold leading-6 text-white shadow-sm shadow-black text-shadow"
+                className="absolute bottom-8 left-3 h-20 w-24 rounded-full border-2 border-white text-lg font-semibold leading-6 text-white shadow-sm shadow-black text-shadow"
                 onClick={() => {
                   setCurrentGloveAnimation({ left: "uppercut" });
                   setAnimateLeft(true);
@@ -218,7 +175,7 @@ function MainGameCanvas() {
             </div>
             <div>
               <button
-                className="absolute bottom-44 right-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
+                className="absolute bottom-32 right-3 h-20 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
                 onClick={() => {
                   setCurrentGloveAnimation({ right: "hook" });
                   setAnimateRight(true);
@@ -227,7 +184,7 @@ function MainGameCanvas() {
                 Hook
               </button>
               <button
-                className="absolute bottom-24 right-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
+                className="absolute bottom-20 right-28 h-20 w-24 rounded-full border-2 border-white text-lg font-semibold text-white shadow-sm shadow-black text-shadow"
                 onClick={() => {
                   setCurrentGloveAnimation({ right: "punch" });
                   setAnimateRight(true);
@@ -236,7 +193,7 @@ function MainGameCanvas() {
                 Punch
               </button>
               <button
-                className="absolute bottom-4 right-2 h-16 w-24 rounded-full border-2 border-white text-lg font-semibold leading-6 text-white shadow-sm shadow-black text-shadow"
+                className="absolute bottom-8 right-3 h-20 w-24 rounded-full border-2 border-white text-lg font-semibold leading-6 text-white shadow-sm shadow-black text-shadow"
                 onClick={() => {
                   setCurrentGloveAnimation({ right: "uppercut" });
                   setAnimateRight(true);
@@ -256,44 +213,6 @@ function MainGameCanvas() {
             <span className=""> for mobile devices</span>
           </div>
         </div>
-        {/* <div className="grid grid-cols-2 gap-3 p-4">
-          <button
-            className="h-24 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
-            onClick={() => {
-              setCurrentGloveAnimation({ left: "hook" });
-              setAnimateLeft(true);
-            }}
-          >
-            Left Hook
-          </button>
-          <button
-            className="h-24 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
-            onClick={() => {
-              setCurrentGloveAnimation({ right: "hook" });
-              setAnimateRight(true);
-            }}
-          >
-            Right Hook
-          </button>
-          <button
-            className="h-24 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
-            onClick={() => {
-              setCurrentGloveAnimation({ left: "punch" });
-              setAnimateLeft(true);
-            }}
-          >
-            Left Punch
-          </button>
-          <button
-            className="h-24 rounded-lg border border-gray-300 bg-gray-100 text-2xl font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-200"
-            onClick={() => {
-              setCurrentGloveAnimation({ right: "punch" });
-              setAnimateRight(true);
-            }}
-          >
-            Right Punch
-          </button>
-        </div> */}
       </div>
     </div>
   );
