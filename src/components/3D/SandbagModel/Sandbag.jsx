@@ -265,14 +265,6 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
     angleRef.current = currentAngle;
     angleVelocityRef.current = currentAngleVelocity;
     angleAccelerateRef.current = currentAngleAccelerate;
-    if (
-      isStartRef.current &&
-      Math.abs(angleRef.current) < SANDBAG_PENDULUM.STOP_CONDITION &&
-      Math.abs(angleVelocityRef.current) < SANDBAG_PENDULUM.STOP_CONDITION
-    ) {
-      stopPendulum();
-      onAnimationEnd();
-    }
   };
 
   useFrame((state, delta) => {
@@ -286,11 +278,11 @@ function SandbagModel({ triggerAnimation, onAnimationEnd }) {
           animatePendulum();
           accumulatedTimeRef.current -= ideal60FPS;
         }
-        if (
+        const pendulumStopCondition =
           isStartRef.current &&
           Math.abs(angleRef.current) < SANDBAG_PENDULUM.STOP_CONDITION &&
-          Math.abs(angleVelocityRef.current) < SANDBAG_PENDULUM.STOP_CONDITION
-        ) {
+          Math.abs(angleVelocityRef.current) < SANDBAG_PENDULUM.STOP_CONDITION;
+        if (pendulumStopCondition) {
           stopPendulum();
           onAnimationEnd();
         }
