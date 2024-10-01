@@ -8,7 +8,8 @@ import GloveLeft from "../3D/GloveModel/GloveLeft";
 import GloveRight from "../3D/GloveModel/GloveRight";
 import usePackageStore from "../../store";
 
-import { DELTA_MOVING } from "../../constants/animationSettings";
+import { DELTA_Z_MOVING, DELTA_DEGREE, RIGHT_GLOVE_POSITION } from "../../constants/animationSettings";
+import { rotateCenterPointByDegrees, getNewGlovesPoints } from "../../common/animation/computeRotateDegrees";
 
 import landScapeIcon from "../../assets/landscape-icon.svg";
 
@@ -24,6 +25,10 @@ function MainGameCanvas() {
   const isDev = import.meta.env.VITE_ENVIRONMENT === "DEV";
 
   const {
+    getCurrentDegree,
+    setCurrentDegree,
+    setXZPosition,
+    getXZPosition,
     setMoveDirection,
     getMovePosition,
     setMovePosition,
@@ -33,55 +38,65 @@ function MainGameCanvas() {
     getComboCount,
   } = usePackageStore();
 
-  const currentMoving = getMovePosition();
-
   const CameraControls = () => {
     const { camera, gl } = useThree();
     useEffect(() => {
-      camera.position.set(0 + xRef.current, 2.5, 3.5 + zRef.current);
-      camera.lookAt(0 + xRef.current, 2, 0 + zRef.current);
+      const newCameraPoint = rotateCenterPointByDegrees(3.5 + zRef.current, getCurrentDegree() * DELTA_DEGREE);
+
+      camera.position.set(-newCameraPoint.x, 2.5, newCameraPoint.z);
+      camera.lookAt(0, 2, 0 + zRef.current);
     }, [camera, gl, moveLeftRightGloves]);
 
     return null;
   };
 
   const handleLeftGloveHookAnimationTrigger = (event) => {
-    if (event.code === "KeyE" && !getCurrentGloveAnimation().left) {
+    if (event.code === "KeyE" && !getCurrentGloveAnimation().left && getCurrentDegree() === 0) {
       setCurrentGloveAnimation({ left: "hook" });
       setAnimateLeft(true);
     }
   };
 
   const handleLeftGlovePunchAnimationTrigger = (event) => {
-    if (event.code === "KeyF" && !getCurrentGloveAnimation().left) {
+    if (event.code === "KeyF" && !getCurrentGloveAnimation().left && getCurrentDegree() === 0) {
       setCurrentGloveAnimation({ left: "punch" });
       setAnimateLeft(true);
     }
   };
 
   const handleRightGlovePunchAnimationTrigger = (event) => {
-    if (event.code === "KeyJ" && !getCurrentGloveAnimation().right) {
+    if (event.code === "KeyJ" && !getCurrentGloveAnimation().right && getCurrentDegree() === 0) {
       setCurrentGloveAnimation({ right: "punch" });
       setAnimateRight(true);
     }
   };
 
   const handleRightGloveHookAnimationTrigger = (event) => {
-    if (event.code === "KeyI" && !getCurrentGloveAnimation().right) {
+    if (event.code === "KeyI" && !getCurrentGloveAnimation().right && getCurrentDegree() === 0) {
       setCurrentGloveAnimation({ right: "hook" });
       setAnimateRight(true);
     }
   };
 
   const handleLeftGloveUppercutAnimationTrigger = (event) => {
-    if (event.code === "KeyV" && !getCurrentGloveAnimation().left && getCurrentGloveAnimation().right !== "uppercut") {
+    if (
+      event.code === "KeyV" &&
+      !getCurrentGloveAnimation().left &&
+      getCurrentGloveAnimation().right !== "uppercut" &&
+      getCurrentDegree() === 0
+    ) {
       setCurrentGloveAnimation({ left: "uppercut" });
       setAnimateLeft(true);
     }
   };
 
   const handleRightGloveUppercutAnimationTrigger = (event) => {
-    if (event.code === "KeyN" && !getCurrentGloveAnimation().right && getCurrentGloveAnimation().left !== "uppercut") {
+    if (
+      event.code === "KeyN" &&
+      !getCurrentGloveAnimation().right &&
+      getCurrentGloveAnimation().left !== "uppercut" &&
+      getCurrentDegree() === 0
+    ) {
       setCurrentGloveAnimation({ right: "uppercut" });
       setAnimateRight(true);
     }
@@ -91,27 +106,33 @@ function MainGameCanvas() {
     if (!getCurrentGloveAnimation().right && !getCurrentGloveAnimation().left && !moveLeftRightGloves) {
       switch (event.code) {
         case "ArrowRight":
-          setMovePosition({ right: (currentMoving.right += DELTA_MOVING) });
-          setMoveDirection("right");
-          xRef.current += DELTA_MOVING;
+          if (getCurrentDegree() < 2) {
+            setCurrentDegree(getCurrentDegree() + 1);
+          }
+          // setMovePosition({ right: (currentMoving.right += DELTA_Z_MOVING) });
+          // setMoveDirection("right");
+          xRef.current += DELTA_Z_MOVING;
           setMoveLeftRightGloves(true);
           break;
         case "ArrowLeft":
-          setMovePosition({ left: (currentMoving.left += DELTA_MOVING) });
-          setMoveDirection("left");
-          xRef.current -= DELTA_MOVING;
+          if (getCurrentDegree() > -2) {
+            setCurrentDegree(getCurrentDegree() - 1);
+          }
+          // setMovePosition({ left: (currentMoving.left += DELTA_Z_MOVING) });
+          // setMoveDirection("left");
+          xRef.current -= DELTA_Z_MOVING;
           setMoveLeftRightGloves(true);
           break;
         case "ArrowUp":
-          setMovePosition({ up: (currentMoving.up += DELTA_MOVING) });
-          setMoveDirection("up");
-          zRef.current -= DELTA_MOVING;
+          // setMovePosition({ up: (currentMoving.up += DELTA_Z_MOVING) });
+          // setMoveDirection("up");
+          zRef.current -= DELTA_Z_MOVING;
           setMoveLeftRightGloves(true);
           break;
         case "ArrowDown":
-          setMovePosition({ down: (currentMoving.down += DELTA_MOVING) });
-          setMoveDirection("down");
-          zRef.current += DELTA_MOVING;
+          // setMovePosition({ down: (currentMoving.down += DELTA_Z_MOVING) });
+          // setMoveDirection("down");
+          zRef.current += DELTA_Z_MOVING;
           setMoveLeftRightGloves(true);
           break;
       }
@@ -122,6 +143,60 @@ function MainGameCanvas() {
   const handleAnimationRightEnd = () => setAnimateRight(false);
   const handleAnimationLeftEnd = () => setAnimateLeft(false);
   const handleMoveLeftRightGloveEnd = () => setMoveLeftRightGloves(false);
+
+  useEffect(() => {
+    setXZPosition({
+      degree0: getNewGlovesPoints(RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current, 0, RIGHT_GLOVE_POSITION.INITIAL_X),
+      degreePlus1: getNewGlovesPoints(
+        RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
+        DELTA_DEGREE,
+        RIGHT_GLOVE_POSITION.INITIAL_X,
+      ),
+      degreePlus2: getNewGlovesPoints(
+        RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
+        DELTA_DEGREE * 2,
+        RIGHT_GLOVE_POSITION.INITIAL_X,
+      ),
+      degreeMinus1: getNewGlovesPoints(
+        RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
+        -DELTA_DEGREE,
+        RIGHT_GLOVE_POSITION.INITIAL_X,
+      ),
+      degreeMinus2: getNewGlovesPoints(
+        RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
+        -DELTA_DEGREE * 2,
+        RIGHT_GLOVE_POSITION.INITIAL_X,
+      ),
+    });
+  }, []);
+
+  useEffect(() => {
+    if (moveLeftRightGloves) {
+      setXZPosition({
+        degree0: getNewGlovesPoints(RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current, 0, RIGHT_GLOVE_POSITION.INITIAL_X),
+        degreePlus1: getNewGlovesPoints(
+          RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
+          DELTA_DEGREE,
+          RIGHT_GLOVE_POSITION.INITIAL_X,
+        ),
+        degreePlus2: getNewGlovesPoints(
+          RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
+          DELTA_DEGREE * 2,
+          RIGHT_GLOVE_POSITION.INITIAL_X,
+        ),
+        degreeMinus1: getNewGlovesPoints(
+          RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
+          -DELTA_DEGREE,
+          RIGHT_GLOVE_POSITION.INITIAL_X,
+        ),
+        degreeMinus2: getNewGlovesPoints(
+          RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
+          -DELTA_DEGREE * 2,
+          RIGHT_GLOVE_POSITION.INITIAL_X,
+        ),
+      });
+    }
+  }, [moveLeftRightGloves]);
 
   useEffect(() => {
     window.addEventListener("keydown", handleLeftGloveHookAnimationTrigger);
@@ -156,6 +231,7 @@ function MainGameCanvas() {
           className="h-full w-full"
           shadows
           camera={{
+            position: [0, 2.5, 3.5],
             fov: 50,
             near: 0.1,
             far: 200,

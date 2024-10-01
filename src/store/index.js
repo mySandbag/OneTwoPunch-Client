@@ -9,6 +9,24 @@ import {
 } from "../constants/animationSettings";
 
 const createMoveStateSlice = (set, get) => ({
+  currentDegree: 0,
+  getCurrentDegree: () => get().currentDegree,
+  setCurrentDegree: (setValue) =>
+    set(() => ({
+      currentDegree: setValue,
+    })),
+  xzPosition: {
+    degreeMinus2: { leftGlove: { x: 0, z: 0 }, rightGlove: { x: 0, z: 0 } },
+    degreeMinus1: { leftGlove: { x: 0, z: 0 }, rightGlove: { x: 0, z: 0 } },
+    degree0: { leftGlove: { x: 0, z: 0 }, rightGlove: { x: 0, z: 0 } },
+    degreePlus1: { leftGlove: { x: 0, z: 0 }, rightGlove: { x: 0, z: 0 } },
+    degreePlus2: { leftGlove: { x: 0, z: 0 }, rightGlove: { x: 0, z: 0 } },
+  },
+  getXZPosition: () => get().xzPosition,
+  setXZPosition: (setValue) =>
+    set((state) => ({
+      xzPosition: { ...state.xzPosition, ...setValue },
+    })),
   movePosition: { left: 0, right: 0, up: 0, down: 0 },
   getMovePosition: () => get().movePosition,
   setMovePosition: (setValue) =>

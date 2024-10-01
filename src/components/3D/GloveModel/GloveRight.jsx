@@ -5,7 +5,7 @@ import { useLoader, useFrame, useThree } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import {
-  DELTA_MOVING,
+  DELTA_DEGREE,
   GLOVE_SPEED,
   GLOVE_DIRECTION,
   RIGHT_GLOVE_POSITION,
@@ -22,6 +22,7 @@ import {
   computeBackwardMovement,
   computeTurningPoint,
 } from "../../../common/animation/computeRightGloveMovement.js";
+import { degToRad } from "../../../common/utils/mathUtils.js";
 
 import punchTargetSound from "/sound/punchTarget.mp3";
 import punchAirSound from "/sound/punchAir.mp3";
@@ -30,6 +31,8 @@ function GloveRight({ triggerAnimation, onAnimationEnd, triggerMove, onMovesEnd 
   const gloveRight = useLoader(GLTFLoader, "/model/glove_right/gloveRight.gltf");
 
   const {
+    getCurrentDegree,
+    getXZPosition,
     getMovePosition,
     getMoveDirection,
     resetMovePosition,
@@ -213,6 +216,7 @@ function GloveRight({ triggerAnimation, onAnimationEnd, triggerMove, onMovesEnd 
   const { rightX: xRotation, rightY: yRotation, rightZ: zRotation } = getCurrentRotation();
 
   const punchType = getCurrentGloveAnimation().right;
+  const rotateXZPosition = getXZPosition();
 
   const transformGloveRef = () => {
     gloveRightRef.current.position.set(xPosition, yPosition, zPosition);
@@ -338,36 +342,44 @@ function GloveRight({ triggerAnimation, onAnimationEnd, triggerMove, onMovesEnd 
       frameCountRef.current += 1;
     }
     if (triggerMove) {
-      switch (getMoveDirection()) {
-        case "right":
-          gloveRightRef.current.position.set(xPosition + DELTA_MOVING, yPosition, zPosition);
-          setCurrentPosition({ rightX: xPosition + DELTA_MOVING, rightY: yPosition, rightZ: zPosition });
-          updateGloveOBBState();
+      let rightX;
+      let rightY;
+      let rightZ;
 
-          onMovesEnd();
+      switch (getCurrentDegree()) {
+        case -2:
+          rightX = rotateXZPosition.degreeMinus2.rightGlove.x;
+          rightY = yPosition;
+          rightZ = rotateXZPosition.degreeMinus2.rightGlove.z;
           break;
-        case "left":
-          gloveRightRef.current.position.set(xPosition - DELTA_MOVING, yPosition, zPosition);
-          setCurrentPosition({ rightX: xPosition - DELTA_MOVING, rightY: yPosition, rightZ: zPosition });
-          updateGloveOBBState();
-
-          onMovesEnd();
+        case -1:
+          rightX = rotateXZPosition.degreeMinus1.rightGlove.x;
+          rightY = yPosition;
+          rightZ = rotateXZPosition.degreeMinus1.rightGlove.z;
           break;
-        case "up":
-          gloveRightRef.current.position.set(xPosition, yPosition, zPosition - DELTA_MOVING);
-          setCurrentPosition({ rightX: xPosition, rightY: yPosition, rightZ: zPosition - DELTA_MOVING });
-          updateGloveOBBState();
-
-          onMovesEnd();
+        case 0:
+          rightX = rotateXZPosition.degree0.rightGlove.x;
+          rightY = yPosition;
+          rightZ = rotateXZPosition.degree0.rightGlove.z;
           break;
-        case "down":
-          gloveRightRef.current.position.set(xPosition, yPosition, zPosition + DELTA_MOVING);
-          setCurrentPosition({ rightX: xPosition, rightY: yPosition, rightZ: zPosition + DELTA_MOVING });
-          updateGloveOBBState();
-
-          onMovesEnd();
+        case 1:
+          rightX = rotateXZPosition.degreePlus1.rightGlove.x;
+          rightY = yPosition;
+          rightZ = rotateXZPosition.degreePlus1.rightGlove.z;
+          break;
+        case 2:
+          rightX = rotateXZPosition.degreePlus2.rightGlove.x;
+          rightY = yPosition;
+          rightZ = rotateXZPosition.degreePlus2.rightGlove.z;
           break;
       }
+
+      gloveRightRef.current.position.set(rightX, rightY, rightZ);
+      gloveRightRef.current.rotation.set(0, degToRad(getCurrentDegree() * DELTA_DEGREE), 0);
+
+
+      setCurrentPosition({ rightX, rightY, rightZ });
+      updateGloveOBBState();
     }
   });
 

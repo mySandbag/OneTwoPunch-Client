@@ -1,7 +1,8 @@
 import { degToRad } from "../common/utils/mathUtils";
 export const RIGHT_ANGLE = degToRad(90);
 
-export const DELTA_MOVING = 0.3;
+export const DELTA_Z_MOVING = 0.3;
+export const DELTA_DEGREE = 20;
 
 export const SANDBAG_POSITION = {
   INITIAL_Y: 4.8,
@@ -54,9 +55,9 @@ export const RIGHT_GLOVE_POSITION = {
 };
 
 export const RIGHT_GLOVE_ROTATION = {
-  INITIAL_X: degToRad(18),
-  INITIAL_Y: degToRad(15),
-  INITIAL_Z: degToRad(-10),
+  INITIAL_X: degToRad(0),
+  INITIAL_Y: degToRad(0),
+  INITIAL_Z: degToRad(0),
   PUNCH_DELTA_X: degToRad(9),
   PUNCH_DELTA_Y: degToRad(10),
   HOOK_DELTA_X: degToRad(1),
@@ -80,9 +81,9 @@ export const LEFT_GLOVE_POSITION = {
 };
 
 export const LEFT_GLOVE_ROTATION = {
-  INITIAL_X: degToRad(-10),
-  INITIAL_Y: degToRad(9),
-  INITIAL_Z: degToRad(-1),
+  INITIAL_X: degToRad(0),
+  INITIAL_Y: degToRad(0),
+  INITIAL_Z: degToRad(0),
   PUNCH_DELTA_X: degToRad(10),
   PUNCH_DELTA_Y: degToRad(7),
   HOOK_DELTA_X: degToRad(2),
