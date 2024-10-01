@@ -44,7 +44,7 @@ function GarageModel() {
         <meshStandardMaterial attach="material-4" map={concreteFloor} side={BackSide} />
         <meshStandardMaterial attach="material-5" map={concreteFloor} side={BackSide} />
       </mesh>
-      <primitive object={boxerPoster.scene} ref={boxerPosterRef} scale={[0.7, 0.9, 0.9]} />
+      <primitive object={boxerPoster.scene} ref={boxerPosterRef} scale={[0.85, 0.9, 0.9]} />
       <primitive object={dumbbell.scene} ref={dumbbellRef} scale={[0.3, 0.3, 0.3]} />
     </>
   );

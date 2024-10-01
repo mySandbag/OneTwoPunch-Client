@@ -109,8 +109,6 @@ function MainGameCanvas() {
           if (getCurrentDegree() < 2) {
             setCurrentDegree(getCurrentDegree() + 1);
           }
-          // setMovePosition({ right: (currentMoving.right += DELTA_Z_MOVING) });
-          // setMoveDirection("right");
           xRef.current += DELTA_Z_MOVING;
           setMoveLeftRightGloves(true);
           break;
@@ -118,20 +116,14 @@ function MainGameCanvas() {
           if (getCurrentDegree() > -2) {
             setCurrentDegree(getCurrentDegree() - 1);
           }
-          // setMovePosition({ left: (currentMoving.left += DELTA_Z_MOVING) });
-          // setMoveDirection("left");
           xRef.current -= DELTA_Z_MOVING;
           setMoveLeftRightGloves(true);
           break;
         case "ArrowUp":
-          // setMovePosition({ up: (currentMoving.up += DELTA_Z_MOVING) });
-          // setMoveDirection("up");
           zRef.current -= DELTA_Z_MOVING;
           setMoveLeftRightGloves(true);
           break;
         case "ArrowDown":
-          // setMovePosition({ down: (currentMoving.down += DELTA_Z_MOVING) });
-          // setMoveDirection("down");
           zRef.current += DELTA_Z_MOVING;
           setMoveLeftRightGloves(true);
           break;
