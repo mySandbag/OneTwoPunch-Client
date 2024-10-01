@@ -1,0 +1,11 @@
+Model Information:
+* title:	Dumbell low-poly
+* source:	https://sketchfab.com/3d-models/dumbell-low-poly-4f87fd49bb7943f882f081639750d716
+* author:	Feodal (https://sketchfab.com/fafagame21)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Dumbell low-poly" (https://sketchfab.com/3d-models/dumbell-low-poly-4f87fd49bb7943f882f081639750d716) by Feodal (https://sketchfab.com/fafagame21) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
