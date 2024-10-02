@@ -128,7 +128,7 @@ export const computeBackwardMovement = (
     };
   }
   if (punchType === "hook") {
-    speedRef.current = Math.max(speedRef.current - GLOVE_SPEED.HOOK_INCREMENT * FPSFactor, GLOVE_SPEED.PUNCH_INITIAL);
+    speedRef.current = Math.max(speedRef.current - GLOVE_SPEED.HOOK_DECREMENT * FPSFactor, GLOVE_SPEED.PUNCH_INITIAL);
 
     newPosition = {
       leftX: Math.min(
