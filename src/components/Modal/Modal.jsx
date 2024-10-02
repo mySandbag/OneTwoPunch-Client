@@ -9,10 +9,7 @@ function Modal({ children, isOpen, onClose }) {
       className="fixed inset-0 flex select-none items-center justify-center bg-black bg-opacity-50"
       onClick={onClose}
     >
-      <div
-        className="rounded-md bg-white p-4 md:p-6"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="rounded-md bg-white p-4 md:px-14 md:py-8" onClick={(e) => e.stopPropagation()}>
         {children}
       </div>
     </div>,
