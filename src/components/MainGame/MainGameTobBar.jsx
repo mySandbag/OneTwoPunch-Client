@@ -7,8 +7,7 @@ import usePackageStore from "../../store";
 import homeIcon from "../../assets/home-icon.svg";
 
 function MainGameTobBar() {
-  const { getHitCount, resetHitCount, getComboCount, resetComboCount } =
-    usePackageStore();
+  const { getHitCount, resetHitCount, resetComboCount } = usePackageStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -46,12 +45,8 @@ function MainGameTobBar() {
           ?
         </button>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <h2 className="mb-1 text-xl font-bold md:mb-4 md:text-4xl">
-            How to Play🥊
-          </h2>
-          <p className="mb-1 text-base md:mb-4 lg:text-2xl">
-            Press the key to control your fist!
-          </p>
+          <h2 className="mb-1 text-xl font-bold md:mb-4 md:text-4xl">How to Play🥊</h2>
+          <p className="mb-1 text-base md:mb-4 lg:text-2xl">Press the key to control your fist!</p>
           <div className="text-md my-1 flex flex-row md:text-3xl">
             <div className="flex flex-col justify-between">
               <div className="m-1 lg:m-2">
@@ -94,6 +89,41 @@ function MainGameTobBar() {
               </div>
             </div>
           </div>
+          <div className="mt-6 flex flex-row items-center justify-evenly">
+            <div className="flex flex-col">
+              <div>
+                <span className="invisible mb-2 mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
+                  N
+                </span>
+                <span className="mb-2 mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
+                  ▲
+                </span>
+                <span className="invisible mb-2 mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
+                  N
+                </span>
+              </div>
+              <div>
+                <span className="mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
+                  ◀
+                </span>
+                <span className="mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
+                  ▼
+                </span>
+                <span className="mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
+                  ▶
+                </span>
+              </div>
+            </div>
+            <div className="ml-3 flex flex-col justify-center text-3xl leading-normal">
+              <p> Top: Move forward</p>
+              <p> Down: Move backward</p>
+              <p> Left: Rotate Left</p>
+              <p> Right: Rotate Right</p>
+            </div>
+          </div>
+          <p className="mt-3 text-center text-lg text-red-400">
+            * You can only hit the Punchbag when you're directly in front of it *
+          </p>
           <div className="flex justify-center">
             <button
               onClick={closeModal}
