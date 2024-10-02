@@ -45,27 +45,27 @@ function MainGameTobBar() {
           ?
         </button>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <h2 className="mb-1 text-xl font-bold md:mb-4 md:text-4xl">How to Play🥊</h2>
-          <p className="mb-1 text-base md:mb-4 lg:text-2xl">Press the key to control your fist!</p>
-          <div className="text-md my-1 flex flex-row md:text-3xl">
+          <h2 className="mb-1 text-xl font-bold md:mb-4 md:text-4xl">플레이 방법</h2>
+          <p className="mb-1 text-base md:mb-4 lg:text-xl">키보드를 눌러 주먹을 컨트롤해보세요!</p>
+          <div className="text-md my-1 flex flex-row md:text-2xl">
             <div className="flex flex-col justify-between">
               <div className="m-1 lg:m-2">
                 <span className="mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
                   E
                 </span>
-                : Left Hook
+                : 레프트 훅
               </div>
               <div className="m-1 lg:m-2">
                 <span className="mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
                   F
                 </span>
-                : Left Punch
+                : 레프트 펀치
               </div>
               <div className="m-1 lg:m-2">
                 <span className="mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
                   V
                 </span>
-                : Left Uppercut
+                : 레프트 어퍼컷
               </div>
             </div>
             <div className="flex flex-col justify-between">
@@ -73,19 +73,19 @@ function MainGameTobBar() {
                 <span className="mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
                   I
                 </span>
-                : Right Hook
+                : 라이트 훅
               </div>
               <div className="m-1 lg:m-2">
                 <span className="mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
                   J
                 </span>
-                : Right Punch
+                : 라이트 펀치
               </div>
               <div className="m-1 lg:m-2">
                 <span className="mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
-                  N
+                  I
                 </span>
-                : Right Uppercut
+                : 라이트 어퍼컷
               </div>
             </div>
           </div>
@@ -93,13 +93,13 @@ function MainGameTobBar() {
             <div className="flex flex-col">
               <div>
                 <span className="invisible mb-2 mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
-                  N
+                  {" "}
                 </span>
                 <span className="mb-2 mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
                   ▲
                 </span>
                 <span className="invisible mb-2 mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
-                  N
+                  {" "}
                 </span>
               </div>
               <div>
@@ -114,22 +114,20 @@ function MainGameTobBar() {
                 </span>
               </div>
             </div>
-            <div className="ml-3 flex flex-col justify-center text-3xl leading-normal">
-              <p> Top: Move forward</p>
-              <p> Down: Move backward</p>
-              <p> Left: Rotate Left</p>
-              <p> Right: Rotate Right</p>
+            <div className="ml-3 flex flex-col justify-center text-2xl leading-relaxed">
+              <p> 위: 앞으로 이동</p>
+              <p> 아래: 뒤로 이동</p>
+              <p> 왼쪽: 왼쪽으로 회전</p>
+              <p> 오른쪽: 오른쪽으로 회전</p>
             </div>
           </div>
-          <p className="mt-3 text-center text-lg text-red-400">
-            * You can only hit the Punchbag when you're directly in front of it *
-          </p>
+
           <div className="flex justify-center">
             <button
               onClick={closeModal}
-              className="mt-1 rounded-md bg-punch-red px-3 py-1 text-center text-base font-bold text-white md:mt-4 md:text-2xl lg:px-4 lg:py-2"
+              className="mt-1 rounded-md bg-blue-400 px-4 py-2 text-center text-base font-bold text-white md:mt-4 md:text-2xl lg:px-4 lg:py-2"
             >
-              OK
+              확인
             </button>
           </div>
         </Modal>
