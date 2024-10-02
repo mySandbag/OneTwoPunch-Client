@@ -22,6 +22,7 @@ export default {
       fontFamily: {
         square: ["square", "sans-serif"],
         comicy: ["comicy", "sans-serif"],
+        pretendard: ["pretendard", "sans-serif"],
       },
     },
   },

@@ -45,9 +45,9 @@ function MainGameTobBar() {
           ?
         </button>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <h2 className="mb-1 text-xl font-bold md:mb-4 md:text-4xl">플레이 방법</h2>
-          <p className="mb-1 text-base md:mb-4 lg:text-xl">키보드를 눌러 주먹을 컨트롤해보세요!</p>
-          <div className="text-md my-1 flex flex-row md:text-2xl">
+          <h2 className="font-pretendard mb-1 text-xl font-bold md:mb-4 md:text-4xl">플레이 방법</h2>
+          <p className="font-pretendard mb-1 text-base md:mb-4 lg:text-xl">키보드를 눌러 주먹을 컨트롤해보세요!</p>
+          <div className="text-md font-pretendard my-1 flex flex-row md:text-2xl">
             <div className="flex flex-col justify-between">
               <div className="m-1 lg:m-2">
                 <span className="mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
@@ -89,7 +89,7 @@ function MainGameTobBar() {
               </div>
             </div>
           </div>
-          <div className="mt-6 flex flex-row items-center justify-evenly">
+          <div className="mt-6 flex flex-row items-start justify-evenly">
             <div className="flex flex-col">
               <div>
                 <span className="invisible mb-2 mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
@@ -114,7 +114,7 @@ function MainGameTobBar() {
                 </span>
               </div>
             </div>
-            <div className="ml-3 flex flex-col justify-center text-2xl leading-relaxed">
+            <div className="font-pretendard ml-3 flex flex-col justify-center text-2xl leading-relaxed">
               <p> 위: 앞으로 이동</p>
               <p> 아래: 뒤로 이동</p>
               <p> 왼쪽: 왼쪽으로 회전</p>

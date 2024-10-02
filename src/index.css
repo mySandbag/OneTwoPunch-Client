@@ -21,3 +21,11 @@ body {
   font-display: block;
   src: url(/font/Comicy.woff) format("truetype");
 }
+
+@font-face {
+  font-family: "pretendard";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url(/font/Pretendard-Medium.woff2) format("truetype");
+}

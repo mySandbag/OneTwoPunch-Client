@@ -343,7 +343,7 @@ function MainGameCanvas() {
       <div className="mt-5 block sm:hidden">
         <div className="text-md flex flex-col items-center text-center text-white">
           <img src={landScapeIcon} width="50px" />
-          <div className="block flex flex-col text-xl md:inline md:flex-row">
+          <div className="font-pretendard block flex flex-col text-xl md:inline md:flex-row">
             <span className="">모바일 기기에서는</span>
             <span className=""> 가로모드로 플레이해주시기 바랍니다.</span>
           </div>
