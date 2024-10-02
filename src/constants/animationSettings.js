@@ -1,8 +1,12 @@
 import { degToRad } from "../common/utils/mathUtils";
 export const RIGHT_ANGLE = degToRad(90);
 
-export const DELTA_Z_MOVING = 0.3;
-export const DELTA_DEGREE = 20;
+export const POV = {
+  DELTA_Z_MOVING: 0.25,
+  DELTA_Z_MAX_LIMIT: 8,
+  DELTA_Z_MIN_LIMIT: -0.6,
+  DELTA_DEGREE: 20,
+};
 
 export const SANDBAG_POSITION = {
   INITIAL_Y: 4.8,
