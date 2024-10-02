@@ -8,7 +8,7 @@ import GloveLeft from "../3D/GloveModel/GloveLeft";
 import GloveRight from "../3D/GloveModel/GloveRight";
 import usePackageStore from "../../store";
 
-import { DELTA_Z_MOVING, DELTA_DEGREE, RIGHT_GLOVE_POSITION } from "../../constants/animationSettings";
+import { POV, RIGHT_GLOVE_POSITION } from "../../constants/animationSettings";
 import { rotateCenterPointByDegrees, getNewGlovesPoints } from "../../common/animation/computeRotateDegrees";
 
 import landScapeIcon from "../../assets/landscape-icon.svg";
@@ -41,7 +41,7 @@ function MainGameCanvas() {
   const CameraControls = () => {
     const { camera, gl } = useThree();
     useEffect(() => {
-      const newCameraPoint = rotateCenterPointByDegrees(3.5 + zRef.current, getCurrentDegree() * DELTA_DEGREE);
+      const newCameraPoint = rotateCenterPointByDegrees(3.5 + zRef.current, getCurrentDegree() * POV.DELTA_DEGREE);
 
       camera.position.set(-newCameraPoint.x, 2.5, newCameraPoint.z);
       camera.lookAt(0, 2, 0);
@@ -109,25 +109,29 @@ function MainGameCanvas() {
           if (getCurrentDegree() < 2) {
             setCurrentDegree(getCurrentDegree() + 1);
           }
-          xRef.current += DELTA_Z_MOVING;
+          xRef.current += POV.DELTA_Z_MOVING;
           setMoveLeftRightGloves(true);
           break;
         case "ArrowLeft":
           if (getCurrentDegree() > -2) {
             setCurrentDegree(getCurrentDegree() - 1);
           }
-          xRef.current -= DELTA_Z_MOVING;
+          xRef.current -= POV.DELTA_Z_MOVING;
           setMoveLeftRightGloves(true);
           break;
         case "ArrowUp":
-          zRef.current -= DELTA_Z_MOVING;
-          setMovePosition({ up: (currentMoving.up += DELTA_Z_MOVING) });
-          setMoveLeftRightGloves(true);
+          if (zRef.current > POV.DELTA_Z_MIN_LIMIT) {
+            zRef.current -= POV.DELTA_Z_MOVING;
+            setMovePosition({ up: (currentMoving.up += POV.DELTA_Z_MOVING) });
+            setMoveLeftRightGloves(true);
+          }
           break;
         case "ArrowDown":
-          zRef.current += DELTA_Z_MOVING;
-          setMovePosition({ down: (currentMoving.down += DELTA_Z_MOVING) });
-          setMoveLeftRightGloves(true);
+          if (zRef.current < POV.DELTA_Z_MAX_LIMIT) {
+            zRef.current += POV.DELTA_Z_MOVING;
+            setMovePosition({ down: (currentMoving.down += POV.DELTA_Z_MOVING) });
+            setMoveLeftRightGloves(true);
+          }
           break;
       }
     }
@@ -143,22 +147,22 @@ function MainGameCanvas() {
       degree0: getNewGlovesPoints(RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current, 0, RIGHT_GLOVE_POSITION.INITIAL_X),
       degreePlus1: getNewGlovesPoints(
         RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
-        DELTA_DEGREE,
+        POV.DELTA_DEGREE,
         RIGHT_GLOVE_POSITION.INITIAL_X,
       ),
       degreePlus2: getNewGlovesPoints(
         RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
-        DELTA_DEGREE * 2,
+        POV.DELTA_DEGREE * 2,
         RIGHT_GLOVE_POSITION.INITIAL_X,
       ),
       degreeMinus1: getNewGlovesPoints(
         RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
-        -DELTA_DEGREE,
+        -POV.DELTA_DEGREE,
         RIGHT_GLOVE_POSITION.INITIAL_X,
       ),
       degreeMinus2: getNewGlovesPoints(
         RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
-        -DELTA_DEGREE * 2,
+        -POV.DELTA_DEGREE * 2,
         RIGHT_GLOVE_POSITION.INITIAL_X,
       ),
     });
@@ -170,22 +174,22 @@ function MainGameCanvas() {
         degree0: getNewGlovesPoints(RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current, 0, RIGHT_GLOVE_POSITION.INITIAL_X),
         degreePlus1: getNewGlovesPoints(
           RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
-          DELTA_DEGREE,
+          POV.DELTA_DEGREE,
           RIGHT_GLOVE_POSITION.INITIAL_X,
         ),
         degreePlus2: getNewGlovesPoints(
           RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
-          DELTA_DEGREE * 2,
+          POV.DELTA_DEGREE * 2,
           RIGHT_GLOVE_POSITION.INITIAL_X,
         ),
         degreeMinus1: getNewGlovesPoints(
           RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
-          -DELTA_DEGREE,
+          -POV.DELTA_DEGREE,
           RIGHT_GLOVE_POSITION.INITIAL_X,
         ),
         degreeMinus2: getNewGlovesPoints(
           RIGHT_GLOVE_POSITION.INITIAL_Z + zRef.current,
-          -DELTA_DEGREE * 2,
+          -POV.DELTA_DEGREE * 2,
           RIGHT_GLOVE_POSITION.INITIAL_X,
         ),
       });

@@ -5,7 +5,7 @@ import { useLoader, useFrame, useThree } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import {
-  DELTA_DEGREE,
+  POV,
   GLOVE_SPEED,
   GLOVE_DIRECTION,
   RIGHT_GLOVE_POSITION,
@@ -375,8 +375,7 @@ function GloveRight({ triggerAnimation, onAnimationEnd, triggerMove, onMovesEnd 
       }
 
       gloveRightRef.current.position.set(rightX, rightY, rightZ);
-      gloveRightRef.current.rotation.set(0, degToRad(getCurrentDegree() * DELTA_DEGREE), 0);
-
+      gloveRightRef.current.rotation.set(0, degToRad(getCurrentDegree() * POV.DELTA_DEGREE), 0);
 
       setCurrentPosition({ rightX, rightY, rightZ });
       updateGloveOBBState();
