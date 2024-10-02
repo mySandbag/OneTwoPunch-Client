@@ -28,8 +28,6 @@ function MainGameCanvas() {
     getCurrentDegree,
     setCurrentDegree,
     setXZPosition,
-    getXZPosition,
-    setMoveDirection,
     getMovePosition,
     setMovePosition,
     getHitInProgress,
@@ -38,13 +36,15 @@ function MainGameCanvas() {
     getComboCount,
   } = usePackageStore();
 
+  const currentMoving = getMovePosition();
+
   const CameraControls = () => {
     const { camera, gl } = useThree();
     useEffect(() => {
       const newCameraPoint = rotateCenterPointByDegrees(3.5 + zRef.current, getCurrentDegree() * DELTA_DEGREE);
 
       camera.position.set(-newCameraPoint.x, 2.5, newCameraPoint.z);
-      camera.lookAt(0, 2, 0 + zRef.current);
+      camera.lookAt(0, 2, 0);
     }, [camera, gl, moveLeftRightGloves]);
 
     return null;
@@ -121,10 +121,12 @@ function MainGameCanvas() {
           break;
         case "ArrowUp":
           zRef.current -= DELTA_Z_MOVING;
+          setMovePosition({ up: (currentMoving.up += DELTA_Z_MOVING) });
           setMoveLeftRightGloves(true);
           break;
         case "ArrowDown":
           zRef.current += DELTA_Z_MOVING;
+          setMovePosition({ down: (currentMoving.down += DELTA_Z_MOVING) });
           setMoveLeftRightGloves(true);
           break;
       }
