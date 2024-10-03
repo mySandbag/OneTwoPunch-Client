@@ -83,7 +83,7 @@ function MainGameTobBar() {
               </div>
               <div className="m-1 lg:m-2">
                 <span className="mr-2 inline-block h-[25px] w-[25px] rounded-lg border border-gray-400 bg-slate-100 text-center font-mono font-bold leading-[25px] text-gray-800 shadow-lg md:h-[45px] md:w-[45px] md:leading-[45px]">
-                  I
+                  N
                 </span>
                 : 라이트 어퍼컷
               </div>
